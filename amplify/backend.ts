@@ -1,6 +1,7 @@
 import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
+import { storage } from './storage/resource';
 import { checkAdmin } from './functions/checkAdmin/resource';
 import { getAffiliateData } from './functions/getAffiliateData/resource';
 import { getFlavorMap } from './functions/getFlavorMap/resource';
@@ -21,6 +22,7 @@ import { postFlavor } from './functions/postFlavor/resource';
 defineBackend({
   auth,
   data,
+  storage,
   // ---- Custom Lambda functions ----
   checkAdmin,
   getAffiliateData,
