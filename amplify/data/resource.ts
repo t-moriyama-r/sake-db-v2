@@ -1,4 +1,17 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { checkAdmin } from '../functions/checkAdmin/resource';
+import { getAffiliateData } from '../functions/getAffiliateData/resource';
+import { getFlavorMap } from '../functions/getFlavorMap/resource';
+import { getVoted } from '../functions/getVoted/resource';
+import { getRecommendLiquorList } from '../functions/getRecommendLiquorList/resource';
+import { randomRecommendList } from '../functions/randomRecommendList/resource';
+import { listFromCategory } from '../functions/listFromCategory/resource';
+import { searchLiquors } from '../functions/searchLiquors/resource';
+import { searchLiquorsByTag } from '../functions/searchLiquorsByTag/resource';
+import { liquorHistories } from '../functions/liquorHistories/resource';
+import { getUserByIdDetail } from '../functions/getUserByIdDetail/resource';
+import { getIsBookMarked } from '../functions/getIsBookMarked/resource';
+import { postFlavor } from '../functions/postFlavor/resource';
 
 /**
  * sake-db GraphQL スキーマを Amplify Gen 2 に移植したデータスキーマ。
@@ -9,26 +22,10 @@ import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
  *   @adminAuth    → allow.groups(['admin'])
  *   (なし/公開)   → allow.guest() + allow.authenticated()
  *
- * 認証系 Mutation (login / register / logout / refreshToken 等) は
- * Amplify Auth (Cognito) で処理するため、このスキーマには含まない。
- *
- * 以下のクエリ・ミューテーションは集計ロジックが必要なため、
- * Lambda ハンドラ実装後に amplify/data/resource.ts へ追加すること:
- *   - checkAdmin
- *   - getAffiliateData(name, limit)
- *   - getFlavorMap(liquorId)       → FlavorVote を集計して FlavorMapData を返す
- *   - getVoted(liquorId)           → 自分の FlavorVote を返す
- *   - getRecommendLiquorList       → ブックマーク考慮のおすすめリスト
- *   - randomRecommendList(limit)
- *   - listFromCategory(categoryId)
- *   - searchLiquors(keyword, limit)
- *   - searchLiquorsByTag(tag)
- *   - liquorHistories(id)
- *   - getUserByIdDetail(id)
- *   - getMyData                    → Cognito ユーザー情報取得
- *   - getIsBookMarked(id)
- *   - postFlavor(liquorId, x, y)   → FlavorVote の upsert
- *   - updateUser(input)            → Cognito ユーザー属性の更新
+ * ユーザー属性の管理:
+ *   名前・プロフィール・画像は UserProfile モデル (DynamoDB) で管理。
+ *   メール・パスワードは Amplify Auth (Cognito) で管理。
+ *   フロントエンドから直接 client.models.UserProfile を操作すること。
  */
 
 const schema = a.schema({
@@ -38,7 +35,7 @@ const schema = a.schema({
 
   /** カテゴリのパンくずリスト */
   CategoryTrail: a.customType({
-    id: a.integer().required(),
+    id: a.id().required(),
     name: a.string().required(),
   }),
 
@@ -62,14 +59,14 @@ const schema = a.schema({
   FlavorCellData: a.customType({
     x: a.float().required(),
     y: a.float().required(),
-    rate: a.float().required(),       // 0〜100 の浮動小数点
+    rate: a.float().required(),
     userAmount: a.integer().required(),
     guestAmount: a.integer().required(),
   }),
 
   /** フレーバーマップ全体（Lambda で集計して返す） */
   FlavorMapData: a.customType({
-    categoryId: a.integer().required(),
+    categoryId: a.id().required(),
     xNames: a.string().array().required(),
     yNames: a.string().array().required(),
     userFullAmount: a.integer().required(),
@@ -81,7 +78,7 @@ const schema = a.schema({
   VotedData: a.customType({
     liquorId: a.id().required(),
     userId: a.id().required(),
-    categoryId: a.integer().required(),
+    categoryId: a.id().required(),
     x: a.float().required(),
     y: a.float().required(),
     updatedAt: a.datetime().required(),
@@ -101,7 +98,7 @@ const schema = a.schema({
   RecommendLiquor: a.customType({
     id: a.id().required(),
     name: a.string().required(),
-    categoryId: a.integer().required(),
+    categoryId: a.id().required(),
     categoryName: a.string().required(),
     imageBase64: a.string(),
     description: a.string().required(),
@@ -124,7 +121,7 @@ const schema = a.schema({
   // ---- ユーザー ----
 
   /** カスタムクエリ・Lambda の戻り値用ユーザー型 */
-  UserProfile: a.customType({
+  UserProfileData: a.customType({
     id: a.id().required(),
     name: a.string().required(),
     email: a.string().required(),
@@ -137,7 +134,7 @@ const schema = a.schema({
     id: a.id().required(),
     liquorId: a.id().required(),
     name: a.string().required(),
-    categoryId: a.integer().required(),
+    categoryId: a.id().required(),
     categoryName: a.string().required(),
     imageBase64: a.string(),
     comment: a.string(),
@@ -157,7 +154,20 @@ const schema = a.schema({
 
   UserPageData: a.customType({
     evaluateList: a.ref('UserEvaluateList').required(),
-    user: a.ref('UserProfile').required(),
+    user: a.ref('UserProfileData').required(),
+  }),
+
+  // ---- カテゴリ別お酒一覧 ----
+
+  /**
+   * listFromCategory の戻り値。
+   * liquors フィールドは JSON シリアライズされた Liquor[] を返す。
+   * フロントエンドで JSON.parse して使用すること。
+   */
+  ListFromCategory: a.customType({
+    categoryName: a.string().required(),
+    categoryDescription: a.string(),
+    liquors: a.json().required(),
   }),
 
   // ================================================================
@@ -165,11 +175,35 @@ const schema = a.schema({
   // ================================================================
 
   /**
+   * ユーザープロフィール（名前・画像など Cognito 外の属性を管理）
+   *
+   * - cognitoId は Cognito の sub（UUID）
+   * - フロントエンドでログイン後に create、更新は update で行う
+   * - getUserByIdDetail Lambda はこのモデルからユーザー情報を取得する
+   */
+  UserProfile: a
+    .model({
+      /** Cognito sub（UUID） */
+      cognitoId: a.id().required(),
+      name: a.string().required(),
+      email: a.string().required(),
+      profile: a.string(),
+      /** 縮小 Base64 プロフィール画像 */
+      imageBase64: a.string(),
+      roles: a.string().array(),
+    })
+    .secondaryIndexes((index) => [index('cognitoId')])
+    .authorization((allow) => [
+      allow.owner().to(['read', 'create', 'update']),
+      allow.authenticated().to(['read']),
+      allow.groups(['admin']),
+    ]),
+
+  /**
    * カテゴリ（階層構造）
    *
    * - 自己参照リレーション: parent / children (parentId で結合)
-   * - 公開読み取り可能
-   * - 書き込みは admin グループのみ
+   * - 公開読み取り可能、書き込みは admin グループのみ
    */
   Category: a
     .model({
@@ -203,7 +237,6 @@ const schema = a.schema({
    * - 公開読み取り可能
    * - ログインユーザーが作成・更新可能
    * - rate*Users: 各評価をつけたユーザー ID の配列（非正規化）
-   * - categoryTrail: パンくず用に非正規化して保持
    */
   Liquor: a
     .model({
@@ -258,7 +291,7 @@ const schema = a.schema({
       userId: a.id(),
       userName: a.string(),
       userImageBase64: a.string(),
-      categoryId: a.integer().required(),
+      categoryId: a.id().required(),
       categoryName: a.string().required(),
       liquorName: a.string().required(),
       text: a.string().required(),
@@ -277,8 +310,7 @@ const schema = a.schema({
    * タグ
    *
    * - 公開読み取り可能
-   * - ログインユーザーが作成可能
-   * - 作成者（owner）が削除可能
+   * - ログインユーザーが作成可能、作成者（owner）が削除可能
    */
   Tag: a
     .model({
@@ -313,14 +345,13 @@ const schema = a.schema({
    *
    * - @optionalAuth: 未ログインでも投票可能
    * - 集計は getFlavorMap Lambda で行う
-   * - x, y は Coordinate スカラー（float で保持）
    */
   FlavorVote: a
     .model({
       liquorId: a.id().required(),
       liquor: a.belongsTo('Liquor', 'liquorId'),
       /** カテゴリごとにフレーバー軸が異なるため保持 */
-      categoryId: a.integer().required(),
+      categoryId: a.id().required(),
       x: a.float().required(),
       y: a.float().required(),
     })
@@ -336,7 +367,7 @@ const schema = a.schema({
   LiquorHistory: a
     .model({
       liquorId: a.id().required(),
-      categoryId: a.integer().required(),
+      categoryId: a.id().required(),
       categoryName: a.string().required(),
       name: a.string().required(),
       description: a.string(),
@@ -373,6 +404,135 @@ const schema = a.schema({
       allow.authenticated().to(['read']),
       allow.groups(['admin']),
     ]),
+
+  // ================================================================
+  // CUSTOM QUERIES
+  // ================================================================
+
+  /** admin グループに所属しているか判定 */
+  checkAdmin: a
+    .query()
+    .returns(a.boolean().required())
+    .authorization((allow) => [allow.authenticated()])
+    .handler(a.handler.function(checkAdmin)),
+
+  /** Amazon アフィリエイトデータ取得（PA-API） */
+  getAffiliateData: a
+    .query()
+    .arguments({ name: a.string().required(), limit: a.integer() })
+    .returns(a.ref('AffiliateData').required())
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(getAffiliateData)),
+
+  /** FlavorVote を集計してフレーバーマップを返す */
+  getFlavorMap: a
+    .query()
+    .arguments({ liquorId: a.id().required() })
+    .returns(a.ref('FlavorMapData'))
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(getFlavorMap)),
+
+  /** 現在のユーザーが対象お酒に投票したデータを返す */
+  getVoted: a
+    .query()
+    .arguments({ liquorId: a.id().required() })
+    .returns(a.ref('VotedData'))
+    .authorization((allow) => [allow.authenticated()])
+    .handler(a.handler.function(getVoted)),
+
+  /** ブックマーク考慮のおすすめレビューリスト */
+  getRecommendLiquorList: a
+    .query()
+    .returns(a.ref('Recommend').array().required())
+    .authorization((allow) => [allow.authenticated()])
+    .handler(a.handler.function(getRecommendLiquorList)),
+
+  /**
+   * ランダムなお酒リスト。
+   * 戻り値は JSON シリアライズされた Liquor[]。
+   */
+  randomRecommendList: a
+    .query()
+    .arguments({ limit: a.integer().required() })
+    .returns(a.json().required())
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(randomRecommendList)),
+
+  /**
+   * カテゴリ別お酒一覧。
+   * liquors フィールドは JSON 文字列（Liquor[]）。
+   */
+  listFromCategory: a
+    .query()
+    .arguments({ categoryId: a.id().required() })
+    .returns(a.ref('ListFromCategory').required())
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(listFromCategory)),
+
+  /**
+   * キーワード検索。
+   * 戻り値は JSON シリアライズされた Liquor[]。
+   */
+  searchLiquors: a
+    .query()
+    .arguments({ keyword: a.string().required(), limit: a.integer() })
+    .returns(a.json().required())
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(searchLiquors)),
+
+  /**
+   * タグで検索。
+   * 戻り値は JSON シリアライズされた Liquor[]。
+   */
+  searchLiquorsByTag: a
+    .query()
+    .arguments({ tag: a.string().required() })
+    .returns(a.json().required())
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(searchLiquorsByTag)),
+
+  /**
+   * お酒の編集履歴。
+   * 戻り値は JSON 文字列: { now: Liquor, histories: LiquorHistory[] }
+   */
+  liquorHistories: a
+    .query()
+    .arguments({ id: a.id().required() })
+    .returns(a.json())
+    .authorization((allow) => [allow.authenticated()])
+    .handler(a.handler.function(liquorHistories)),
+
+  /** ユーザープロフィールと評価リストを返す */
+  getUserByIdDetail: a
+    .query()
+    .arguments({ id: a.string().required() })
+    .returns(a.ref('UserPageData').required())
+    .authorization((allow) => [allow.authenticated()])
+    .handler(a.handler.function(getUserByIdDetail)),
+
+  /** 対象お酒をブックマーク済みか判定 */
+  getIsBookMarked: a
+    .query()
+    .arguments({ id: a.string().required() })
+    .returns(a.boolean().required())
+    .authorization((allow) => [allow.authenticated()])
+    .handler(a.handler.function(getIsBookMarked)),
+
+  // ================================================================
+  // CUSTOM MUTATIONS
+  // ================================================================
+
+  /** フレーバーマップへの投票（upsert）。未ログインでも投票可能 */
+  postFlavor: a
+    .mutation()
+    .arguments({
+      liquorId: a.id().required(),
+      x: a.float().required(),
+      y: a.float().required(),
+    })
+    .returns(a.boolean().required())
+    .authorization((allow) => [allow.guest(), allow.authenticated()])
+    .handler(a.handler.function(postFlavor)),
 });
 
 export type Schema = ClientSchema<typeof schema>;
