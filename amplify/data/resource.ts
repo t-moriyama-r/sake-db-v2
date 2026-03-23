@@ -367,6 +367,7 @@ const schema = a.schema({
   LiquorHistory: a
     .model({
       liquorId: a.id().required(),
+      liquor: a.belongsTo('Liquor', 'liquorId'),
       categoryId: a.id().required(),
       categoryName: a.string().required(),
       name: a.string().required(),
@@ -390,6 +391,7 @@ const schema = a.schema({
   CategoryHistory: a
     .model({
       categoryId: a.id().required(),
+      category: a.belongsTo('Category', 'categoryId'),
       name: a.string().required(),
       parentId: a.id(),
       description: a.string(),
