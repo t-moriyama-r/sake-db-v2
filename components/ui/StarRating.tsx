@@ -10,7 +10,7 @@ type StarRatingProps = {
 
 const sizeClasses = { sm: 'text-lg', md: 'text-2xl', lg: 'text-3xl' };
 
-export default function StarRating({ value, max = 5, onChange, readonly, size = 'md' }: StarRatingProps) {
+export const StarRating = ({ value, max = 5, onChange, readonly, size = 'md' }: StarRatingProps) => {
   return (
     <div className="flex items-center gap-0.5" role={readonly ? undefined : 'radiogroup'}>
       {Array.from({ length: max }, (_, i) => i + 1).map((star) => (

@@ -5,14 +5,14 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import LiquorCard from '@/components/cards/LiquorCard';
-import Spinner from '@/components/ui/Spinner';
-import Sidebar from '@/components/layout/Sidebar';
+import { LiquorCard } from '@/components/cards/LiquorCard';
+import { Spinner } from '@/components/ui/Spinner';
+import { Sidebar } from '@/components/layout/Sidebar';
 
 type Category = Schema['Category']['type'];
 type Liquor = Schema['Liquor']['type'];
 
-export default function CategoryDiscoveryPage() {
+export const CategoryDiscoveryPage = () => {
   const params = useParams();
   const categoryId = Array.isArray(params.id) ? params.id[0] : params.id;
 

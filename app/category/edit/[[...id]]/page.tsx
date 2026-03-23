@@ -6,12 +6,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import type { CategoryInput } from '@/schemas/category';
-import CategoryForm from '@/components/category/CategoryForm';
-import Spinner from '@/components/ui/Spinner';
+import { CategoryForm } from '@/components/category/CategoryForm';
+import { Spinner } from '@/components/ui/Spinner';
 
 type Category = Schema['Category']['type'];
 
-export default function CategoryEditPage() {
+export const CategoryEditPage = () => {
   const params = useParams();
   const categoryId = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();

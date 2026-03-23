@@ -8,7 +8,7 @@ import { useEffect } from 'react';
  * amplify_outputs.json は `npx ampx sandbox` または CI/CD デプロイ後に生成される。
  * 生成前はダミー設定でスキップする。
  */
-export default function AmplifyProvider({ children }: { children: React.ReactNode }) {
+export const AmplifyProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports

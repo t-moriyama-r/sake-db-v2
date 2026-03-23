@@ -6,14 +6,14 @@ import Link from 'next/link';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import { useAuth } from '@/hooks/useAuth';
-import LiquorCard from '@/components/cards/LiquorCard';
-import Button from '@/components/ui/Button';
-import Spinner from '@/components/ui/Spinner';
+import { LiquorCard } from '@/components/cards/LiquorCard';
+import { Button } from '@/components/ui/Button';
+import { Spinner } from '@/components/ui/Spinner';
 
 type BookMark = Schema['BookMark']['type'];
 type Liquor = Schema['Liquor']['type'];
 
-export default function MyPage() {
+export const MyPage = () => {
   const router = useRouter();
   const { user, isLogin, isLoading } = useAuth();
 

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-export default function Footer() {
+export const Footer = () => {
   return (
     <footer className="mt-auto border-t bg-gray-50 py-8">
       <div className="mx-auto max-w-7xl px-4">

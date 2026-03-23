@@ -6,12 +6,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import type { LiquorInput } from '@/schemas/liquor';
-import LiquorForm from '@/components/liquor/LiquorForm';
-import Spinner from '@/components/ui/Spinner';
+import { LiquorForm } from '@/components/liquor/LiquorForm';
+import { Spinner } from '@/components/ui/Spinner';
 
 type Liquor = Schema['Liquor']['type'];
 
-export default function LiquorEditPage() {
+export const LiquorEditPage = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { user, isLogin, isAdmin } = useAuth();

@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { passwordResetExeSchema, type PasswordResetExeInput } from '@/schemas/auth';
 import { FormField } from '@/components/forms/FormField';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 
-export default function PasswordResetExePage() {
+export const PasswordResetExePage = () => {
   const router = useRouter();
   const { confirmResetPassword } = useAuth();
   const [serverError, setServerError] = useState('');

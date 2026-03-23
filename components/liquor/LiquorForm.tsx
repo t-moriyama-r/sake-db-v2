@@ -7,8 +7,8 @@ import { liquorSchema, type LiquorInput } from '@/schemas/liquor';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import { FormField } from '@/components/forms/FormField';
-import ImageUpload from '@/components/forms/ImageUpload';
-import Button from '@/components/ui/Button';
+import { ImageUpload } from '@/components/forms/ImageUpload';
+import { Button } from '@/components/ui/Button';
 
 type Category = Schema['Category']['type'];
 type Liquor = Schema['Liquor']['type'];
@@ -20,7 +20,7 @@ type LiquorFormProps = {
   submitLabel?: string;
 };
 
-export default function LiquorForm({ defaultValues, liquor, onSubmit, submitLabel = '保存' }: LiquorFormProps) {
+export const LiquorForm = ({ defaultValues, liquor, onSubmit, submitLabel = '保存' }: LiquorFormProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [serverError, setServerError] = useState('');
 

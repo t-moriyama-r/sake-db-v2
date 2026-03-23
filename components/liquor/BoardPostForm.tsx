@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { boardPostSchema, type BoardPostInput } from '@/schemas/board';
 import { FormField } from '@/components/forms/FormField';
-import StarRating from '@/components/ui/StarRating';
-import Button from '@/components/ui/Button';
+import { StarRating } from '@/components/ui/StarRating';
+import { Button } from '@/components/ui/Button';
 
 type BoardPostFormProps = {
   onSubmit: (data: BoardPostInput) => Promise<void>;
@@ -14,7 +14,7 @@ type BoardPostFormProps = {
   submitLabel?: string;
 };
 
-export default function BoardPostForm({ onSubmit, defaultValues, submitLabel = '投稿' }: BoardPostFormProps) {
+export const BoardPostForm = ({ onSubmit, defaultValues, submitLabel = '投稿' }: BoardPostFormProps) => {
   const [serverError, setServerError] = useState('');
 
   const {

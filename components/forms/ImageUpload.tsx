@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 
 type ImageUploadProps = {
   label?: string;
@@ -11,13 +11,13 @@ type ImageUploadProps = {
   error?: string;
 };
 
-export default function ImageUpload({
+export const ImageUpload = ({
   label = '画像',
   currentImageUrl,
   currentImageBase64,
   onChange,
   error,
-}: ImageUploadProps) {
+}: ImageUploadProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
 

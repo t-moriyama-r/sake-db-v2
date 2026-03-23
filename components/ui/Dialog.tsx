@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Button from './Button';
+import { Button } from './Button';
 
 type DialogProps = {
   open: boolean;
@@ -11,7 +11,7 @@ type DialogProps = {
   actions?: React.ReactNode;
 };
 
-export default function Dialog({ open, onClose, title, children, actions }: DialogProps) {
+export const Dialog = ({ open, onClose, title, children, actions }: DialogProps) => {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,9 +57,9 @@ type ConfirmDialogProps = {
   loading?: boolean;
 };
 
-export function ConfirmDialog({
+export const ConfirmDialog = ({
   open, onClose, onConfirm, title = '確認', message, confirmLabel = '実行', loading,
-}: ConfirmDialogProps) {
+}: ConfirmDialogProps) => {
   return (
     <Dialog
       open={open}

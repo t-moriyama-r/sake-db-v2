@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 
-export default function Header() {
+export const Header = () => {
   const { user, isLogin, isAdmin, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 

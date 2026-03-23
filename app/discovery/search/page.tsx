@@ -1,17 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import LiquorCard from '@/components/cards/LiquorCard';
-import Spinner from '@/components/ui/Spinner';
-import Button from '@/components/ui/Button';
-import Sidebar from '@/components/layout/Sidebar';
+import { LiquorCard } from '@/components/cards/LiquorCard';
+import { Spinner } from '@/components/ui/Spinner';
+import { Button } from '@/components/ui/Button';
+import { Sidebar } from '@/components/layout/Sidebar';
 
 type Liquor = Schema['Liquor']['type'];
 
-export default function SearchPage() {
+export const SearchPage = () => {
+  return (
+    <Suspense fallback={<div className="mx-auto flex max-w-7xl gap-6 px-4 py-8"><Sidebar /><div className="flex-1 min-w-0 flex justify-center py-16"><Spinner size="lg" /></div></div>}>
+      <SearchContent />
+    </Suspense>
+  );
+}
+
+const SearchContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get('q') ?? '';

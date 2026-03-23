@@ -5,8 +5,8 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import StarRating from '@/components/ui/StarRating';
-import Spinner from '@/components/ui/Spinner';
+import { StarRating } from '@/components/ui/StarRating';
+import { Spinner } from '@/components/ui/Spinner';
 
 type BoardPost = Schema['BoardPost']['type'];
 
@@ -16,7 +16,7 @@ type UserActivity = {
   liquorId: string;
 };
 
-export default function UserProfilePage() {
+export const UserProfilePage = () => {
   const { id } = useParams<{ id: string }>();
 
   const [posts, setPosts] = useState<UserActivity[]>([]);

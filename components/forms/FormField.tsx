@@ -22,7 +22,7 @@ const inputClass = 'w-full rounded-md border border-gray-300 px-3 py-2 text-sm s
 export const FormField = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   FormFieldProps
->(function FormField({ label, error, required, hint, as, ...props }, ref) {
+>(({ label, error, required, hint, as, ...props }, ref) => {
   const id = (props as { id?: string }).id ?? label;
   return (
     <div className="flex flex-col gap-1">

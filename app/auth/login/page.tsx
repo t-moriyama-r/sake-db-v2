@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import LoginForm from '@/components/auth/LoginForm';
+import { LoginForm } from '@/components/auth/LoginForm';
 
 export const metadata: Metadata = { title: 'ログイン' };
 
-export default function LoginPage() {
+export const LoginPage = () => {
   return (
     <div className="flex min-h-[calc(100vh-120px)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">

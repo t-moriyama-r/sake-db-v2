@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import LiquorCard from '@/components/cards/LiquorCard';
-import Spinner from '@/components/ui/Spinner';
-import Sidebar from '@/components/layout/Sidebar';
+import { LiquorCard } from '@/components/cards/LiquorCard';
+import { Spinner } from '@/components/ui/Spinner';
+import { Sidebar } from '@/components/layout/Sidebar';
 
 type Liquor = Schema['Liquor']['type'];
 
-export default function HomePage() {
+export const HomePage = () => {
   const [liquors, setLiquors] = useState<Liquor[]>([]);
   const [loading, setLoading] = useState(true);
 

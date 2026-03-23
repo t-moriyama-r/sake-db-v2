@@ -5,7 +5,7 @@ type TagProps = {
   variant?: 'default' | 'outline';
 };
 
-export default function Tag({ label, onDelete, onClick, variant = 'default' }: TagProps) {
+export const Tag = ({ label, onDelete, onClick, variant = 'default' }: TagProps) => {
   const base =
     variant === 'outline'
       ? 'border border-blue-500 text-blue-600 bg-white hover:bg-blue-50'

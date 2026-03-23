@@ -22,10 +22,8 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
 };
 
-const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'primary', size = 'md', loading, disabled, children, className = '', ...props },
-  ref
-) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = 'primary', size = 'md', loading, disabled, children, className = '', ...props }, ref) => {
   return (
     <button
       ref={ref}
@@ -40,5 +38,3 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     </button>
   );
 });
-
-export default Button;

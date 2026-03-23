@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import StarRating from '@/components/ui/StarRating';
+import { StarRating } from '@/components/ui/StarRating';
 import type { Schema } from '@/amplify/data/resource';
 
 type Liquor = Schema['Liquor']['type'];
 
-function calcAvgRate(liquor: Liquor): number {
+const calcAvgRate = (liquor: Liquor): number => {
   const total =
     (liquor.rate5Users?.length ?? 0) * 5 +
     (liquor.rate4Users?.length ?? 0) * 4 +
@@ -25,7 +25,7 @@ type LiquorCardProps = {
   liquor: Liquor;
 };
 
-export default function LiquorCard({ liquor }: LiquorCardProps) {
+export const LiquorCard = ({ liquor }: LiquorCardProps) => {
   const avg = calcAvgRate(liquor);
 
   return (

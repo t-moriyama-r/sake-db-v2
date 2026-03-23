@@ -7,8 +7,8 @@ import { categorySchema, type CategoryInput } from '@/schemas/category';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import { FormField } from '@/components/forms/FormField';
-import ImageUpload from '@/components/forms/ImageUpload';
-import Button from '@/components/ui/Button';
+import { ImageUpload } from '@/components/forms/ImageUpload';
+import { Button } from '@/components/ui/Button';
 
 type Category = Schema['Category']['type'];
 
@@ -19,7 +19,7 @@ type CategoryFormProps = {
   submitLabel?: string;
 };
 
-export default function CategoryForm({ defaultValues, category, onSubmit, submitLabel = '保存' }: CategoryFormProps) {
+export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = '保存' }: CategoryFormProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [serverError, setServerError] = useState('');
 

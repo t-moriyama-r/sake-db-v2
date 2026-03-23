@@ -4,9 +4,9 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { LiquorInput } from '@/schemas/liquor';
-import LiquorForm from '@/components/liquor/LiquorForm';
+import { LiquorForm } from '@/components/liquor/LiquorForm';
 
-export default function LiquorCreatePage() {
+export const LiquorCreatePage = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const router = useRouter();
   const { user, isLogin } = useAuth();

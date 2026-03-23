@@ -6,13 +6,13 @@ import Link from 'next/link';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import { useAuth } from '@/hooks/useAuth';
-import Button from '@/components/ui/Button';
-import Spinner from '@/components/ui/Spinner';
+import { Button } from '@/components/ui/Button';
+import { Spinner } from '@/components/ui/Spinner';
 import { ConfirmDialog } from '@/components/ui/Dialog';
 
 type Category = Schema['Category']['type'];
 
-export default function AdminPage() {
+export const AdminPage = () => {
   const router = useRouter();
   const { isAdmin, isLoading } = useAuth();
 

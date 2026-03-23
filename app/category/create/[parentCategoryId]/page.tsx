@@ -4,9 +4,9 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { CategoryInput } from '@/schemas/category';
-import CategoryForm from '@/components/category/CategoryForm';
+import { CategoryForm } from '@/components/category/CategoryForm';
 
-export default function CategoryCreatePage() {
+export const CategoryCreatePage = () => {
   const { parentCategoryId } = useParams<{ parentCategoryId: string }>();
   const router = useRouter();
   const { user, isAdmin } = useAuth();

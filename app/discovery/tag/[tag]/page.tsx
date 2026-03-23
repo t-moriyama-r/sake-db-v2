@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import LiquorCard from '@/components/cards/LiquorCard';
-import Spinner from '@/components/ui/Spinner';
-import Sidebar from '@/components/layout/Sidebar';
+import { LiquorCard } from '@/components/cards/LiquorCard';
+import { Spinner } from '@/components/ui/Spinner';
+import { Sidebar } from '@/components/layout/Sidebar';
 
 type Liquor = Schema['Liquor']['type'];
 type Tag = Schema['Tag']['type'];
 
-export default function TagSearchPage() {
+export const TagSearchPage = () => {
   const { tag } = useParams<{ tag: string }>();
   const decodedTag = decodeURIComponent(tag);
 

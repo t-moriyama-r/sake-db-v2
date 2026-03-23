@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import Spinner from '@/components/ui/Spinner';
+import { Spinner } from '@/components/ui/Spinner';
 
 type Category = Schema['Category']['type'];
 
@@ -13,7 +13,7 @@ type CategoryTreeItemProps = {
   depth?: number;
 };
 
-function CategoryTreeItem({ category, depth = 0 }: CategoryTreeItemProps) {
+const CategoryTreeItem = ({ category, depth = 0 }: CategoryTreeItemProps) => {
   const [expanded, setExpanded] = useState(false);
   const [children, setChildren] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
@@ -60,7 +60,7 @@ function CategoryTreeItem({ category, depth = 0 }: CategoryTreeItemProps) {
   );
 }
 
-export default function Sidebar() {
+export const Sidebar = () => {
   const [rootCategories, setRootCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 

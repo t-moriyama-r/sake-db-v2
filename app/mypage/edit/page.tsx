@@ -8,10 +8,10 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { userEditSchema, type UserEditInput } from '@/schemas/auth';
 import { FormField } from '@/components/forms/FormField';
-import Button from '@/components/ui/Button';
-import Spinner from '@/components/ui/Spinner';
+import { Button } from '@/components/ui/Button';
+import { Spinner } from '@/components/ui/Spinner';
 
-export default function MyPageEditPage() {
+export const MyPageEditPage = () => {
   const router = useRouter();
   const { user, isLogin, isLoading, updateUserAttributes, updatePassword, reload } = useAuth();
   const [serverError, setServerError] = useState('');

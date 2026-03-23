@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { passwordResetSchema, type PasswordResetInput } from '@/schemas/auth';
 import { FormField } from '@/components/forms/FormField';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 
-export default function PasswordResetPage() {
+export const PasswordResetPage = () => {
   const { resetPassword } = useAuth();
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState('');

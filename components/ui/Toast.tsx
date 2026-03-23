@@ -13,7 +13,7 @@ type ToastContainerProps = {
   onRemove: (id: string) => void;
 };
 
-export default function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
+export const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
   if (toasts.length === 0) return null;
 
   return (

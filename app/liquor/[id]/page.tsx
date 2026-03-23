@@ -6,19 +6,19 @@ import Link from 'next/link';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import { useAuth } from '@/hooks/useAuth';
-import StarRating from '@/components/ui/StarRating';
-import Tag from '@/components/ui/Tag';
-import Button from '@/components/ui/Button';
-import Spinner from '@/components/ui/Spinner';
+import { StarRating } from '@/components/ui/StarRating';
+import { Tag } from '@/components/ui/Tag';
+import { Button } from '@/components/ui/Button';
+import { Spinner } from '@/components/ui/Spinner';
 import { ConfirmDialog } from '@/components/ui/Dialog';
-import BoardPostForm from '@/components/liquor/BoardPostForm';
+import { BoardPostForm } from '@/components/liquor/BoardPostForm';
 import type { BoardPostInput } from '@/schemas/board';
 
 type Liquor = Schema['Liquor']['type'];
 type BoardPost = Schema['BoardPost']['type'];
 type TagModel = Schema['Tag']['type'];
 
-function calcAvgRate(liquor: Liquor): number {
+const calcAvgRate = (liquor: Liquor): number => {
   const total =
     (liquor.rate5Users?.length ?? 0) * 5 +
     (liquor.rate4Users?.length ?? 0) * 4 +
@@ -35,7 +35,7 @@ function calcAvgRate(liquor: Liquor): number {
   return Math.round(total / count);
 }
 
-export default function LiquorDetailPage() {
+export const LiquorDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { user, isLogin, isAdmin } = useAuth();

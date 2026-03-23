@@ -8,11 +8,11 @@ import Link from 'next/link';
 import { registerSchema, type RegisterInput } from '@/schemas/auth';
 import { useAuth } from '@/hooks/useAuth';
 import { FormField } from '@/components/forms/FormField';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 
 type Step = 'form' | 'confirm';
 
-export default function RegisterForm() {
+export const RegisterForm = () => {
   const router = useRouter();
   const { register: registerUser, confirmSignUp } = useAuth();
   const [step, setStep] = useState<Step>('form');

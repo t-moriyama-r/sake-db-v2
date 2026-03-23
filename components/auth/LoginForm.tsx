@@ -8,9 +8,9 @@ import Link from 'next/link';
 import { loginSchema, type LoginInput } from '@/schemas/auth';
 import { useAuth } from '@/hooks/useAuth';
 import { FormField } from '@/components/forms/FormField';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 
-export default function LoginForm() {
+export const LoginForm = () => {
   const router = useRouter();
   const { login } = useAuth();
   const [serverError, setServerError] = useState('');
