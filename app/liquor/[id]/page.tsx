@@ -35,7 +35,7 @@ const calcAvgRate = (liquor: Liquor): number => {
   return Math.round(total / count);
 }
 
-export const LiquorDetailPage = () => {
+export default function LiquorDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { user, isLogin, isAdmin } = useAuth();

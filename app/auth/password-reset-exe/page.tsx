@@ -9,7 +9,7 @@ import { passwordResetExeSchema, type PasswordResetExeInput } from '@/schemas/au
 import { FormField } from '@/components/forms/FormField';
 import { Button } from '@/components/ui/Button';
 
-export const PasswordResetExePage = () => {
+export default function PasswordResetExePage() {
   const router = useRouter();
   const { confirmResetPassword } = useAuth();
   const [serverError, setServerError] = useState('');

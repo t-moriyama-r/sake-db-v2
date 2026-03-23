@@ -6,7 +6,7 @@ import { client } from '@/lib/amplify-client';
 import type { CategoryInput } from '@/schemas/category';
 import { CategoryForm } from '@/components/category/CategoryForm';
 
-export const CategoryCreatePage = () => {
+export default function CategoryCreatePage() {
   const { parentCategoryId } = useParams<{ parentCategoryId: string }>();
   const router = useRouter();
   const { user, isAdmin } = useAuth();

@@ -6,7 +6,7 @@ import { client } from '@/lib/amplify-client';
 import type { LiquorInput } from '@/schemas/liquor';
 import { LiquorForm } from '@/components/liquor/LiquorForm';
 
-export const LiquorCreatePage = () => {
+export default function LiquorCreatePage() {
   const { categoryId } = useParams<{ categoryId: string }>();
   const router = useRouter();
   const { user, isLogin } = useAuth();

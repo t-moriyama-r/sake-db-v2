@@ -8,7 +8,7 @@ import { passwordResetSchema, type PasswordResetInput } from '@/schemas/auth';
 import { FormField } from '@/components/forms/FormField';
 import { Button } from '@/components/ui/Button';
 
-export const PasswordResetPage = () => {
+export default function PasswordResetPage() {
   const { resetPassword } = useAuth();
   const [sent, setSent] = useState(false);
   const [serverError, setServerError] = useState('');

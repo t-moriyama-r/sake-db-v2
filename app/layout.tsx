@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: 'お酒のデータベース・コミュニティサイト',
 };
 
-export const RootLayout = ({ children }: { children: React.ReactNode }) => {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja" className={`${geistSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-gray-50">

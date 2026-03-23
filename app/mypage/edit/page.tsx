@@ -11,7 +11,7 @@ import { FormField } from '@/components/forms/FormField';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 
-export const MyPageEditPage = () => {
+export default function MyPageEditPage() {
   const router = useRouter();
   const { user, isLogin, isLoading, updateUserAttributes, updatePassword, reload } = useAuth();
   const [serverError, setServerError] = useState('');

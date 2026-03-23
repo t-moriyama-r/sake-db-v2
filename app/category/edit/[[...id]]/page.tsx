@@ -11,7 +11,7 @@ import { Spinner } from '@/components/ui/Spinner';
 
 type Category = Schema['Category']['type'];
 
-export const CategoryEditPage = () => {
+export default function CategoryEditPage() {
   const params = useParams();
   const categoryId = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();

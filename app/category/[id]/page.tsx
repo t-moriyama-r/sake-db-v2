@@ -13,7 +13,7 @@ import { Spinner } from '@/components/ui/Spinner';
 type Category = Schema['Category']['type'];
 type Liquor = Schema['Liquor']['type'];
 
-export const CategoryDetailPage = () => {
+export default function CategoryDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { isAdmin } = useAuth();

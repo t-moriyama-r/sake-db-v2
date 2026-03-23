@@ -11,7 +11,7 @@ import { Spinner } from '@/components/ui/Spinner';
 
 type Liquor = Schema['Liquor']['type'];
 
-export const LiquorEditPage = () => {
+export default function LiquorEditPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { user, isLogin, isAdmin } = useAuth();

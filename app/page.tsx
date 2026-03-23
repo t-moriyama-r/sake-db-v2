@@ -9,7 +9,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 
 type Liquor = Schema['Liquor']['type'];
 
-export const HomePage = () => {
+export default function HomePage() {
   const [liquors, setLiquors] = useState<Liquor[]>([]);
   const [loading, setLoading] = useState(true);
 

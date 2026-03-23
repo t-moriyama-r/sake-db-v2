@@ -11,7 +11,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 type Liquor = Schema['Liquor']['type'];
 type Tag = Schema['Tag']['type'];
 
-export const TagSearchPage = () => {
+export default function TagSearchPage() {
   const { tag } = useParams<{ tag: string }>();
   const decodedTag = decodeURIComponent(tag);
 

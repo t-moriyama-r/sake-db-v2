@@ -11,7 +11,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 
 type Liquor = Schema['Liquor']['type'];
 
-export const SearchPage = () => {
+export default function SearchPage() {
   return (
     <Suspense fallback={<div className="mx-auto flex max-w-7xl gap-6 px-4 py-8"><Sidebar /><div className="flex-1 min-w-0 flex justify-center py-16"><Spinner size="lg" /></div></div>}>
       <SearchContent />

@@ -16,7 +16,7 @@ type UserActivity = {
   liquorId: string;
 };
 
-export const UserProfilePage = () => {
+export default function UserProfilePage() {
   const { id } = useParams<{ id: string }>();
 
   const [posts, setPosts] = useState<UserActivity[]>([]);

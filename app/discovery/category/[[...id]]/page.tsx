@@ -12,7 +12,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 type Category = Schema['Category']['type'];
 type Liquor = Schema['Liquor']['type'];
 
-export const CategoryDiscoveryPage = () => {
+export default function CategoryDiscoveryPage() {
   const params = useParams();
   const categoryId = Array.isArray(params.id) ? params.id[0] : params.id;
 

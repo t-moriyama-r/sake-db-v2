@@ -12,7 +12,7 @@ import { ConfirmDialog } from '@/components/ui/Dialog';
 
 type Category = Schema['Category']['type'];
 
-export const AdminPage = () => {
+export default function AdminPage() {
   const router = useRouter();
   const { isAdmin, isLoading } = useAuth();
 

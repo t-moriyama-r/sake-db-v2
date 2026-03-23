@@ -13,7 +13,7 @@ import { Spinner } from '@/components/ui/Spinner';
 type BookMark = Schema['BookMark']['type'];
 type Liquor = Schema['Liquor']['type'];
 
-export const MyPage = () => {
+export default function MyPage() {
   const router = useRouter();
   const { user, isLogin, isLoading } = useAuth();
 
