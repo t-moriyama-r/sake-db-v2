@@ -1,2 +1,2 @@
 import { defineFunction } from '@aws-amplify/backend';
-export const getRecommendLiquorList = defineFunction({ entry: './handler.ts' });
+export const getRecommendLiquorList = defineFunction({ name: 'getRecommendLiquorList', entry: './handler.ts' });

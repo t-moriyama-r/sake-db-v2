@@ -1,2 +1,2 @@
 import { defineFunction } from '@aws-amplify/backend';
-export const getUserByIdDetail = defineFunction({ entry: './handler.ts' });
+export const getUserByIdDetail = defineFunction({ name: 'getUserByIdDetail', entry: './handler.ts' });
