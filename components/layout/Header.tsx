@@ -1,41 +1,56 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/Button';
 
 export const Header = () => {
   const { user, isLogin, isAdmin, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [keyword, setKeyword] = useState('');
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = keyword.trim();
+    if (!q) return;
+    router.push(`/discovery/search?q=${encodeURIComponent(q)}`);
+    inputRef.current?.blur();
+  };
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-white shadow-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-xl font-bold text-blue-700 hover:text-blue-800">
+    <header className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur-sm shadow-sm">
+      <div className="mx-auto flex h-10 max-w-7xl items-center gap-2 px-4">
+        <Link href="/" className="shrink-0 text-lg font-bold text-blue-700 hover:text-blue-800">
           🍶 sake-db
         </Link>
 
-        <nav className="hidden items-center gap-4 md:flex">
-          <Link href="/discovery/category" className="text-sm text-gray-600 hover:text-blue-600">
-            カテゴリから探す
-          </Link>
-          <Link href="/discovery/search" className="text-sm text-gray-600 hover:text-blue-600">
-            検索
-          </Link>
-          {isLogin && (
-            <Link href="/mypage" className="text-sm text-gray-600 hover:text-blue-600">
-              マイページ
-            </Link>
-          )}
-          {isAdmin && (
-            <Link href="/admin" className="text-sm text-gray-600 hover:text-blue-600">
-              管理
-            </Link>
-          )}
-        </nav>
+        <form onSubmit={handleSearch} className="flex flex-1 min-w-0 items-center px-2 sm:px-4 max-w-xl">
+          <div className="flex w-full rounded border border-gray-300 bg-white focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-400">
+            <input
+              ref={inputRef}
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              placeholder="キーワードで検索..."
+              className="flex-1 min-w-0 px-3 py-1 text-sm bg-transparent outline-none"
+            />
+            <button
+              type="submit"
+              className="shrink-0 px-3 py-1 text-gray-500 hover:text-blue-600"
+              aria-label="検索"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+              </svg>
+            </button>
+          </div>
+        </form>
 
-        <div className="relative">
+        <div className="shrink-0 relative">
           {isLogin ? (
             <button
               className="flex items-center gap-2 rounded-full"

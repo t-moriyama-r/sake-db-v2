@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https",
+    "sandbox": "npx ampx sandbox --profile sake-db",
+    "start:local": "concurrently \"npm run sandbox\" \"npm run dev\"",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts",
+    "seed:dry-run": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts --dry-run"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -25,7 +29,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "aws-cdk-lib": "^2.234.1",
+    "concurrently": "^9.2.1",
     "constructs": "^10.5.1",
+    "cross-env": "^10.1.0",
     "esbuild": "^0.27.4",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
