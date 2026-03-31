@@ -3,8 +3,8 @@ backend:
   phases:
     build:
       commands:
+        - echo "Current branch is $AWS_BRANCH"
         - npm ci
-        # --branch で現在のブランチ名を明示的に渡す
         - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
 frontend:
   phases:
@@ -12,7 +12,7 @@ frontend:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: .next # Next.jsの場合。React(Vite)なら dist
+    baseDirectory: .next
     files:
       - '**/*'
   cache:
