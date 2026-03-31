@@ -1,0 +1,6 @@
+{
+  "app": "npx ampx pipeline-deploy",
+  "context": {
+    "amplifyEnvironmentName": "sandbox"
+  }
+}

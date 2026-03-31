@@ -19,7 +19,7 @@ import { postFlavor } from './functions/postFlavor/resource';
 /**
  * @see https://docs.amplify.aws/react/build-a-backend/
  */
-defineBackend({
+const backend = defineBackend({
   auth,
   data,
   storage,
@@ -38,3 +38,4 @@ defineBackend({
   getIsBookMarked,
   postFlavor,
 });
+
