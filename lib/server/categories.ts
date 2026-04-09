@@ -1,12 +1,11 @@
-import { unstable_cache } from 'next/cache';
 import { revalidateTag } from 'next/cache';
 import { getGuestClient } from './client';
-import { cacheTtl, CACHE_TAGS } from './cache';
+import { withCache, CACHE_TAGS } from './cache';
 import type { Schema } from '@/amplify/data/resource';
 
 export type CategoryRecord = Schema['Category']['type'];
 
-export const fetchAllCategories = unstable_cache(
+export const fetchAllCategories = withCache(
   async (): Promise<CategoryRecord[]> => {
     const client = getGuestClient();
     const all: CategoryRecord[] = [];
@@ -25,28 +24,28 @@ export const fetchAllCategories = unstable_cache(
     return all;
   },
   ['all-categories'],
-  { tags: [CACHE_TAGS.categories], revalidate: cacheTtl(3600) },
+  { tags: [CACHE_TAGS.categories], revalidate: 3600 },
 );
 
 /** ルートカテゴリ（parentId が null）のみ取得する。 */
-export const fetchRootCategories = unstable_cache(
+export const fetchRootCategories = withCache(
   async (): Promise<CategoryRecord[]> => {
     const all = await fetchAllCategories();
     return all.filter((c) => !c.parentId);
   },
   ['root-categories'],
-  { tags: [CACHE_TAGS.categories], revalidate: cacheTtl(3600) },
+  { tags: [CACHE_TAGS.categories], revalidate: 3600 },
 );
 
-/** 指定 ID のカテゴリ単体を取得する（unstable_cache でキャッシュ）。 */
-export const fetchCategory = unstable_cache(
+/** 指定 ID のカテゴリ単体を取得する。 */
+export const fetchCategory = withCache(
   async (id: string): Promise<CategoryRecord | null> => {
     const client = getGuestClient();
     const { data } = await client.models.Category.get({ id });
     return data ?? null;
   },
   ['category'],
-  { tags: [CACHE_TAGS.categories], revalidate: cacheTtl(3600) },
+  { tags: [CACHE_TAGS.categories], revalidate: 3600 },
 );
 
 /** 指定カテゴリを起点に全子孫 ID を BFS で収集する（自身を含む）。 */

@@ -10,8 +10,8 @@ export const handler: Schema['getUserByIdDetail']['functionHandler'] = async (ev
   const client = await getDataClient();
 
   const [{ data: profiles }, { data: posts }] = await Promise.all([
-    client.models.UserProfile.listByCognitoId({ cognitoId: id }),
-    client.models.BoardPost.listByUserId({ userId: id }),
+    client.models.UserProfile.listUserProfileByCognitoId({ cognitoId: id }),
+    client.models.BoardPost.listBoardPostByUserId({ userId: id }),
   ]);
 
   const profile = profiles?.[0];
