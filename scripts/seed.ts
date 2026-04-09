@@ -18,9 +18,11 @@
 
 import { runAll } from './seed/runner';
 import { categoriesSeeder } from './seed/categories';
+import { liquorsSeeder } from './seed/liquors';
 
 const seeders = [
   categoriesSeeder,
+  liquorsSeeder,
   // 新しいシーダーはここに追加する
 ];
 

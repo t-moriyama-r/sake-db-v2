@@ -54,6 +54,8 @@ export const liquorSchema = {
       allow.guest().to(['read']),
       allow.authenticated().to(['read', 'create', 'update']),
       allow.groups(['admin']),
+      /** シードスクリプト用（apiKey による書き込みを許可） */
+      allow.publicApiKey(),
     ]),
 
   /**
@@ -104,6 +106,7 @@ export const liquorSchema = {
       /** 評価なしの場合は null */
       rate: a.integer(),
     })
+    .secondaryIndexes((index) => [index('userId')])
     .authorization((allow) => [
       allow.guest().to(['read', 'create']),
       allow.authenticated().to(['read', 'create']),
@@ -124,6 +127,7 @@ export const liquorSchema = {
       liquor: a.belongsTo('Liquor', 'liquorId'),
       text: a.string().required(),
     })
+    .secondaryIndexes((index) => [index('text')])
     .authorization((allow) => [
       allow.guest().to(['read']),
       allow.authenticated().to(['read', 'create']),

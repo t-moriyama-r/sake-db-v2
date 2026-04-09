@@ -10,9 +10,8 @@ export const handler: Schema['getUserByIdDetail']['functionHandler'] = async (ev
   const client = await getDataClient();
 
   const [{ data: profiles }, { data: posts }] = await Promise.all([
-    // cognitoId フィールドで UserProfile を検索（セカンダリインデックスを使用）
-    client.models.UserProfile.list({ filter: { cognitoId: { eq: id } } }),
-    client.models.BoardPost.list({ filter: { userId: { eq: id } } }),
+    client.models.UserProfile.listByCognitoId({ cognitoId: id }),
+    client.models.BoardPost.listByUserId({ userId: id }),
   ]);
 
   const profile = profiles?.[0];
