@@ -85,6 +85,17 @@ Vue / Go / GraphQL で構築された [sake-db](./sake-db/) を **Next.js (App R
 - AWS アカウント + CLI 設定済み
 - Amplify CLI: `npm install -g @aws-amplify/backend-cli`
 
+### AWS プロファイルの設定
+
+`npm run sandbox` や `npm run seed` は `sake-db` という名前の AWS プロファイルを使用します。
+事前に以下のコマンドで設定してください。
+
+```bash
+aws configure --profile sake-db
+```
+
+対話形式で Access Key ID・Secret Access Key・リージョン（例: `ap-northeast-1`）・出力形式（例: `json`）を入力します。
+
 ### インストール
 
 ```bash
@@ -96,7 +107,7 @@ npm install
 1. **Amplify Sandbox を起動**（別ターミナル）
 
    ```bash
-   npx ampx sandbox
+   npm run sandbox
    ```
 
    `amplify_outputs.json` が生成されるまで待つ。
