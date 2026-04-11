@@ -1,7 +1,7 @@
-import { fetchRootCategories } from '@/lib/server/categories';
+import { fetchCategoryTree } from '@/lib/server/categories';
 import { SidebarClient } from './SidebarClient';
 
 export const Sidebar = async () => {
-  const rootCategories = await fetchRootCategories();
-  return <SidebarClient rootCategories={rootCategories} />;
+  const categoryTree = await fetchCategoryTree();
+  return <SidebarClient categoryTree={categoryTree} />;
 };

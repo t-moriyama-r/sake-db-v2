@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { LiquorCard } from '@/components/cards/LiquorCard';
-import { Sidebar } from '@/components/layout/Sidebar';
 import {
   fetchAllCategories,
   fetchCategory,
@@ -28,11 +27,9 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
   }
 
   return (
-    <div className="mx-auto flex max-w-7xl gap-6 px-4 py-8">
-      <Sidebar />
-      <div className="flex-1 min-w-0">
-        <div className="mb-6">
-          {category ? (
+    <div className="flex-1 min-w-0">
+      <div className="mb-6">
+        {category ? (
             <>
               <h1 className="text-2xl font-bold text-gray-900">{category.name}</h1>
               {category.description && (
@@ -42,51 +39,50 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
           ) : (
             <h1 className="text-2xl font-bold text-gray-900">カテゴリから探す</h1>
           )}
-        </div>
-
-        {subCategories.length > 0 && (
-          <section className="mb-8">
-            <h2 className="mb-4 text-lg font-semibold text-gray-800">
-              {category ? 'サブカテゴリ' : 'カテゴリ一覧'}
-            </h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-              {subCategories.map((sub) => (
-                <Link
-                  key={sub.id}
-                  href={`/discovery/category/${sub.id}`}
-                  className="flex flex-col items-center rounded-xl border bg-white p-4 text-center shadow-sm hover:shadow-md transition-shadow"
-                >
-                  {sub.imageBase64 || sub.imageUrl ? (
-                    <img
-                      src={sub.imageBase64 ?? sub.imageUrl ?? ''}
-                      alt={sub.name}
-                      className="mb-2 h-16 w-16 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-2xl">🍶</div>
-                  )}
-                  <span className="text-sm font-medium text-gray-800">{sub.name}</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {liquors.length > 0 && (
-          <section>
-            <h2 className="mb-4 text-lg font-semibold text-gray-800">このカテゴリのお酒</h2>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-              {liquors.map((liquor) => (
-                <LiquorCard key={liquor.id} liquor={liquor} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {subCategories.length === 0 && liquors.length === 0 && (
-          <p className="py-16 text-center text-gray-500">まだ登録がありません</p>
-        )}
       </div>
+
+      {subCategories.length > 0 && (
+        <section className="mb-8">
+          <h2 className="mb-4 text-lg font-semibold text-gray-800">
+            {category ? 'サブカテゴリ' : 'カテゴリ一覧'}
+          </h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+            {subCategories.map((sub) => (
+              <Link
+                key={sub.id}
+                href={`/discovery/category/${sub.id}`}
+                className="flex flex-col items-center rounded-xl border bg-white p-4 text-center shadow-sm hover:shadow-md transition-shadow"
+              >
+                {sub.imageBase64 || sub.imageUrl ? (
+                  <img
+                    src={sub.imageBase64 ?? sub.imageUrl ?? ''}
+                    alt={sub.name}
+                    className="mb-2 h-16 w-16 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-2xl">🍶</div>
+                )}
+                <span className="text-sm font-medium text-gray-800">{sub.name}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {liquors.length > 0 && (
+        <section>
+          <h2 className="mb-4 text-lg font-semibold text-gray-800">このカテゴリのお酒</h2>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {liquors.map((liquor) => (
+              <LiquorCard key={liquor.id} liquor={liquor} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {subCategories.length === 0 && liquors.length === 0 && (
+        <p className="py-16 text-center text-gray-500">まだ登録がありません</p>
+      )}
     </div>
   );
 }

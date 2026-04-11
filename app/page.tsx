@@ -6,7 +6,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 export default async function HomePage() {
   const [liquors] = await Promise.all([
     fetchRandomLiquors(12),
-    fetchRootCategories(), // Sidebar 用にウォームアップ
+    fetchRootCategories(), // Sidebar用に先に読みこみキャッシュしておく
   ]);
 
   return (

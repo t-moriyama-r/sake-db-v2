@@ -11,7 +11,7 @@ export const handler: Schema['randomRecommendList']['functionHandler'] = async (
   const client = await getDataClient();
 
   const { data: liquors } = await client.models.Liquor.list();
-  if (!liquors || liquors.length === 0) return [];
+  if (!liquors || liquors.length === 0) return JSON.stringify([]);
 
   // Fisher-Yates シャッフル
   const arr = [...liquors];
@@ -20,5 +20,5 @@ export const handler: Schema['randomRecommendList']['functionHandler'] = async (
     [arr[i], arr[j]] = [arr[j]!, arr[i]!];
   }
 
-  return arr.slice(0, limit);
+  return JSON.stringify(arr.slice(0, limit));
 };

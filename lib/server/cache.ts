@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { unstable_cache } from 'next/cache';
 import { revalidateTag } from 'next/cache';
 
@@ -19,8 +20,11 @@ export const withCache = <Args extends unknown[], Return>(
   key: string[],
   options: { tags: string[]; revalidate?: number },
 ): ((...args: Args) => Promise<Return>) => {
-  if (process.env.CACHE_ENABLED !== 'true') return fn;
-  return unstable_cache(fn, key, options) as (...args: Args) => Promise<Return>;
+  const cached =
+    process.env.CACHE_ENABLED !== 'true'
+      ? fn
+      : (unstable_cache(fn, key, options) as (...args: Args) => Promise<Return>);
+  return cache(cached);
 };
 
 /** カテゴリキャッシュを無効化する。カテゴリ作成・更新・削除後に呼ぶ。 */

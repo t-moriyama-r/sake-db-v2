@@ -7,12 +7,14 @@ export type CategoryRecord = Schema['Category']['type'];
 
 export const fetchAllCategories = withCache(
   async (): Promise<CategoryRecord[]> => {
+    console.log('[DEBUG] fetchAllCategories 開始');
     const client = getGuestClient();
     const all: CategoryRecord[] = [];
     let nextToken: string | null | undefined = undefined;
 
     do {
       const result = await client.models.Category.list({ limit: 500, nextToken });
+      console.log('[DEBUG] Category.list 結果:', { dataCount: result.data?.length, errors: result.errors });
       if (result.errors?.length) {
         console.warn('カテゴリ取得中にエラーが発生しました:', result.errors);
         break;
@@ -21,6 +23,7 @@ export const fetchAllCategories = withCache(
       nextToken = result.nextToken as string | null | undefined;
     } while (nextToken);
 
+    console.log('[DEBUG] fetchAllCategories 完了 件数:', all.length);
     return all;
   },
   ['all-categories'],
@@ -34,6 +37,50 @@ export const fetchRootCategories = withCache(
     return all.filter((c) => !c.parentId);
   },
   ['root-categories'],
+  { tags: [CACHE_TAGS.categories], revalidate: 3600 },
+);
+
+/**
+ * サイドバー等でカテゴリツリーを表示する際に使うノード型。
+ * liquors などのリレーションを含まず、シリアライズ可能。
+ */
+export type CategoryTreeNode = {
+  id: string;
+  name: string;
+  parentId: string | null;
+  children: CategoryTreeNode[];
+};
+
+/**
+ * 全カテゴリをツリー構造（ルートノードの配列）で返す。
+ * liquors などのリレーションは含まない。
+ * サイドバーのような再帰表示用途向け。
+ */
+export const fetchCategoryTree = withCache(
+  async (): Promise<CategoryTreeNode[]> => {
+    const all = await fetchAllCategories();
+
+    // id → ノード のマップ（children は空配列で初期化）
+    const nodeMap = new Map<string, CategoryTreeNode>(
+      all.map(({ id, name, parentId }) => [
+        id,
+        { id, name, parentId: parentId ?? null, children: [] },
+      ]),
+    );
+
+    const roots: CategoryTreeNode[] = [];
+
+    for (const node of nodeMap.values()) {
+      if (node.parentId) {
+        nodeMap.get(node.parentId)?.children.push(node);
+      } else {
+        roots.push(node);
+      }
+    }
+
+    return roots;
+  },
+  ['category-tree'],
   { tags: [CACHE_TAGS.categories], revalidate: 3600 },
 );
 
