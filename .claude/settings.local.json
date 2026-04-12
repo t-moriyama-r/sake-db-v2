@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"app/\\(main\\)\")",
+      "Bash(cp -r app/category \"app/\\(main\\)/category\")",
+      "Bash(cp -r app/discovery \"app/\\(main\\)/discovery\")",
+      "Bash(cp -r app/liquor \"app/\\(main\\)/liquor\")",
+      "Bash(cp -r app/mypage \"app/\\(main\\)/mypage\")"
+    ]
+  }
+}

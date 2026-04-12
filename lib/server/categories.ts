@@ -60,25 +60,22 @@ export const fetchCategoryTree = withCache(
   async (): Promise<CategoryTreeNode[]> => {
     const all = await fetchAllCategories();
 
-    // id → ノード のマップ（children は空配列で初期化）
-    const nodeMap = new Map<string, CategoryTreeNode>(
-      all.map(({ id, name, parentId }) => [
-        id,
-        { id, name, parentId: parentId ?? null, children: [] },
-      ]),
-    );
+    const build = (items: CategoryRecord[], parentId: string | null): CategoryTreeNode[] =>
+      items
+        .filter((c) => (c.parentId ?? null) === parentId)
+        .map(({ id, name, parentId: pid }) => ({
+          id,
+          name,
+          parentId: pid ?? null,
+          children: build(items, id),
+        }))
+        .sort((a, b) => {
+          if (a.name === 'その他') return 1;
+          if (b.name === 'その他') return -1;
+          return 0;
+        });
 
-    const roots: CategoryTreeNode[] = [];
-
-    for (const node of nodeMap.values()) {
-      if (node.parentId) {
-        nodeMap.get(node.parentId)?.children.push(node);
-      } else {
-        roots.push(node);
-      }
-    }
-
-    return roots;
+    return build(all, null);
   },
   ['category-tree'],
   { tags: [CACHE_TAGS.categories], revalidate: 3600 },
