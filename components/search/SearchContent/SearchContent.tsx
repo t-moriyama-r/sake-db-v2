@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import { LiquorCard } from '@/components/cards/LiquorCard';
-import { Spinner } from '@/components/ui/Spinner';
-import { Button } from '@/components/ui/Button';
+import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
+import { Button } from '@/components/ui/Button/Button';
 
 type Liquor = Schema['Liquor']['type'];
 
@@ -51,8 +51,8 @@ export const SearchContent = () => {
   });
 
   return (
-    <div className="flex-1 min-w-0">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">お酒を検索</h1>
+    <div className="flex-1 min-w-0 overflow-y-auto">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">お酒を検索</h1>
 
       <form onSubmit={handleSearch} className="mb-8 flex gap-2">
         <input
@@ -60,7 +60,7 @@ export const SearchContent = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="お酒の名前・説明で検索..."
-          className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="flex-1 rounded-md border border-border-input bg-surface px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
         />
         <Button type="submit" loading={loading}>検索</Button>
       </form>
@@ -69,9 +69,9 @@ export const SearchContent = () => {
 
       {searched && !loading && (
         <>
-          <p className="mb-4 text-sm text-gray-500">{results.length} 件見つかりました</p>
+          <p className="mb-4 text-sm text-muted-foreground">{results.length} 件見つかりました</p>
           {results.length === 0 ? (
-            <p className="py-16 text-center text-gray-500">「{query}」に一致するお酒が見つかりませんでした</p>
+            <p className="py-16 text-center text-muted-foreground">「{query}」に一致するお酒が見つかりませんでした</p>
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {results.map((liquor) => (

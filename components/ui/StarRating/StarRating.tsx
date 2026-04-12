@@ -24,7 +24,7 @@ export const StarRating = ({ value, max = 5, onChange, readonly, size = 'md' }: 
           aria-label={readonly ? undefined : `${star}点`}
           tabIndex={readonly ? -1 : 0}
         >
-          <span className={star <= value ? 'text-yellow-400' : 'text-gray-300'}>★</span>
+          <span className={star <= value ? 'text-rating' : 'text-border-input'}>★</span>
         </button>
       ))}
     </div>

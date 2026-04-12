@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Button } from './Button';
+import { Button } from '../Button/Button';
 
 type DialogProps = {
   open: boolean;
@@ -31,16 +31,16 @@ export const Dialog = ({ open, onClose, title, children, actions }: DialogProps)
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
     >
-      <div className="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
+      <div className="bg-surface rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
         {title && (
-          <div className="flex items-center justify-between border-b px-6 py-4">
-            <h2 className="text-lg font-semibold">{title}</h2>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">✕</button>
+          <div className="flex items-center justify-between border-b border-border px-6 py-4">
+            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+            <button onClick={onClose} className="text-muted-foreground hover:text-foreground">✕</button>
           </div>
         )}
         <div className="flex-1 overflow-auto px-6 py-4">{children}</div>
         {actions && (
-          <div className="flex justify-end gap-2 border-t px-6 py-4">{actions}</div>
+          <div className="flex justify-end gap-2 border-t border-border px-6 py-4">{actions}</div>
         )}
       </div>
     </div>
@@ -72,7 +72,7 @@ export const ConfirmDialog = ({
         </>
       }
     >
-      <p className="text-gray-700">{message}</p>
+      <p className="text-foreground-secondary">{message}</p>
     </Dialog>
   );
 }

@@ -6,8 +6,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import type { LiquorInput } from '@/schemas/liquor';
-import { LiquorForm } from '@/components/liquor/LiquorForm';
-import { Spinner } from '@/components/ui/Spinner';
+import { LiquorForm } from '@/components/liquor/LiquorForm/LiquorForm';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
 
 type Liquor = Schema['Liquor']['type'];
 
@@ -32,7 +32,7 @@ export default function LiquorEditPage() {
 
   const handleSubmit = async (data: LiquorInput) => {
     if (!liquor || !user) return;
-    const { data: updated } = await client.models.Liquor.update({
+    await client.models.Liquor.update({
       id,
       categoryId: data.categoryId,
       name: data.name,
@@ -43,7 +43,6 @@ export default function LiquorEditPage() {
       updateUserName: user.name,
     });
 
-    // 履歴を保存
     await client.models.LiquorHistory.create({
       liquorId: id,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,8 +66,8 @@ export default function LiquorEditPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">お酒を編集</h1>
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">お酒を編集</h1>
+      <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <LiquorForm
           liquor={liquor}
           defaultValues={{

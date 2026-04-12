@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { LiquorInput } from '@/schemas/liquor';
-import { LiquorForm } from '@/components/liquor/LiquorForm';
+import { LiquorForm } from '@/components/liquor/LiquorForm/LiquorForm';
 
 export default function LiquorCreatePage() {
   const { categoryId } = useParams<{ categoryId: string }>();
@@ -17,10 +17,9 @@ export default function LiquorCreatePage() {
   }
 
   const handleSubmit = async (data: LiquorInput) => {
-    // 画像は S3 アップロード後に URL をセット（実装は Storage モジュールで追加）
     await client.models.Liquor.create({
       categoryId: data.categoryId || categoryId,
-      categoryName: '', // カテゴリ名は create 時に別途取得
+      categoryName: '',
       name: data.name,
       description: data.description ?? undefined,
       youtube: data.youtube ?? undefined,
@@ -40,8 +39,8 @@ export default function LiquorCreatePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">お酒を登録</h1>
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">お酒を登録</h1>
+      <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <LiquorForm
           defaultValues={{ categoryId }}
           onSubmit={handleSubmit}

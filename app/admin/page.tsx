@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/Button';
-import { Spinner } from '@/components/ui/Spinner';
-import { ConfirmDialog } from '@/components/ui/Dialog';
+import { Button } from '@/components/ui/Button/Button';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
+import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 
 type Category = Schema['Category']['type'];
 
@@ -49,24 +49,24 @@ export default function AdminPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">管理画面</h1>
+        <h1 className="text-2xl font-bold text-foreground">管理画面</h1>
         <Button onClick={() => router.push('/category/create/root')}>
           カテゴリを作成
         </Button>
       </div>
 
-      <section className="rounded-xl border bg-white shadow-sm">
-        <div className="border-b px-6 py-4">
-          <h2 className="font-semibold text-gray-900">カテゴリ管理</h2>
+      <section className="rounded-xl border border-border bg-surface shadow-sm">
+        <div className="border-b border-border px-6 py-4">
+          <h2 className="font-semibold text-foreground">カテゴリ管理</h2>
         </div>
-        <div className="divide-y">
+        <div className="divide-y divide-border">
           {rootCategories.map((cat) => (
             <div key={cat.id} className="flex items-center justify-between px-6 py-3">
               <div>
-                <Link href={`/category/${cat.id}`} className="font-medium text-gray-800 hover:text-blue-600">
+                <Link href={`/category/${cat.id}`} className="font-medium text-foreground hover:text-primary">
                   {cat.name}
                 </Link>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   子カテゴリ: {categories.filter((c) => c.parentId === cat.id).length}件
                 </p>
               </div>

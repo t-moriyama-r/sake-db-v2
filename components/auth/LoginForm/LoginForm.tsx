@@ -7,8 +7,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { loginSchema, type LoginInput } from '@/schemas/auth';
 import { useAuth } from '@/hooks/useAuth';
-import { FormField } from '@/components/forms/FormField';
-import { Button } from '@/components/ui/Button';
+import { FormField } from '@/components/forms/FormField/FormField';
+import { Button } from '@/components/ui/Button/Button';
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -42,7 +42,7 @@ export const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       {serverError && (
-        <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>
+        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
       )}
 
       <FormField
@@ -68,12 +68,12 @@ export const LoginForm = () => {
       </Button>
 
       <div className="flex flex-col items-center gap-1 text-sm">
-        <Link href="/auth/password-reset" className="text-blue-600 hover:underline">
+        <Link href="/auth/password-reset" className="text-link hover:underline">
           パスワードを忘れた方
         </Link>
-        <p className="text-gray-500">
+        <p className="text-muted-foreground">
           アカウントをお持ちでない方は{' '}
-          <Link href="/auth/register" className="text-blue-600 hover:underline">
+          <Link href="/auth/register" className="text-link hover:underline">
             新規登録
           </Link>
         </p>

@@ -3,9 +3,9 @@
 import { type Toast } from '@/hooks/useToast';
 
 const typeClasses = {
-  success: 'bg-green-600',
-  error: 'bg-red-600',
-  info: 'bg-blue-600',
+  success: 'bg-success text-success-foreground',
+  error:   'bg-destructive text-destructive-foreground',
+  info:    'bg-primary text-primary-foreground',
 };
 
 type ToastContainerProps = {
@@ -21,12 +21,12 @@ export const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className={`flex items-center gap-3 rounded-lg px-4 py-3 text-white shadow-lg ${typeClasses[toast.type]} max-w-sm`}
+          className={`flex items-center gap-3 rounded-lg px-4 py-3 shadow-lg ${typeClasses[toast.type]} max-w-sm`}
         >
           <span className="flex-1 text-sm">{toast.message}</span>
           <button
             onClick={() => onRemove(toast.id)}
-            className="text-white/80 hover:text-white"
+            className="opacity-80 hover:opacity-100"
             aria-label="閉じる"
           >
             ✕

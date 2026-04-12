@@ -7,9 +7,9 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { userEditSchema, type UserEditInput } from '@/schemas/auth';
-import { FormField } from '@/components/forms/FormField';
-import { Button } from '@/components/ui/Button';
-import { Spinner } from '@/components/ui/Spinner';
+import { FormField } from '@/components/forms/FormField/FormField';
+import { Button } from '@/components/ui/Button/Button';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
 
 export default function MyPageEditPage() {
   const router = useRouter();
@@ -57,14 +57,14 @@ export default function MyPageEditPage() {
 
   return (
     <div className="mx-auto max-w-xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">プロフィール編集</h1>
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">プロフィール編集</h1>
+      <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           {serverError && (
-            <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>
+            <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
           )}
           {success && (
-            <div className="rounded-md bg-green-50 px-4 py-3 text-sm text-green-700">更新しました</div>
+            <div className="rounded-md bg-success-subtle px-4 py-3 text-sm text-success-subtle-foreground">更新しました</div>
           )}
 
           <FormField label="名前" type="text" required error={errors.name?.message} {...register('name')} />

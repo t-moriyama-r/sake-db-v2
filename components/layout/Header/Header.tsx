@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button/Button';
 
 export const Header = () => {
   const { user, isLogin, isAdmin, logout } = useAuth();
@@ -22,25 +22,25 @@ export const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-white/80 backdrop-blur-sm shadow-sm">
+    <header className="sticky top-0 z-40 border-b border-border bg-surface/80 backdrop-blur-sm shadow-sm">
       <div className="mx-auto flex h-10 max-w-7xl items-center gap-2 px-4">
-        <Link href="/" className="shrink-0 text-lg font-bold text-blue-700 hover:text-blue-800">
+        <Link href="/" className="shrink-0 text-lg font-bold text-primary hover:text-primary-hover">
           🍶 sake-db
         </Link>
 
         <form onSubmit={handleSearch} className="flex flex-1 min-w-0 items-center px-2 sm:px-4 max-w-xl">
-          <div className="flex w-full rounded border border-gray-300 bg-white focus-within:border-blue-400 focus-within:ring-1 focus-within:ring-blue-400">
+          <div className="flex w-full rounded border border-border-input bg-surface focus-within:border-ring focus-within:ring-1 focus-within:ring-ring">
             <input
               ref={inputRef}
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="キーワードで検索..."
-              className="flex-1 min-w-0 px-3 py-1 text-sm bg-transparent outline-none"
+              className="flex-1 min-w-0 px-3 py-1 text-sm bg-transparent text-foreground placeholder:text-muted-foreground outline-none"
             />
             <button
               type="submit"
-              className="shrink-0 px-3 py-1 text-gray-500 hover:text-blue-600"
+              className="shrink-0 px-3 py-1 text-muted-foreground hover:text-primary"
               aria-label="検索"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,7 +59,7 @@ export const Header = () => {
               {user?.imageBase64 ? (
                 <img src={user.imageBase64} className="h-8 w-8 rounded-full object-cover" alt={user.name} />
               ) : (
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-sm font-medium text-blue-700">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-avatar-bg text-sm font-medium text-avatar-fg">
                   {user?.name?.[0] ?? '?'}
                 </span>
               )}
@@ -76,21 +76,21 @@ export const Header = () => {
           )}
 
           {menuOpen && isLogin && (
-            <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border bg-white py-1 shadow-lg">
-              <div className="border-b px-4 py-2 text-sm font-medium text-gray-900">{user?.name}</div>
-              <Link href="/mypage" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>
+            <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-border bg-surface py-1 shadow-lg">
+              <div className="border-b border-border px-4 py-2 text-sm font-medium text-foreground">{user?.name}</div>
+              <Link href="/mypage" className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
                 マイページ
               </Link>
-              <Link href="/mypage/edit" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>
+              <Link href="/mypage/edit" className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
                 プロフィール編集
               </Link>
               {isAdmin && (
-                <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>
+                <Link href="/admin" className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
                   管理画面
                 </Link>
               )}
               <button
-                className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-gray-50"
+                className="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-muted"
                 onClick={() => { logout(); setMenuOpen(false); }}
               >
                 ログアウト

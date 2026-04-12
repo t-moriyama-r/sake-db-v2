@@ -8,8 +8,8 @@ type TagProps = {
 export const Tag = ({ label, onDelete, onClick, variant = 'default' }: TagProps) => {
   const base =
     variant === 'outline'
-      ? 'border border-blue-500 text-blue-600 bg-white hover:bg-blue-50'
-      : 'bg-blue-100 text-blue-700';
+      ? 'border border-primary text-primary bg-surface hover:bg-primary/10'
+      : 'bg-primary/10 text-primary';
 
   return (
     <span

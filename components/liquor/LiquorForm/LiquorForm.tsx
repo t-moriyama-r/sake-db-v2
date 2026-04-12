@@ -6,9 +6,9 @@ import { useState, useEffect } from 'react';
 import { liquorSchema, type LiquorInput } from '@/schemas/liquor';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import { FormField } from '@/components/forms/FormField';
-import { ImageUpload } from '@/components/forms/ImageUpload';
-import { Button } from '@/components/ui/Button';
+import { FormField } from '@/components/forms/FormField/FormField';
+import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
+import { Button } from '@/components/ui/Button/Button';
 
 type Category = Schema['Category']['type'];
 type Liquor = Schema['Liquor']['type'];
@@ -28,7 +28,6 @@ export const LiquorForm = ({ defaultValues, liquor, onSubmit, submitLabel = '保
     register,
     handleSubmit,
     control,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LiquorInput>({
     resolver: zodResolver(liquorSchema),
@@ -53,26 +52,27 @@ export const LiquorForm = ({ defaultValues, liquor, onSubmit, submitLabel = '保
     }
   };
 
+  const selectClass =
+    'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground ' +
+    'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring';
+
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-5">
       {serverError && (
-        <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>
+        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
       )}
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-700">
-          カテゴリ <span className="text-red-500">*</span>
+        <label className="text-sm font-medium text-foreground-secondary">
+          カテゴリ <span className="text-destructive">*</span>
         </label>
-        <select
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          {...register('categoryId')}
-        >
+        <select className={selectClass} {...register('categoryId')}>
           <option value="">-- カテゴリを選択 --</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>{c.name}</option>
           ))}
         </select>
-        {errors.categoryId && <p className="text-xs text-red-600">{errors.categoryId.message}</p>}
+        {errors.categoryId && <p className="text-xs text-destructive">{errors.categoryId.message}</p>}
       </div>
 
       <FormField

@@ -7,8 +7,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { registerSchema, type RegisterInput } from '@/schemas/auth';
 import { useAuth } from '@/hooks/useAuth';
-import { FormField } from '@/components/forms/FormField';
-import { Button } from '@/components/ui/Button';
+import { FormField } from '@/components/forms/FormField/FormField';
+import { Button } from '@/components/ui/Button/Button';
 
 type Step = 'form' | 'confirm';
 
@@ -59,11 +59,11 @@ export const RegisterForm = () => {
   if (step === 'confirm') {
     return (
       <div className="flex flex-col gap-4">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-foreground-secondary">
           <strong>{email}</strong> に確認コードを送信しました。メールを確認して入力してください。
         </p>
         {serverError && (
-          <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>
+          <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
         )}
         <FormField
           label="確認コード"
@@ -82,7 +82,7 @@ export const RegisterForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       {serverError && (
-        <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>
+        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
       )}
 
       <FormField
@@ -117,9 +117,9 @@ export const RegisterForm = () => {
         新規登録
       </Button>
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-muted-foreground">
         すでにアカウントをお持ちの方は{' '}
-        <Link href="/auth/login" className="text-blue-600 hover:underline">
+        <Link href="/auth/login" className="text-link hover:underline">
           ログイン
         </Link>
       </p>

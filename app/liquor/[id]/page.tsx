@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { fetchLiquor, fetchBoardPosts, fetchTags } from '@/lib/server/liquors';
 import { getServerUser } from '@/lib/server/auth';
-import { LiquorDetailClient } from '@/components/liquor/LiquorDetailClient';
+import { LiquorDetailClient } from '@/components/liquor/LiquorDetailClient/LiquorDetailClient';
 
 type Props = { params: Promise<{ id: string }> };
 

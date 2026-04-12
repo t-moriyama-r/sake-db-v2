@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { client } from '@/lib/amplify-client';
 import { useAuth } from '@/hooks/useAuth';
-import { StarRating } from '@/components/ui/StarRating';
-import { Tag } from '@/components/ui/Tag';
-import { Button } from '@/components/ui/Button';
-import { ConfirmDialog } from '@/components/ui/Dialog';
-import { BoardPostForm } from '@/components/liquor/BoardPostForm';
+import { StarRating } from '@/components/ui/StarRating/StarRating';
+import { Tag } from '@/components/ui/Tag/Tag';
+import { Button } from '@/components/ui/Button/Button';
+import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
+import { BoardPostForm } from './BoardPostForm';
 import type { LiquorRecord, BoardPostRecord, TagRecord } from '@/lib/server/liquors';
 import type { ServerUser } from '@/lib/server/auth';
 import type { BoardPostInput } from '@/schemas/board';
@@ -140,17 +140,17 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       {/* パンくずリスト */}
-      <nav className="mb-4 flex items-center gap-1 text-sm text-gray-500">
-        <Link href="/" className="hover:text-blue-600">ホーム</Link>
-        <span>›</span>
-        <Link href={`/discovery/category/${liquor.categoryId}`} className="hover:text-blue-600">
+      <nav className="mb-4 flex items-center gap-1 text-sm">
+        <Link href="/" className="text-link hover:underline">ホーム</Link>
+        <span className="text-muted-foreground">›</span>
+        <Link href={`/discovery/category/${liquor.categoryId}`} className="text-link hover:underline">
           {liquor.categoryName}
         </Link>
-        <span>›</span>
-        <span className="text-gray-900">{liquor.name}</span>
+        <span className="text-muted-foreground">›</span>
+        <span className="font-medium text-foreground-secondary">{liquor.name}</span>
       </nav>
 
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <div className="flex flex-col gap-6 md:flex-row">
           {/* 画像 */}
           <div className="shrink-0">
@@ -161,24 +161,24 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
                 className="h-48 w-48 rounded-lg object-cover"
               />
             ) : (
-              <div className="flex h-48 w-48 items-center justify-center rounded-lg bg-gray-100 text-6xl">🍶</div>
+              <div className="flex h-48 w-48 items-center justify-center rounded-lg bg-muted text-6xl">🍶</div>
             )}
           </div>
 
           {/* 詳細 */}
           <div className="flex-1">
-            <p className="text-sm text-gray-500">{liquor.categoryName}</p>
-            <h1 className="mt-1 text-2xl font-bold text-gray-900">{liquor.name}</h1>
+            <p className="text-sm text-muted-foreground">{liquor.categoryName}</p>
+            <h1 className="mt-1 text-2xl font-bold text-foreground">{liquor.name}</h1>
 
             {avg > 0 && (
               <div className="mt-2 flex items-center gap-2">
                 <StarRating value={avg} readonly />
-                <span className="text-sm text-gray-500">({ratingCount}件)</span>
+                <span className="text-sm text-muted-foreground">({ratingCount}件)</span>
               </div>
             )}
 
             {liquor.description && (
-              <p className="mt-4 whitespace-pre-wrap text-gray-600">{liquor.description}</p>
+              <p className="mt-4 whitespace-pre-wrap text-foreground-secondary">{liquor.description}</p>
             )}
 
             {/* タグ */}
@@ -203,7 +203,7 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
                   placeholder="タグを追加..."
-                  className="rounded-md border border-gray-300 px-3 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="rounded-md border border-border-input bg-surface px-3 py-1 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
                   onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddTag(); } }}
                 />
                 <Button size="sm" variant="secondary" onClick={handleAddTag}>追加</Button>
@@ -213,7 +213,7 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
             {/* 評価 */}
             {isLogin && (
               <div className="mt-4">
-                <p className="mb-1 text-sm font-medium text-gray-700">あなたの評価</p>
+                <p className="mb-1 text-sm font-medium text-foreground-secondary">あなたの評価</p>
                 <StarRating
                   value={ratingValue}
                   onChange={ratingLoading ? undefined : handleRate}
@@ -255,7 +255,7 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
       {/* ボード（レビュー） */}
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900">みんなの投稿 ({boardPosts.length})</h2>
+          <h2 className="text-xl font-bold text-foreground">みんなの投稿 ({boardPosts.length})</h2>
           {isLogin && (
             <Button size="sm" onClick={() => setPostFormOpen((v) => !v)}>
               {postFormOpen ? '閉じる' : '投稿する'}
@@ -264,39 +264,39 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
         </div>
 
         {postFormOpen && (
-          <div className="mb-6 rounded-xl border bg-white p-4 shadow-sm">
+          <div className="mb-6 rounded-xl border border-border bg-surface p-4 shadow-sm">
             <BoardPostForm onSubmit={handlePost} />
           </div>
         )}
 
         <div className="flex flex-col gap-4">
           {boardPosts.length === 0 ? (
-            <p className="py-8 text-center text-gray-500">まだ投稿がありません。最初の投稿をしてみましょう！</p>
+            <p className="py-8 text-center text-muted-foreground">まだ投稿がありません。最初の投稿をしてみましょう！</p>
           ) : (
             boardPosts.map((post) => {
               const embedId = post.youtube?.match(/(?:v=|youtu\.be\/)([^&\s]+)/)?.[1];
               return (
-                <div key={post.id} className="rounded-xl border bg-white p-4 shadow-sm">
+                <div key={post.id} className="rounded-xl border border-border bg-surface p-4 shadow-sm">
                   <div className="flex items-start gap-3">
                     {post.userImageBase64 ? (
                       <img src={post.userImageBase64} alt={post.userName ?? '匿名'} className="h-9 w-9 rounded-full object-cover" />
                     ) : (
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-sm font-medium text-gray-500">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-avatar-bg text-sm font-medium text-avatar-fg">
                         {post.userName?.[0] ?? '?'}
                       </div>
                     )}
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         {post.userId ? (
-                          <Link href={`/user/${post.userId}`} className="text-sm font-medium text-gray-800 hover:text-blue-600">
+                          <Link href={`/user/${post.userId}`} className="text-sm font-medium text-foreground hover:text-primary">
                             {post.userName}
                           </Link>
                         ) : (
-                          <span className="text-sm font-medium text-gray-500">匿名</span>
+                          <span className="text-sm font-medium text-muted-foreground">匿名</span>
                         )}
                         {post.rate && <StarRating value={post.rate} readonly size="sm" />}
                       </div>
-                      <p className="mt-1 text-sm text-gray-700 whitespace-pre-wrap">{post.text}</p>
+                      <p className="mt-1 text-sm text-foreground-secondary whitespace-pre-wrap">{post.text}</p>
                       {embedId && (
                         <iframe
                           className="mt-2 aspect-video w-full max-w-sm rounded"

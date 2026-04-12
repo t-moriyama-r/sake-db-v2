@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { passwordResetSchema, type PasswordResetInput } from '@/schemas/auth';
-import { FormField } from '@/components/forms/FormField';
-import { Button } from '@/components/ui/Button';
+import { FormField } from '@/components/forms/FormField/FormField';
+import { Button } from '@/components/ui/Button/Button';
 
 export default function PasswordResetPage() {
   const { resetPassword } = useAuth();
@@ -33,8 +33,8 @@ export default function PasswordResetPage() {
     return (
       <div className="flex min-h-[calc(100vh-120px)] items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm text-center">
-          <p className="text-lg font-medium text-gray-900">メールを送信しました</p>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="text-lg font-medium text-foreground">メールを送信しました</p>
+          <p className="mt-2 text-sm text-muted-foreground">
             パスワードリセット用のメールをお送りしました。メール内のリンクをクリックしてください。
           </p>
         </div>
@@ -45,14 +45,14 @@ export default function PasswordResetPage() {
   return (
     <div className="flex min-h-[calc(100vh-120px)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">パスワードリセット</h1>
-        <p className="mb-6 text-center text-sm text-gray-500">
+        <h1 className="mb-2 text-center text-2xl font-bold text-foreground">パスワードリセット</h1>
+        <p className="mb-6 text-center text-sm text-muted-foreground">
           登録したメールアドレスを入力してください
         </p>
-        <div className="rounded-xl border bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             {serverError && (
-              <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>
+              <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
             )}
             <FormField
               label="メールアドレス"

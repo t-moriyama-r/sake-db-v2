@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button/Button';
 
 type ImageUploadProps = {
   label?: string;
@@ -37,9 +37,9 @@ export const ImageUpload = ({
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm font-medium text-gray-700">{label}</span>
+      <span className="text-sm font-medium text-foreground-secondary">{label}</span>
       {displayImage && (
-        <img src={displayImage} alt="プレビュー" className="h-32 w-32 rounded-md object-cover border" />
+        <img src={displayImage} alt="プレビュー" className="h-32 w-32 rounded-md object-cover border border-border" />
       )}
       <div className="flex items-center gap-2">
         <Button
@@ -68,7 +68,7 @@ export const ImageUpload = ({
         className="hidden"
         onChange={handleFileChange}
       />
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }

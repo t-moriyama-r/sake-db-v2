@@ -6,8 +6,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { passwordResetExeSchema, type PasswordResetExeInput } from '@/schemas/auth';
-import { FormField } from '@/components/forms/FormField';
-import { Button } from '@/components/ui/Button';
+import { FormField } from '@/components/forms/FormField/FormField';
+import { Button } from '@/components/ui/Button/Button';
 
 export default function PasswordResetExePage() {
   const router = useRouter();
@@ -38,11 +38,11 @@ export default function PasswordResetExePage() {
   return (
     <div className="flex min-h-[calc(100vh-120px)] items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <h1 className="mb-2 text-center text-2xl font-bold text-gray-900">パスワード再設定</h1>
-        <div className="rounded-xl border bg-white p-6 shadow-sm">
+        <h1 className="mb-2 text-center text-2xl font-bold text-foreground">パスワード再設定</h1>
+        <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             {serverError && (
-              <div className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700">{serverError}</div>
+              <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
             )}
             <FormField
               label="メールアドレス"

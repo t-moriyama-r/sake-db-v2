@@ -17,7 +17,11 @@ type TextareaFieldProps = BaseProps & TextareaHTMLAttributes<HTMLTextAreaElement
 
 type FormFieldProps = InputFieldProps | TextareaFieldProps;
 
-const inputClass = 'w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-500';
+const inputClass =
+  'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground shadow-sm ' +
+  'placeholder:text-muted-foreground ' +
+  'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring ' +
+  'disabled:bg-muted disabled:text-muted-foreground';
 
 export const FormField = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
@@ -26,27 +30,27 @@ export const FormField = forwardRef<
   const id = (props as { id?: string }).id ?? label;
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={id} className="text-sm font-medium text-gray-700">
+      <label htmlFor={id} className="text-sm font-medium text-foreground-secondary">
         {label}
-        {required && <span className="ml-1 text-red-500">*</span>}
+        {required && <span className="ml-1 text-destructive">*</span>}
       </label>
       {as === 'textarea' ? (
         <textarea
           id={id}
           ref={ref as React.Ref<HTMLTextAreaElement>}
-          className={`${inputClass} min-h-[100px] resize-y ${error ? 'border-red-500 focus:ring-red-500' : ''}`}
+          className={`${inputClass} min-h-[100px] resize-y ${error ? 'border-destructive focus:ring-destructive' : ''}`}
           {...(props as TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />
       ) : (
         <input
           id={id}
           ref={ref as React.Ref<HTMLInputElement>}
-          className={`${inputClass} ${error ? 'border-red-500 focus:ring-red-500' : ''}`}
+          className={`${inputClass} ${error ? 'border-destructive focus:ring-destructive' : ''}`}
           {...(props as InputHTMLAttributes<HTMLInputElement>)}
         />
       )}
-      {hint && !error && <p className="text-xs text-gray-500">{hint}</p>}
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {hint && !error && <p className="text-xs text-muted-foreground">{hint}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 });

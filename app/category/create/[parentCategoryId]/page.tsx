@@ -4,7 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { CategoryInput } from '@/schemas/category';
-import { CategoryForm } from '@/components/category/CategoryForm';
+import { CategoryForm } from '@/components/category/CategoryForm/CategoryForm';
 
 export default function CategoryCreatePage() {
   const { parentCategoryId } = useParams<{ parentCategoryId: string }>();
@@ -33,8 +33,8 @@ export default function CategoryCreatePage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">カテゴリを作成</h1>
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">カテゴリを作成</h1>
+      <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <CategoryForm
           defaultValues={{ parentId: parentCategoryId }}
           onSubmit={handleSubmit}

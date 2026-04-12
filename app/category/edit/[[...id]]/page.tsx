@@ -6,8 +6,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import type { CategoryInput } from '@/schemas/category';
-import { CategoryForm } from '@/components/category/CategoryForm';
-import { Spinner } from '@/components/ui/Spinner';
+import { CategoryForm } from '@/components/category/CategoryForm/CategoryForm';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
 
 type Category = Schema['Category']['type'];
 
@@ -34,7 +34,6 @@ export default function CategoryEditPage() {
   const handleSubmit = async (data: CategoryInput) => {
     if (!user) return;
     if (categoryId && category) {
-      // 履歴を保存
       await client.models.CategoryHistory.create({
         categoryId,
         name: category.name,
@@ -58,7 +57,6 @@ export default function CategoryEditPage() {
       });
       router.push(`/category/${categoryId}`);
     } else {
-      // 新規作成
       await client.models.Category.create({
         name: data.name,
         parentId: data.parentId || undefined,
@@ -78,10 +76,10 @@ export default function CategoryEditPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">
         {category ? 'カテゴリを編集' : 'カテゴリを作成'}
       </h1>
-      <div className="rounded-xl border bg-white p-6 shadow-sm">
+      <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <CategoryForm
           category={category ?? undefined}
           defaultValues={
