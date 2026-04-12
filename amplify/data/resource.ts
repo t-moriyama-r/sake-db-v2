@@ -3,8 +3,7 @@ import { adminSchema } from './schema/admin';
 import { affiliateSchema } from './schema/affiliate';
 import { bookmarkSchema } from './schema/bookmark';
 import { categorySchema } from './schema/category';
-import { flavorSchema } from './schema/flavor';
-import { liquorSchema } from './schema/liquor';
+import { liquorSchema } from './schema/liquor/index';
 import { recommendSchema } from './schema/recommend';
 import { userSchema } from './schema/user';
 
@@ -27,7 +26,6 @@ const schema = a.schema({
   ...affiliateSchema,
   ...bookmarkSchema,
   ...categorySchema,
-  ...flavorSchema,
   ...liquorSchema,
   ...recommendSchema,
   ...userSchema,

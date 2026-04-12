@@ -115,6 +115,22 @@ export function collectDescendantIds(
   return result;
 }
 
+/** パンくずリスト用のカテゴリ情報 */
+export type CategoryBreadcrumbItem = { id: string; name: string };
+
+/** 指定カテゴリからルートまでの祖先を含むパンくずリストを返す（自身含む）。 */
+export function buildCategoryBreadcrumbs(
+  categoryId: string,
+  allCategories: CategoryRecord[],
+): CategoryBreadcrumbItem[] {
+  const category = allCategories.find((c) => c.id === categoryId);
+  if (!category) return [];
+  const ancestors = category.parentId
+    ? buildCategoryBreadcrumbs(category.parentId, allCategories)
+    : [];
+  return [...ancestors, { id: category.id, name: category.name ?? '' }];
+}
+
 /** カテゴリキャッシュを無効化する。カテゴリ作成・更新・削除後に呼ぶ。 */
 export async function revalidateCategoriesCache(): Promise<void> {
   'use server';

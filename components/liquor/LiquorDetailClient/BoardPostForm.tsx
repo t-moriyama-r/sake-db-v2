@@ -12,9 +12,10 @@ type BoardPostFormProps = {
   onSubmit: (data: BoardPostInput) => Promise<void>;
   defaultValues?: Partial<BoardPostInput>;
   submitLabel?: string;
+  isLoggedIn?: boolean;
 };
 
-export const BoardPostForm = ({ onSubmit, defaultValues, submitLabel = '投稿' }: BoardPostFormProps) => {
+export const BoardPostForm = ({ onSubmit, defaultValues, submitLabel = '投稿', isLoggedIn }: BoardPostFormProps) => {
   const [serverError, setServerError] = useState('');
 
   const {
@@ -27,7 +28,7 @@ export const BoardPostForm = ({ onSubmit, defaultValues, submitLabel = '投稿' 
     defaultValues: {
       text: defaultValues?.text ?? '',
       rate: defaultValues?.rate ?? null,
-      youtube: defaultValues?.youtube ?? '',
+      guestName: defaultValues?.guestName ?? '',
     },
   });
 
@@ -44,6 +45,15 @@ export const BoardPostForm = ({ onSubmit, defaultValues, submitLabel = '投稿' 
     <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
       {serverError && (
         <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
+      )}
+
+      {!isLoggedIn && (
+        <FormField
+          label="ニックネーム（任意）"
+          placeholder="名無し"
+          error={errors.guestName?.message}
+          {...register('guestName')}
+        />
       )}
 
       <div className="flex flex-col gap-1">
@@ -66,17 +76,10 @@ export const BoardPostForm = ({ onSubmit, defaultValues, submitLabel = '投稿' 
         label="コメント"
         required
         rows={3}
+        autoFocus
         placeholder="感想を書いてください"
         error={errors.text?.message}
         {...register('text')}
-      />
-
-      <FormField
-        label="YouTube URL（任意）"
-        type="url"
-        placeholder="https://youtube.com/watch?v=..."
-        error={errors.youtube?.message}
-        {...register('youtube')}
       />
 
       <Button type="submit" loading={isSubmitting}>

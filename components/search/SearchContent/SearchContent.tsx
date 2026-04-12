@@ -29,16 +29,9 @@ export const SearchContent = () => {
     setSearched(false);
 
     try {
-      const { data } = await client.models.Liquor.list({
-        filter: {
-          or: [
-            { name: { contains: query } },
-            { description: { contains: query } },
-          ],
-        },
-        limit: 50,
-      });
-      setResults(data);
+      const result = await client.queries.searchLiquors({ keyword: query, limit: 50 });
+      const liquors = JSON.parse((result.data ?? '[]') as string) as unknown as Liquor[];
+      setResults(liquors);
     } finally {
       setLoading(false);
       setSearched(true);

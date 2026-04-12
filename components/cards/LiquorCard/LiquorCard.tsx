@@ -1,36 +1,19 @@
 import Link from 'next/link';
-import { StarRating } from '@/components/ui/StarRating/StarRating';
+import { LiquorRating } from '@/components/liquor/LiquorRating/LiquorRating';
+import { calcMemberAvgRate, calcMemberRateCount } from '@/lib/liquor/rating';
+import { routes } from '@/lib/routes';
 import type { Schema } from '@/amplify/data/resource';
 
 type Liquor = Schema['Liquor']['type'];
-
-const calcAvgRate = (liquor: Liquor): number => {
-  const total =
-    (liquor.rate5Users?.length ?? 0) * 5 +
-    (liquor.rate4Users?.length ?? 0) * 4 +
-    (liquor.rate3Users?.length ?? 0) * 3 +
-    (liquor.rate2Users?.length ?? 0) * 2 +
-    (liquor.rate1Users?.length ?? 0) * 1;
-  const count =
-    (liquor.rate5Users?.length ?? 0) +
-    (liquor.rate4Users?.length ?? 0) +
-    (liquor.rate3Users?.length ?? 0) +
-    (liquor.rate2Users?.length ?? 0) +
-    (liquor.rate1Users?.length ?? 0);
-  if (count === 0) return 0;
-  return Math.round(total / count);
-}
 
 type LiquorCardProps = {
   liquor: Liquor;
 };
 
 export const LiquorCard = ({ liquor }: LiquorCardProps) => {
-  const avg = calcAvgRate(liquor);
-
   return (
     <Link
-      href={`/liquor/${liquor.id}`}
+      href={routes.liquor.detail(liquor.id)}
       className="group flex flex-col rounded-xl border border-border bg-surface p-4 shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="relative mb-3 aspect-video overflow-hidden rounded-md bg-muted">
@@ -49,11 +32,14 @@ export const LiquorCard = ({ liquor }: LiquorCardProps) => {
       {liquor.description && (
         <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{liquor.description}</p>
       )}
-      {avg > 0 && (
-        <div className="mt-2">
-          <StarRating value={avg} readonly size="sm" />
-        </div>
-      )}
+      <div className="mt-2">
+        <LiquorRating
+          memberAvgRate={calcMemberAvgRate(liquor)}
+          memberRateCount={calcMemberRateCount(liquor)}
+          allAvgRate={liquor.boardAvgRate}
+          allRateCount={liquor.boardRateCount}
+        />
+      </div>
     </Link>
   );
 }

@@ -1,4 +1,4 @@
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { getGuestClient } from './client';
 import { withCache, CACHE_TAGS } from './cache';
 import type { Schema } from '@/amplify/data/resource';
@@ -52,18 +52,36 @@ export const fetchLiquorsByCategories = withCache(
 );
 
 /**
- * ホームページ用のお酒一覧をランダムに取得する。
- * randomRecommendList Lambda で全件対象のシャッフルを行う。
+ * ホームページ用のお酒一覧を全件ランダム順で取得する。
+ * DynamoDB はランダム取得を直接サポートしないため、全件取得後にシャッフルする。
  * データ量が増えたら OpenSearch や ElastiCache への移行を検討すること。
  */
-export const fetchRandomLiquors = withCache(
-  async (limit: number): Promise<LiquorRecord[]> => {
+export const fetchAllLiquorsRandomly = withCache(
+  async (): Promise<LiquorRecord[]> => {
     const client = getGuestClient();
-    const { data } = await client.queries.randomRecommendList({ limit });
-    return data ? (JSON.parse(data as string) as LiquorRecord[]) : [];
+    const all: LiquorRecord[] = [];
+    let nextToken: string | null | undefined = undefined;
+
+    do {
+      const result = await client.models.Liquor.list({ limit: 500, nextToken });
+      if (result.errors?.length) {
+        console.warn('お酒取得中にエラーが発生しました:', result.errors);
+        break;
+      }
+      all.push(...result.data);
+      nextToken = result.nextToken as string | null | undefined;
+    } while (nextToken);
+
+    // Fisher-Yates シャッフル
+    for (let i = all.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [all[i], all[j]] = [all[j]!, all[i]!];
+    }
+
+    return all;
   },
-  ['random-liquors'],
-  { tags: [CACHE_TAGS.liquors], revalidate: 300 },
+  ['all-liquors-random'],
+  { tags: [CACHE_TAGS.liquors], revalidate: 60 },
 );
 
 /**
@@ -89,7 +107,7 @@ export const fetchLiquorsByTag = withCache(
 /** お酒キャッシュを無効化する。お酒作成・更新・削除後に呼ぶ。 */
 export async function revalidateLiquorsCache(): Promise<void> {
   'use server';
-  revalidateTag(CACHE_TAGS.liquors, 'max');
+  updateTag(CACHE_TAGS.liquors);
 }
 
 /** 指定お酒の掲示板投稿を取得する。 */
@@ -126,7 +144,7 @@ export const fetchUserBoardPosts = withCache(
 /** 掲示板投稿キャッシュを無効化する。投稿作成・削除後に呼ぶ。 */
 export async function revalidateBoardPostsCache(): Promise<void> {
   'use server';
-  revalidateTag(CACHE_TAGS.boardPosts, 'max');
+  updateTag(CACHE_TAGS.boardPosts);
 }
 
 /** 指定お酒のタグを取得する。 */
@@ -146,5 +164,5 @@ export const fetchTags = withCache(
 /** タグキャッシュを無効化する。タグ作成・削除後に呼ぶ。 */
 export async function revalidateTagsCache(): Promise<void> {
   'use server';
-  revalidateTag(CACHE_TAGS.tags, 'max');
+  updateTag(CACHE_TAGS.tags);
 }

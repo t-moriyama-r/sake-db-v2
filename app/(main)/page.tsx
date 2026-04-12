@@ -1,8 +1,8 @@
-import { fetchRandomLiquors } from '@/lib/server/liquors';
+import { fetchAllLiquorsRandomly } from '@/lib/server/liquors';
 import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
 
 export default async function HomePage() {
-  const liquors = await fetchRandomLiquors(12);
+  const liquors = await fetchAllLiquorsRandomly();
 
   return (
     <section>

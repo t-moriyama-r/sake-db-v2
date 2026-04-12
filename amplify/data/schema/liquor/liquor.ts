@@ -1,23 +1,17 @@
 import { a } from '@aws-amplify/backend';
-import { listFromCategory } from '../../functions/listFromCategory/resource';
-import { liquorHistories } from '../../functions/liquorHistories/resource';
-import { randomRecommendList } from '../../functions/randomRecommendList/resource';
-import { searchLiquors } from '../../functions/searchLiquors/resource';
-import { searchLiquorsByTag } from '../../functions/searchLiquorsByTag/resource';
+import { listFromCategory } from '../../../functions/listFromCategory/resource';
+import { randomRecommendList } from '../../../functions/randomRecommendList/resource';
+import { searchLiquors } from '../../../functions/searchLiquors/resource';
+import { searchLiquorsByTag } from '../../../functions/searchLiquorsByTag/resource';
 
-/** お酒・掲示板・タグ関連のモデル・型・クエリ */
-export const liquorSchema = {
-  // ----------------------------------------------------------------
-  // MODELS（DynamoDB テーブル）
-  // ----------------------------------------------------------------
-
-  /**
-   * お酒（sake）
-   *
-   * - 公開読み取り可能
-   * - ログインユーザーが作成・更新可能
-   * - rate*Users: 各評価をつけたユーザー ID の配列（非正規化）
-   */
+/**
+ * お酒（sake）
+ *
+ * - 公開読み取り可能
+ * - ログインユーザーが作成・更新可能
+ * - rate*Users: 各評価をつけたユーザー ID の配列（非正規化）
+ */
+export const liquorModels = {
   Liquor: a
     .model({
       categoryId: a.id().required(),
@@ -39,6 +33,10 @@ export const liquorSchema = {
       rate3Users: a.string().array().required(),
       rate2Users: a.string().array().required(),
       rate1Users: a.string().array().required(),
+      /** 掲示板投稿（未ログイン含む）のrate平均 */
+      boardAvgRate: a.float(),
+      /** 掲示板投稿のうち rate を設定した件数（未ログイン含む） */
+      boardRateCount: a.integer(),
       createUserId: a.id(),
       createUserName: a.string(),
       updateUserId: a.id(),
@@ -56,83 +54,6 @@ export const liquorSchema = {
       allow.groups(['admin']),
       /** シードスクリプト用（apiKey による書き込みを許可） */
       allow.publicApiKey(),
-    ]),
-
-  /**
-   * お酒の編集履歴（バージョン管理）
-   */
-  LiquorHistory: a
-    .model({
-      liquorId: a.id().required(),
-      liquor: a.belongsTo('Liquor', 'liquorId'),
-      categoryId: a.id().required(),
-      categoryName: a.string().required(),
-      name: a.string().required(),
-      description: a.string(),
-      imageUrl: a.string(),
-      imageBase64: a.string(),
-      youtube: a.string(),
-      versionNo: a.integer().required(),
-      updateUserId: a.id(),
-      updateUserName: a.string(),
-    })
-    .authorization((allow) => [
-      allow.guest().to(['read']),
-      allow.authenticated().to(['read']),
-      allow.groups(['admin']),
-    ]),
-
-  /**
-   * 掲示板投稿（お酒へのレビュー・コメント）
-   *
-   * - 公開読み取り可能
-   * - @optionalAuth: 未ログインでも投稿可能（guest create を許可）
-   * - 投稿者（owner）が更新・削除可能
-   */
-  BoardPost: a
-    .model({
-      owner: a.string().authorization((allow) => [allow.owner().to(['read'])]),
-      liquorId: a.id().required(),
-      liquor: a.belongsTo('Liquor', 'liquorId'),
-      /** 匿名投稿は null */
-      userId: a.id(),
-      userName: a.string(),
-      userImageBase64: a.string(),
-      categoryId: a.id().required(),
-      categoryName: a.string().required(),
-      liquorName: a.string().required(),
-      text: a.string().required(),
-      youtube: a.string(),
-      /** 評価なしの場合は null */
-      rate: a.integer(),
-    })
-    .secondaryIndexes((index) => [index('userId')])
-    .authorization((allow) => [
-      allow.guest().to(['read', 'create']),
-      allow.authenticated().to(['read', 'create']),
-      allow.owner().to(['update', 'delete']),
-      allow.groups(['admin']),
-    ]),
-
-  /**
-   * タグ
-   *
-   * - 公開読み取り可能
-   * - ログインユーザーが作成可能、作成者（owner）が削除可能
-   */
-  Tag: a
-    .model({
-      owner: a.string().authorization((allow) => [allow.owner().to(['read'])]),
-      liquorId: a.id().required(),
-      liquor: a.belongsTo('Liquor', 'liquorId'),
-      text: a.string().required(),
-    })
-    .secondaryIndexes((index) => [index('text')])
-    .authorization((allow) => [
-      allow.guest().to(['read']),
-      allow.authenticated().to(['read', 'create']),
-      allow.owner().to(['delete']),
-      allow.groups(['admin']),
     ]),
 
   // ----------------------------------------------------------------
@@ -183,17 +104,6 @@ export const liquorSchema = {
     .returns(a.json().required())
     .authorization((allow) => [allow.guest(), allow.authenticated()])
     .handler(a.handler.function(searchLiquorsByTag)),
-
-  /**
-   * お酒の編集履歴。
-   * 戻り値は JSON 文字列: { now: Liquor, histories: LiquorHistory[] }
-   */
-  liquorHistories: a
-    .query()
-    .arguments({ id: a.id().required() })
-    .returns(a.json())
-    .authorization((allow) => [allow.authenticated()])
-    .handler(a.handler.function(liquorHistories)),
 
   /**
    * ランダムなお酒リスト。

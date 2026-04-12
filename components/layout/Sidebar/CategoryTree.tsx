@@ -1,11 +1,15 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { client } from '@/lib/amplify-client';
 import type { CategoryTreeNode } from '@/lib/server/categories';
 
 type CategoryTreeProps = {
   categoryTree: CategoryTreeNode[];
+  /** サーバー側で解決したアクティブカテゴリID（直アクセス時の初期値として使用）。 */
+  activeCategoryId?: string | null;
 };
 
 /** ルートから targetId までの ID パス（自身含む）を返す。見つからなければ null。 */
@@ -22,10 +26,41 @@ function findPath(
   return null;
 }
 
-export const CategoryTree = ({ categoryTree }: CategoryTreeProps) => {
+export const CategoryTree = ({ categoryTree, activeCategoryId: propActiveCategoryId }: CategoryTreeProps) => {
   const pathname = usePathname();
-  const match = pathname.match(/\/discovery\/category\/([^/]+)/);
-  const activeCategoryId = match?.[1] ?? null;
+
+  const categoryMatch = pathname.match(/\/discovery\/category\/([^/]+)/);
+  const urlCategoryId = categoryMatch?.[1] ?? null;
+
+  const liquorMatch = pathname.match(/^\/liquor\/([^/]+)$/);
+  const liquorId = liquorMatch?.[1] ?? null;
+
+  // フェッチ完了まで前の値を保持し続けることで、ページ遷移中のフラッシュを防ぐ。
+  // 直アクセス時はサーバーから渡された propActiveCategoryId を初期値として使用する。
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(
+    propActiveCategoryId ?? null,
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (urlCategoryId !== null) {
+      // カテゴリページ: URL から即時反映
+      setActiveCategoryId(urlCategoryId);
+    } else if (liquorId) {
+      // お酒ページ: フェッチ完了まで現在の値（前のページのカテゴリ）を保持し、完了後に更新
+      client.models.Liquor.get({ id: liquorId }, { authMode: 'identityPool' }).then(({ data }) => {
+        if (!cancelled) setActiveCategoryId(data?.categoryId ?? null);
+      });
+    } else {
+      // その他のページ: アクティブなし
+      setActiveCategoryId(null);
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [urlCategoryId, liquorId]);
 
   const pathIds = activeCategoryId ? (findPath(activeCategoryId, categoryTree) ?? []) : [];
   // 祖先 ID セット（アクティブ自身を除く）
@@ -38,7 +73,9 @@ export const CategoryTree = ({ categoryTree }: CategoryTreeProps) => {
   return (
     <aside className="hidden w-56 shrink-0 lg:block">
       <div className="rounded-lg border border-border bg-surface p-4">
-        <h2 className="mb-3 text-sm font-semibold text-foreground">カテゴリ</h2>
+        <Link href="/" className="mb-3 block text-sm font-semibold text-foreground hover:text-primary hover:underline">
+          カテゴリ
+        </Link>
         <ul className="space-y-0.5">
           {categoryTree.map((node) => (
             <CategoryTreeItem

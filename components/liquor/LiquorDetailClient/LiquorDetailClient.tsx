@@ -8,36 +8,25 @@ import { useAuth } from '@/hooks/useAuth';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { Tag } from '@/components/ui/Tag/Tag';
 import { Button } from '@/components/ui/Button/Button';
-import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
+import { Dialog, ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { BoardPostForm } from './BoardPostForm';
+import { LiquorRating } from '@/components/liquor/LiquorRating/LiquorRating';
+import { calcMemberAvgRate, calcMemberRateCount } from '@/lib/liquor/rating';
 import type { LiquorRecord, BoardPostRecord, TagRecord } from '@/lib/server/liquors';
+import type { CategoryBreadcrumbItem } from '@/lib/server/categories';
 import type { ServerUser } from '@/lib/server/auth';
 import type { BoardPostInput } from '@/schemas/board';
-
-const calcAvgRate = (liquor: LiquorRecord): number => {
-  const total =
-    (liquor.rate5Users?.length ?? 0) * 5 +
-    (liquor.rate4Users?.length ?? 0) * 4 +
-    (liquor.rate3Users?.length ?? 0) * 3 +
-    (liquor.rate2Users?.length ?? 0) * 2 +
-    (liquor.rate1Users?.length ?? 0) * 1;
-  const count =
-    (liquor.rate5Users?.length ?? 0) +
-    (liquor.rate4Users?.length ?? 0) +
-    (liquor.rate3Users?.length ?? 0) +
-    (liquor.rate2Users?.length ?? 0) +
-    (liquor.rate1Users?.length ?? 0);
-  return count === 0 ? 0 : Math.round(total / count);
-};
+import { revalidateLiquorsCache, revalidateBoardPostsCache } from '@/lib/actions/revalidate';
 
 type Props = {
   initialLiquor: LiquorRecord;
   initialBoardPosts: BoardPostRecord[];
   initialTags: TagRecord[];
   serverUser: ServerUser | null;
+  categoryPath: CategoryBreadcrumbItem[];
 };
 
-export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTags, serverUser }: Props) {
+export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTags, serverUser, categoryPath }: Props) {
   const router = useRouter();
   const { user, isLogin, isAdmin } = useAuth();
 
@@ -76,36 +65,58 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
         setRatingValue(0);
       }
       const { data } = await client.models.Liquor.update({ id, ...updated });
-      if (data) setLiquor(data as LiquorRecord);
+      if (data) setLiquor(stripLiquorRelations(data));
+      await revalidateLiquorsCache();
     } finally {
       setRatingLoading(false);
     }
   };
 
   const handlePost = async (data: BoardPostInput) => {
-    await client.models.BoardPost.create({
+    const authMode = user ? 'userPool' : 'apiKey';
+    const postData = {
       liquorId: id,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      categoryId: parseInt(liquor.categoryId) as any,
+      categoryId: liquor.categoryId,
       categoryName: liquor.categoryName,
       liquorName: liquor.name,
       text: data.text,
       rate: data.rate ?? undefined,
-      youtube: data.youtube ?? undefined,
       userId: user?.id,
-      userName: user?.name,
+      userName: user ? user.name : (data.guestName || null),
       userImageBase64: user?.imageBase64,
-    });
-    const { data: posts } = await client.models.BoardPost.list({ filter: { liquorId: { eq: id } } });
-    setBoardPosts(posts as BoardPostRecord[]);
+    };
+    const { data: newPost, errors } = await client.models.BoardPost.create(postData, { authMode });
+    if (errors?.length) {
+      throw new Error(errors[0].message);
+    }
+    if (newPost) {
+      // Amplify の belongsTo リレーションは遅延ロード関数を含むため、シリアライズ可能な形に除外する
+      const { liquor: _liquorFn, ...cleanPost } = newPost as BoardPostRecord & { liquor?: unknown };
+      const updatedPosts = [...boardPosts, cleanPost as BoardPostRecord];
+      setBoardPosts(updatedPosts);
+      await updateBoardAvgRate(updatedPosts, authMode);
+      await revalidateBoardPostsCache();
+    }
     setPostFormOpen(false);
+  };
+
+  /** 投稿リストから boardAvgRate・boardRateCount を再計算して Liquor を更新する */
+  const updateBoardAvgRate = async (posts: BoardPostRecord[], authMode: 'apiKey' | 'userPool' = 'userPool') => {
+    const rated = posts.filter((p) => p.rate != null);
+    const boardRateCount = rated.length > 0 ? rated.length : null;
+    const boardAvgRate = rated.length > 0
+      ? rated.reduce((acc, p) => acc + (p.rate ?? 0), 0) / rated.length
+      : null;
+    const { data: updated } = await client.models.Liquor.update({ id, boardAvgRate, boardRateCount }, { authMode });
+    if (updated) setLiquor(stripLiquorRelations(updated));
+    await revalidateLiquorsCache();
   };
 
   const handleAddTag = async () => {
     if (!newTag.trim() || !isLogin) return;
     await client.models.Tag.create({ liquorId: id, text: newTag.trim() });
     const { data: tagList } = await client.models.Tag.list({ filter: { liquorId: { eq: id } } });
-    setTags(tagList as TagRecord[]);
+    setTags(tagList.map(({ liquor: _liquorFn, ...tag }) => tag as TagRecord));
     setNewTag('');
   };
 
@@ -125,13 +136,6 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
     }
   };
 
-  const avg = calcAvgRate(liquor);
-  const ratingCount =
-    (liquor.rate5Users?.length ?? 0) +
-    (liquor.rate4Users?.length ?? 0) +
-    (liquor.rate3Users?.length ?? 0) +
-    (liquor.rate2Users?.length ?? 0) +
-    (liquor.rate1Users?.length ?? 0);
 
   const youtubeEmbedId = liquor.youtube?.match(/(?:v=|youtu\.be\/)([^&\s]+)/)?.[1];
 
@@ -140,12 +144,16 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
       {/* パンくずリスト */}
-      <nav className="mb-4 flex items-center gap-1 text-sm">
+      <nav className="mb-4 flex flex-wrap items-center gap-1 text-sm">
         <Link href="/" className="text-link hover:underline">ホーム</Link>
-        <span className="text-muted-foreground">›</span>
-        <Link href={`/discovery/category/${liquor.categoryId}`} className="text-link hover:underline">
-          {liquor.categoryName}
-        </Link>
+        {categoryPath.map((cat) => (
+          <span key={cat.id} className="flex items-center gap-1">
+            <span className="text-muted-foreground">›</span>
+            <Link href={`/discovery/category/${cat.id}`} className="text-link hover:underline">
+              {cat.name}
+            </Link>
+          </span>
+        ))}
         <span className="text-muted-foreground">›</span>
         <span className="font-medium text-foreground-secondary">{liquor.name}</span>
       </nav>
@@ -170,12 +178,14 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
             <p className="text-sm text-muted-foreground">{liquor.categoryName}</p>
             <h1 className="mt-1 text-2xl font-bold text-foreground">{liquor.name}</h1>
 
-            {avg > 0 && (
-              <div className="mt-2 flex items-center gap-2">
-                <StarRating value={avg} readonly />
-                <span className="text-sm text-muted-foreground">({ratingCount}件)</span>
-              </div>
-            )}
+            <div className="mt-2">
+              <LiquorRating
+                memberAvgRate={calcMemberAvgRate(liquor)}
+                memberRateCount={calcMemberRateCount(liquor)}
+                allAvgRate={liquor.boardAvgRate}
+                allRateCount={liquor.boardRateCount}
+              />
+            </div>
 
             {liquor.description && (
               <p className="mt-4 whitespace-pre-wrap text-foreground-secondary">{liquor.description}</p>
@@ -252,64 +262,48 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
         )}
       </div>
 
+      {/* 投稿モーダル */}
+      <Dialog open={postFormOpen} onClose={() => setPostFormOpen(false)} title="投稿する">
+        <BoardPostForm onSubmit={handlePost} isLoggedIn={isLogin} />
+      </Dialog>
+
       {/* ボード（レビュー） */}
       <section className="mt-8">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-foreground">みんなの投稿 ({boardPosts.length})</h2>
-          {isLogin && (
-            <Button size="sm" onClick={() => setPostFormOpen((v) => !v)}>
-              {postFormOpen ? '閉じる' : '投稿する'}
-            </Button>
-          )}
+          <Button size="sm" onClick={() => setPostFormOpen(true)}>投稿する</Button>
         </div>
-
-        {postFormOpen && (
-          <div className="mb-6 rounded-xl border border-border bg-surface p-4 shadow-sm">
-            <BoardPostForm onSubmit={handlePost} />
-          </div>
-        )}
 
         <div className="flex flex-col gap-4">
           {boardPosts.length === 0 ? (
             <p className="py-8 text-center text-muted-foreground">まだ投稿がありません。最初の投稿をしてみましょう！</p>
           ) : (
-            boardPosts.map((post) => {
-              const embedId = post.youtube?.match(/(?:v=|youtu\.be\/)([^&\s]+)/)?.[1];
-              return (
-                <div key={post.id} className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-                  <div className="flex items-start gap-3">
-                    {post.userImageBase64 ? (
-                      <img src={post.userImageBase64} alt={post.userName ?? '匿名'} className="h-9 w-9 rounded-full object-cover" />
-                    ) : (
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-avatar-bg text-sm font-medium text-avatar-fg">
-                        {post.userName?.[0] ?? '?'}
-                      </div>
-                    )}
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        {post.userId ? (
-                          <Link href={`/user/${post.userId}`} className="text-sm font-medium text-foreground hover:text-primary">
-                            {post.userName}
-                          </Link>
-                        ) : (
-                          <span className="text-sm font-medium text-muted-foreground">匿名</span>
-                        )}
-                        {post.rate && <StarRating value={post.rate} readonly size="sm" />}
-                      </div>
-                      <p className="mt-1 text-sm text-foreground-secondary whitespace-pre-wrap">{post.text}</p>
-                      {embedId && (
-                        <iframe
-                          className="mt-2 aspect-video w-full max-w-sm rounded"
-                          src={`https://www.youtube.com/embed/${embedId}`}
-                          allowFullScreen
-                          title="投稿動画"
-                        />
-                      )}
+            [...boardPosts].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((post) => (
+              <div key={post.id} className="rounded-xl border border-border bg-surface p-4 shadow-sm">
+                <div className="flex items-start gap-3">
+                  {post.userImageBase64 ? (
+                    <img src={post.userImageBase64} alt={post.userName ?? '匿名'} className="h-9 w-9 rounded-full object-cover" />
+                  ) : (
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-avatar-bg text-sm font-medium text-avatar-fg">
+                      {post.userName?.[0] ?? '?'}
                     </div>
+                  )}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      {post.userId ? (
+                        <Link href={`/user/${post.userId}`} className="text-sm font-medium text-foreground hover:text-primary">
+                          {post.userName}
+                        </Link>
+                      ) : (
+                        <span className="text-sm font-medium text-muted-foreground">{post.userName ?? '匿名'}</span>
+                      )}
+                      {post.rate && <StarRating value={post.rate} readonly size="sm" />}
+                    </div>
+                    <p className="mt-1 text-sm text-foreground-secondary whitespace-pre-wrap">{post.text}</p>
                   </div>
                 </div>
-              );
-            })
+              </div>
+            ))
           )}
         </div>
       </section>
@@ -325,4 +319,10 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
       />
     </div>
   );
+}
+
+/** Amplify client の update/get 結果に含まれる遅延ロード関数（リレーション）を除去する */
+function stripLiquorRelations(data: LiquorRecord & Record<string, unknown>): LiquorRecord {
+  const { category: _cat, boardPosts: _bp, tags: _tags, flavorVotes: _fv, bookmarks: _bm, liquorHistories: _lh, ...rest } = data;
+  return rest as LiquorRecord;
 }

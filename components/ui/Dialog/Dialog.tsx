@@ -35,7 +35,7 @@ export const Dialog = ({ open, onClose, title, children, actions }: DialogProps)
         {title && (
           <div className="flex items-center justify-between border-b border-border px-6 py-4">
             <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-            <button onClick={onClose} className="text-muted-foreground hover:text-foreground">✕</button>
+            <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground">✕</button>
           </div>
         )}
         <div className="flex-1 overflow-auto px-6 py-4">{children}</div>
