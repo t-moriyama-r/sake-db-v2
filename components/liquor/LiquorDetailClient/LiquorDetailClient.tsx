@@ -12,11 +12,14 @@ import { Dialog, ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { BoardPostForm } from './BoardPostForm';
 import { LiquorRating } from '@/components/liquor/LiquorRating/LiquorRating';
 import { calcMemberAvgRate, calcMemberRateCount } from '@/lib/liquor/rating';
-import type { LiquorRecord, BoardPostRecord, TagRecord } from '@/lib/server/liquors';
-import type { CategoryBreadcrumbItem } from '@/lib/server/categories';
+import type { LiquorRecord } from '@/lib/server/liquors/fetch';
+import type { BoardPostRecord } from '@/lib/server/boardPosts/fetch';
+import type { TagRecord } from '@/lib/server/tags/fetch';
+import type { CategoryBreadcrumbItem } from '@/lib/server/categories/fetch';
 import type { ServerUser } from '@/lib/server/auth';
 import type { BoardPostInput } from '@/schemas/board';
-import { revalidateLiquorsCache, revalidateBoardPostsCache } from '@/lib/actions/revalidate';
+import { revalidateLiquorsCache } from '@/lib/server/liquors/revalidate';
+import { revalidateBoardPostsCache } from '@/lib/server/boardPosts/revalidate';
 
 type Props = {
   initialLiquor: LiquorRecord;

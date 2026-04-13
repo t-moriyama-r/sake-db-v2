@@ -1,5 +1,5 @@
 import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
-import { fetchLiquorsByTag } from '@/lib/server/liquors';
+import { fetchLiquorsByTag } from '@/lib/server/liquors/fetch';
 
 type Props = { params: Promise<{ tag: string }> };
 

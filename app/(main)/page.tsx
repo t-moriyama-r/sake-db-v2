@@ -1,4 +1,4 @@
-import { fetchAllLiquorsRandomly } from '@/lib/server/liquors';
+import { fetchAllLiquorsRandomly } from '@/lib/server/liquors/fetch';
 import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
 
 export default async function HomePage() {

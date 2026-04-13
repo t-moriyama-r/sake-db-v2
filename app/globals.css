@@ -122,3 +122,12 @@
   --color-avatar-bg: var(--avatar-bg);
   --color-avatar-fg: var(--avatar-fg);
 }
+
+/* ─── ベーススタイル ────────────────────────────────────────────── */
+
+@layer base {
+  button:not([disabled]),
+  a {
+    cursor: pointer;
+  }
+}

@@ -1,7 +1,8 @@
 import { headers } from 'next/headers';
-import { fetchCategoryTree } from '@/lib/server/categories';
-import { fetchLiquor } from '@/lib/server/liquors';
+import { fetchCategoryTree } from '@/lib/server/categories/fetch';
+import { fetchLiquor } from '@/lib/server/liquors/fetch';
 import { CategoryTree } from './CategoryTree';
+import { MobileSidebarDrawer } from './MobileSidebarDrawer';
 
 export const Sidebar = async () => {
   const categoryTree = await fetchCategoryTree();
@@ -17,5 +18,10 @@ export const Sidebar = async () => {
     activeCategoryId = liquor?.categoryId ?? null;
   }
 
-  return <CategoryTree categoryTree={categoryTree} activeCategoryId={activeCategoryId} />;
+  return (
+    <>
+      <CategoryTree categoryTree={categoryTree} activeCategoryId={activeCategoryId} />
+      <MobileSidebarDrawer categoryTree={categoryTree} activeCategoryId={activeCategoryId} />
+    </>
+  );
 };

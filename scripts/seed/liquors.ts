@@ -159,18 +159,15 @@ async function fetchAllCategories(
   let nextToken: string | null | undefined = undefined;
 
   do {
-    const { data, nextToken: token, errors } = await client.models.Category.list({
-      limit: 500,
-      nextToken: nextToken,
-    });
-    if (errors?.length) {
-      console.warn('カテゴリ取得中にエラーが発生しました:', errors);
+    const result = await client.models.Category.list({ limit: 500, nextToken });
+    if (result.errors?.length) {
+      console.warn('カテゴリ取得中にエラーが発生しました:', result.errors);
       break;
     }
-    for (const c of data) {
+    for (const c of result.data) {
       map.set(c.name, { id: c.id, name: c.name });
     }
-    nextToken = token;
+    nextToken = result.nextToken as string | null | undefined;
   } while (nextToken);
 
   return map;
@@ -183,18 +180,15 @@ async function fetchAllLiquors(
   let nextToken: string | null | undefined = undefined;
 
   do {
-    const { data, nextToken: token, errors } = await client.models.Liquor.list({
-      limit: 500,
-      nextToken: nextToken,
-    });
-    if (errors?.length) {
-      console.warn('Liquor 取得中にエラーが発生しました:', errors);
+    const result = await client.models.Liquor.list({ limit: 500, nextToken });
+    if (result.errors?.length) {
+      console.warn('Liquor 取得中にエラーが発生しました:', result.errors);
       break;
     }
-    for (const l of data) {
+    for (const l of result.data) {
       map.set(`${l.name}:${l.categoryId}`, l.id);
     }
-    nextToken = token;
+    nextToken = result.nextToken as string | null | undefined;
   } while (nextToken);
 
   return map;

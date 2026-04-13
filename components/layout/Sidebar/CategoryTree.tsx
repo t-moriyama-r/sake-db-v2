@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { client } from '@/lib/amplify-client';
-import type { CategoryTreeNode } from '@/lib/server/categories';
+import type { CategoryTreeNode } from '@/lib/server/categories/fetch';
 
 type CategoryTreeProps = {
   categoryTree: CategoryTreeNode[];
@@ -12,21 +12,20 @@ type CategoryTreeProps = {
   activeCategoryId?: string | null;
 };
 
-/** ルートから targetId までの ID パス（自身含む）を返す。見つからなければ null。 */
-function findPath(
-  targetId: string,
-  nodes: CategoryTreeNode[],
-  ancestors: string[] = [],
-): string[] | null {
-  for (const node of nodes) {
-    if (node.id === targetId) return [...ancestors, node.id];
-    const found = findPath(targetId, node.children, [...ancestors, node.id]);
-    if (found !== null) return found;
-  }
-  return null;
-}
+export const CategoryTree = ({ categoryTree, activeCategoryId }: CategoryTreeProps) => {
+  return (
+    <aside className="hidden w-56 shrink-0 lg:block">
+      <CategoryTreeContent categoryTree={categoryTree} activeCategoryId={activeCategoryId} />
+    </aside>
+  );
+};
 
-export const CategoryTree = ({ categoryTree, activeCategoryId: propActiveCategoryId }: CategoryTreeProps) => {
+type CategoryTreeContentProps = {
+  categoryTree: CategoryTreeNode[];
+  activeCategoryId?: string | null;
+};
+
+export function CategoryTreeContent({ categoryTree, activeCategoryId: propActiveCategoryId }: CategoryTreeContentProps) {
   const pathname = usePathname();
 
   const categoryMatch = pathname.match(/\/discovery\/category\/([^/]+)/);
@@ -71,27 +70,25 @@ export const CategoryTree = ({ categoryTree, activeCategoryId: propActiveCategor
   const pathIdSet = new Set(pathIds);
 
   return (
-    <aside className="hidden w-56 shrink-0 lg:block">
-      <div className="rounded-lg border border-border bg-surface p-4">
-        <Link href="/" className="mb-3 block text-sm font-semibold text-foreground hover:text-primary hover:underline">
-          カテゴリ
-        </Link>
-        <ul className="space-y-0.5">
-          {categoryTree.map((node) => (
-            <CategoryTreeItem
-              key={node.id}
-              node={node}
-              activeCategoryId={activeCategoryId}
-              ancestorIds={ancestorIds}
-              directParentId={directParentId}
-              pathIdSet={pathIdSet}
-            />
-          ))}
-        </ul>
-      </div>
-    </aside>
+    <div className="rounded-lg border border-border bg-surface p-4">
+      <Link href="/" className="mb-3 block text-sm font-semibold text-foreground hover:text-primary hover:underline">
+        カテゴリ
+      </Link>
+      <ul className="space-y-0.5">
+        {categoryTree.map((node) => (
+          <CategoryTreeItem
+            key={node.id}
+            node={node}
+            activeCategoryId={activeCategoryId}
+            ancestorIds={ancestorIds}
+            directParentId={directParentId}
+            pathIdSet={pathIdSet}
+          />
+        ))}
+      </ul>
+    </div>
   );
-};
+}
 
 type CategoryTreeItemProps = {
   node: CategoryTreeNode;
@@ -102,14 +99,14 @@ type CategoryTreeItemProps = {
   pathIdSet: Set<string>;
 };
 
-const CategoryTreeItem = ({
+function CategoryTreeItem({
   node,
   depth = 0,
   activeCategoryId,
   ancestorIds,
   directParentId,
   pathIdSet,
-}: CategoryTreeItemProps) => {
+}: CategoryTreeItemProps) {
   const isAncestor = ancestorIds.has(node.id);
   const isActive = node.id === activeCategoryId;
   // URLから計算した展開状態（stateなし）
@@ -158,4 +155,18 @@ const CategoryTreeItem = ({
       )}
     </li>
   );
-};
+}
+
+/** ルートから targetId までの ID パス（自身含む）を返す。見つからなければ null。 */
+function findPath(
+  targetId: string,
+  nodes: CategoryTreeNode[],
+  ancestors: string[] = [],
+): string[] | null {
+  for (const node of nodes) {
+    if (node.id === targetId) return [...ancestors, node.id];
+    const found = findPath(targetId, node.children, [...ancestors, node.id]);
+    if (found !== null) return found;
+  }
+  return null;
+}

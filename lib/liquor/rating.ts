@@ -1,4 +1,4 @@
-import type { LiquorRecord } from '@/lib/server/liquors';
+import type { LiquorRecord } from '@/lib/server/liquors/fetch';
 
 type RateFields = Pick<
   LiquorRecord,

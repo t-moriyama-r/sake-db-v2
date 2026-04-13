@@ -5,8 +5,8 @@ import {
   fetchCategory,
   collectDescendantIds,
   type CategoryRecord,
-} from '@/lib/server/categories';
-import { fetchLiquorsByCategories } from '@/lib/server/liquors';
+} from '@/lib/server/categories/fetch';
+import { fetchLiquorsByCategories } from '@/lib/server/liquors/fetch';
 
 type Props = { params: Promise<{ id: string[] }> };
 

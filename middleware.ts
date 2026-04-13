@@ -42,6 +42,10 @@ function getGroups(token: string): string[] {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // サーバーコンポーネントからパスを参照できるよう x-pathname ヘッダーを注入
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', pathname);
+
   const token = getAccessToken(request);
   const isAuthenticated = !!token && isTokenValid(token);
 
@@ -73,16 +77,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {
   matcher: [
-    '/liquor/create/:path*',
-    '/liquor/edit/:path*',
-    '/mypage/:path*',
-    '/admin/:path*',
-    '/category/create/:path*',
-    '/category/edit/:path*',
+    '/((?!_next/static|_next/image|favicon\\.ico).*)',
   ],
 };

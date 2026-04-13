@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
-import { fetchLiquor, fetchBoardPosts, fetchTags } from '@/lib/server/liquors';
-import { fetchAllCategories, buildCategoryBreadcrumbs } from '@/lib/server/categories';
+import { fetchLiquor } from '@/lib/server/liquors/fetch';
+import { fetchBoardPosts } from '@/lib/server/boardPosts/fetch';
+import { fetchTags } from '@/lib/server/tags/fetch';
+import { fetchAllCategories, buildCategoryBreadcrumbs } from '@/lib/server/categories/fetch';
 import { getServerUser } from '@/lib/server/auth';
 import { LiquorDetailClient } from '@/components/liquor/LiquorDetailClient/LiquorDetailClient';
 

@@ -4,6 +4,7 @@ import './globals.css';
 import { AmplifyProvider } from '@/components/AmplifyProvider/AmplifyProvider';
 import { ThemeProvider } from '@/components/ThemeProvider/ThemeProvider';
 import { Header } from '@/components/layout/Header/Header';
+import { MobileSidebarProvider } from '@/components/layout/Sidebar/MobileSidebarContext';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 
@@ -18,8 +19,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex h-full flex-col bg-background text-foreground overflow-hidden">
         <ThemeProvider>
           <AmplifyProvider>
-            <Header />
-            <main className="flex-1 overflow-hidden">{children}</main>
+            <MobileSidebarProvider>
+              <Header />
+              <main className="flex-1 overflow-hidden">{children}</main>
+            </MobileSidebarProvider>
           </AmplifyProvider>
         </ThemeProvider>
       </body>

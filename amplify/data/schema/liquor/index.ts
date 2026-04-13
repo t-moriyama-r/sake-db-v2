@@ -3,7 +3,6 @@ import { liquorHistoryModels } from './liquorHistory';
 import { boardModels } from './board';
 import { tagModels } from './tag';
 import { flavorVoteModels } from './flavorVote';
-import { flavorMapModels } from './flavorMap';
 
 export const liquorSchema = {
   ...liquorModels,
@@ -11,5 +10,4 @@ export const liquorSchema = {
   ...boardModels,
   ...tagModels,
   ...flavorVoteModels,
-  ...flavorMapModels,
 };

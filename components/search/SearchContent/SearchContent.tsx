@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
@@ -19,6 +18,7 @@ export const SearchContent = () => {
   const [results, setResults] = useState<Liquor[]>([]);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   const handleSearch = async (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -27,11 +27,23 @@ export const SearchContent = () => {
     router.replace(`/discovery/search?q=${encodeURIComponent(query)}`);
     setLoading(true);
     setSearched(false);
+    setSearchError(null);
 
     try {
-      const result = await client.queries.searchLiquors({ keyword: query, limit: 50 });
-      const liquors = JSON.parse((result.data ?? '[]') as string) as unknown as Liquor[];
+      const res = await fetch(`/api/search?keyword=${encodeURIComponent(query)}&limit=50`);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const message = (data as { error?: string }).error ?? '検索リクエストが失敗しました';
+        setSearchError(message);
+        setResults([]);
+        return;
+      }
+      const liquors = await res.json() as Liquor[];
       setResults(liquors);
+    } catch (err) {
+      console.error('[search] exception:', err);
+      setSearchError('検索中にエラーが発生しました');
+      setResults([]);
     } finally {
       setLoading(false);
       setSearched(true);
@@ -39,9 +51,10 @@ export const SearchContent = () => {
   };
 
   // 初回ロード時に q パラメータがあれば検索
-  useState(() => {
+  useEffect(() => {
     if (initialQuery) handleSearch();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex-1 min-w-0 overflow-y-auto">
@@ -60,7 +73,11 @@ export const SearchContent = () => {
 
       {loading && <div className="flex justify-center py-16"><Spinner size="lg" /></div>}
 
-      {searched && !loading && (
+      {searchError && !loading && (
+        <p className="py-4 text-sm text-red-500">{searchError}</p>
+      )}
+
+      {searched && !loading && !searchError && (
         <>
           <p className="mb-4 text-sm text-muted-foreground">{results.length} 件見つかりました</p>
           {results.length === 0 ? (

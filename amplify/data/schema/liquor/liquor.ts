@@ -1,8 +1,4 @@
 import { a } from '@aws-amplify/backend';
-import { listFromCategory } from '../../../functions/listFromCategory/resource';
-import { randomRecommendList } from '../../../functions/randomRecommendList/resource';
-import { searchLiquors } from '../../../functions/searchLiquors/resource';
-import { searchLiquorsByTag } from '../../../functions/searchLiquorsByTag/resource';
 
 /**
  * お酒（sake）
@@ -55,64 +51,4 @@ export const liquorModels = {
       /** シードスクリプト用（apiKey による書き込みを許可） */
       allow.publicApiKey(),
     ]),
-
-  // ----------------------------------------------------------------
-  // CUSTOM TYPES（Lambda 戻り値）
-  // ----------------------------------------------------------------
-
-  /**
-   * listFromCategory の戻り値。
-   * liquors フィールドは JSON シリアライズされた Liquor[] を返す。
-   * フロントエンドで JSON.parse して使用すること。
-   */
-  ListFromCategory: a.customType({
-    categoryName: a.string().required(),
-    categoryDescription: a.string(),
-    liquors: a.json().required(),
-  }),
-
-  // ----------------------------------------------------------------
-  // CUSTOM QUERIES
-  // ----------------------------------------------------------------
-
-  /** カテゴリ別お酒一覧 */
-  listFromCategory: a
-    .query()
-    .arguments({ categoryId: a.id().required() })
-    .returns(a.ref('ListFromCategory').required())
-    .authorization((allow) => [allow.guest(), allow.authenticated()])
-    .handler(a.handler.function(listFromCategory)),
-
-  /**
-   * キーワード検索。
-   * 戻り値は JSON シリアライズされた Liquor[]。
-   */
-  searchLiquors: a
-    .query()
-    .arguments({ keyword: a.string().required(), limit: a.integer() })
-    .returns(a.json().required())
-    .authorization((allow) => [allow.guest(), allow.authenticated()])
-    .handler(a.handler.function(searchLiquors)),
-
-  /**
-   * タグで検索。
-   * 戻り値は JSON シリアライズされた Liquor[]。
-   */
-  searchLiquorsByTag: a
-    .query()
-    .arguments({ tag: a.string().required() })
-    .returns(a.json().required())
-    .authorization((allow) => [allow.guest(), allow.authenticated()])
-    .handler(a.handler.function(searchLiquorsByTag)),
-
-  /**
-   * ランダムなお酒リスト。
-   * 戻り値は JSON シリアライズされた Liquor[]。
-   */
-  randomRecommendList: a
-    .query()
-    .arguments({ limit: a.integer().required() })
-    .returns(a.json().required())
-    .authorization((allow) => [allow.guest(), allow.authenticated()])
-    .handler(a.handler.function(randomRecommendList)),
 };

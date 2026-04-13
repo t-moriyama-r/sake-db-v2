@@ -1,5 +1,4 @@
 import { a } from '@aws-amplify/backend';
-import { liquorHistories } from '../../../functions/liquorHistories/resource';
 
 /**
  * お酒の編集履歴（バージョン管理）
@@ -28,15 +27,4 @@ export const liquorHistoryModels = {
       allow.authenticated().to(['read']),
       allow.groups(['admin']),
     ]),
-
-  /**
-   * お酒の編集履歴。
-   * 戻り値は JSON 文字列: { now: Liquor, histories: LiquorHistory[] }
-   */
-  liquorHistories: a
-    .query()
-    .arguments({ id: a.id().required() })
-    .returns(a.json())
-    .authorization((allow) => [allow.authenticated()])
-    .handler(a.handler.function(liquorHistories)),
 };

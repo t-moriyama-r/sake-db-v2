@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts",
-    "seed:dry-run": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts --dry-run"
+    "seed:dry-run": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts --dry-run",
+    "invoke:search-cache": "cross-env AWS_PROFILE=sake-db npx tsx scripts/invoke-build-search-cache.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
