@@ -26,11 +26,12 @@ export default async function LiquorDetailPage({ params }: Props) {
   // Amplify Gen2 の lazy loading 関数フィールド（category, boardPosts 等）を除去し、
   // Client Component に渡せるシリアライザブルな形式に変換する
   const serializableLiquor = JSON.parse(JSON.stringify(liquor)) as typeof liquor;
+  const serializableBoardPosts = JSON.parse(JSON.stringify(boardPosts)) as typeof boardPosts;
 
   return (
     <LiquorDetailClient
       initialLiquor={serializableLiquor}
-      initialBoardPosts={boardPosts}
+      initialBoardPosts={serializableBoardPosts}
       initialTags={tags}
       serverUser={serverUser}
       categoryPath={categoryPath}
