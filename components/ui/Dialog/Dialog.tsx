@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '../Button/Button';
 
-type DialogProps = {
+type Props = {
   open: boolean;
   onClose: () => void;
   title?: string;
@@ -11,7 +11,7 @@ type DialogProps = {
   actions?: React.ReactNode;
 };
 
-export const Dialog = ({ open, onClose, title, children, actions }: DialogProps) => {
+export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export const Dialog = ({ open, onClose, title, children, actions }: DialogProps)
   );
 }
 
-type ConfirmDialogProps = {
+type ConfirmProps = {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -59,7 +59,7 @@ type ConfirmDialogProps = {
 
 export const ConfirmDialog = ({
   open, onClose, onConfirm, title = '確認', message, confirmLabel = '実行', loading,
-}: ConfirmDialogProps) => {
+}: ConfirmProps) => {
   return (
     <Dialog
       open={open}

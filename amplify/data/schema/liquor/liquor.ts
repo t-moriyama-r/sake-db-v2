@@ -45,7 +45,7 @@ export const liquorModels = {
       liquorHistories: a.hasMany('LiquorHistory', 'liquorId'),
     })
     .authorization((allow) => [
-      allow.guest().to(['read']),
+      allow.guest().to(['read', 'create']),
       allow.authenticated().to(['read', 'create', 'update']),
       allow.groups(['admin']),
       /** シードスクリプト用（apiKey による書き込みを許可） */

@@ -7,6 +7,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { registerSchema, type RegisterInput } from '@/schemas/auth';
 import { useAuth } from '@/hooks/useAuth';
+import { toJapaneseAuthError } from '@/lib/auth/errors';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
 
@@ -34,12 +35,7 @@ export const RegisterForm = () => {
       setEmail(data.email);
       setStep('confirm');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '登録に失敗しました';
-      if (msg.includes('UsernameExistsException') || msg.includes('already exists')) {
-        setServerError('このメールアドレスはすでに登録されています');
-      } else {
-        setServerError(msg);
-      }
+      setServerError(toJapaneseAuthError(err, '登録に失敗しました'));
     }
   };
 
@@ -50,7 +46,7 @@ export const RegisterForm = () => {
       await confirmSignUp({ username: email, confirmationCode: confirmCode });
       router.push('/auth/login');
     } catch (err: unknown) {
-      setServerError(err instanceof Error ? err.message : '確認に失敗しました');
+      setServerError(toJapaneseAuthError(err, '確認に失敗しました'));
     } finally {
       setConfirming(false);
     }
@@ -108,7 +104,7 @@ export const RegisterForm = () => {
         type="password"
         autoComplete="new-password"
         required
-        hint="7文字以上"
+        hint="8文字以上"
         error={errors.password?.message}
         {...register('password')}
       />

@@ -1,13 +1,13 @@
 import { StarRating } from '@/components/ui/StarRating/StarRating';
 
-type LiquorRatingProps = {
+type Props = {
   memberAvgRate: number;
   memberRateCount: number;
   allAvgRate?: number | null;
   allRateCount?: number | null;
 };
 
-export function LiquorRating({ memberAvgRate, memberRateCount, allAvgRate, allRateCount }: LiquorRatingProps) {
+export function LiquorRating({ memberAvgRate, memberRateCount, allAvgRate, allRateCount }: Props) {
   return (
     <div className="flex items-center gap-1.5">
       {memberAvgRate > 0 ? (

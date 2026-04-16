@@ -7,8 +7,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { loginSchema, type LoginInput } from '@/schemas/auth';
 import { useAuth } from '@/hooks/useAuth';
+import { toJapaneseAuthError } from '@/lib/auth/errors';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
+import { XLoginButton } from '@/components/auth/XLoginButton/XLoginButton';
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -28,14 +30,7 @@ export const LoginForm = () => {
       router.push('/');
       router.refresh();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'ログインに失敗しました';
-      if (msg.includes('NotAuthorizedException') || msg.includes('Incorrect')) {
-        setServerError('メールアドレスまたはパスワードが正しくありません');
-      } else if (msg.includes('UserNotFoundException') || msg.includes('UserNotFound')) {
-        setServerError('アカウントが見つかりません');
-      } else {
-        setServerError(msg);
-      }
+      setServerError(toJapaneseAuthError(err, 'ログインに失敗しました'));
     }
   };
 
@@ -66,6 +61,14 @@ export const LoginForm = () => {
       <Button type="submit" loading={isSubmitting} className="w-full">
         ログイン
       </Button>
+
+      <div className="relative flex items-center gap-3">
+        <hr className="flex-1 border-border" />
+        <span className="text-xs text-muted-foreground">または</span>
+        <hr className="flex-1 border-border" />
+      </div>
+
+      <XLoginButton />
 
       <div className="flex flex-col items-center gap-1 text-sm">
         <Link href="/auth/password-reset" className="text-link hover:underline">

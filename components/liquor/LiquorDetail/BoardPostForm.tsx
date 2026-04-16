@@ -8,14 +8,14 @@ import { FormField } from '@/components/forms/FormField/FormField';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { Button } from '@/components/ui/Button/Button';
 
-type BoardPostFormProps = {
+type Props = {
   onSubmit: (data: BoardPostInput) => Promise<void>;
   defaultValues?: Partial<BoardPostInput>;
   submitLabel?: string;
   isLoggedIn?: boolean;
 };
 
-export const BoardPostForm = ({ onSubmit, defaultValues, submitLabel = '投稿', isLoggedIn }: BoardPostFormProps) => {
+export function BoardPostForm({ onSubmit, defaultValues, submitLabel = '投稿', isLoggedIn }: Props) {
   const [serverError, setServerError] = useState('');
 
   const {

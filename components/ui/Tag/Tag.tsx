@@ -1,11 +1,11 @@
-type TagProps = {
+type Props = {
   label: string;
   onDelete?: () => void;
   onClick?: () => void;
   variant?: 'default' | 'outline';
 };
 
-export const Tag = ({ label, onDelete, onClick, variant = 'default' }: TagProps) => {
+export const Tag = ({ label, onDelete, onClick, variant = 'default' }: Props) => {
   const base =
     variant === 'outline'
       ? 'border border-primary text-primary bg-surface hover:bg-primary/10'

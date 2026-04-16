@@ -1,5 +1,6 @@
 import { defineBackend } from '@aws-amplify/backend';
 import { Duration } from 'aws-cdk-lib';
+import { CfnUserPool } from 'aws-cdk-lib/aws-cognito';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
@@ -18,6 +19,18 @@ const backend = defineBackend({
   storage,
   buildSearchCache,
 });
+
+// ---- Cognito パスワードポリシー（8文字以上のみ） ----
+const cfnUserPool = backend.auth.resources.userPool.node.defaultChild as CfnUserPool;
+cfnUserPool.policies = {
+  passwordPolicy: {
+    minimumLength: 8,
+    requireLowercase: false,
+    requireUppercase: false,
+    requireNumbers: false,
+    requireSymbols: false,
+  },
+};
 
 // ---- 検索キャッシュ設定 ----
 const { bucket } = backend.storage.resources;

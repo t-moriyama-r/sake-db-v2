@@ -4,12 +4,12 @@ import type { CategoryTreeNode } from '@/lib/server/categories/fetch';
 import { CategoryTreeContent } from './CategoryTree';
 import { useMobileSidebar } from './MobileSidebarContext';
 
-type MobileSidebarDrawerProps = {
+type Props = {
   categoryTree: CategoryTreeNode[];
   activeCategoryId: string | null;
 };
 
-export function MobileSidebarDrawer({ categoryTree, activeCategoryId }: MobileSidebarDrawerProps) {
+export function MobileSidebarDrawer({ categoryTree, activeCategoryId }: Props) {
   const { isOpen, close } = useMobileSidebar();
 
   return (

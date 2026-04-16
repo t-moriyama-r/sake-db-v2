@@ -51,8 +51,6 @@ export function middleware(request: NextRequest) {
 
   // 要ログインルート
   const requiresAuth = [
-    '/liquor/create',
-    '/liquor/edit',
     '/mypage',
   ].some((p) => pathname.startsWith(p));
 

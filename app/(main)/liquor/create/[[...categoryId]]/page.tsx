@@ -1,5 +1,5 @@
 import { fetchAllCategories } from '@/lib/server/categories/fetch';
-import { LiquorFormClient } from '@/components/liquor/LiquorFormClient/LiquorFormClient';
+import { LiquorForm } from '@/components/liquor/LiquorForm/LiquorForm';
 
 export default async function LiquorCreatePage({
   params,
@@ -11,5 +11,5 @@ export default async function LiquorCreatePage({
     fetchAllCategories(),
   ]);
 
-  return <LiquorFormClient categoryId={categoryId?.[0]} categories={categories} />;
+  return <LiquorForm mode="NEW" categoryId={categoryId?.[0]} categories={categories} />;
 }

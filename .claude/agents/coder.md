@@ -23,6 +23,69 @@ components/layout/Header/index.tsx
 components/layout/Header/Header.tsx
 ```
 
+# コンポーネントの props 型名
+
+コンポーネントの props 型名は **`Props`** に統一する。
+
+```tsx
+// Bad
+type ButtonProps = { ... };
+export const Button = ({ ... }: ButtonProps) => { ... };
+
+// Good
+type Props = { ... };
+export const Button = ({ ... }: Props) => { ... };
+```
+
+同一ファイル内に複数コンポーネントが存在する場合、メインコンポーネントの props は `Props`、サブコンポーネントの props はコンポーネント名プレフィックスを外した短い名前（`ContentProps`・`ItemProps`・`ConfirmProps` など）を使う。
+
+```tsx
+// Good（複数コンポーネントが同一ファイルに存在する場合）
+type Props = { categoryTree: CategoryTreeNode[] };          // メイン
+export const CategoryTree = ({ ... }: Props) => { ... };
+
+type ContentProps = { ... };                                // サブ
+function CategoryTreeContent({ ... }: ContentProps) { ... }
+
+type ItemProps = { ... };                                   // サブ
+function CategoryTreeItem({ ... }: ItemProps) { ... }
+```
+
+また、Union 型を構成するための内部型（`BaseProps`・`InputProps` など）は `Props` に統一せず、意味のある名前を維持する。
+
+# カスタムフックの引数型名
+
+カスタムフック（`use` プレフィックスの関数）の引数オブジェクトの型名は、特別な理由がない限り **`Args`** に統一する。
+
+```ts
+// Bad
+type UseLiquorFormArgs = { ... };
+export function useLiquorForm({ ... }: UseLiquorFormArgs) { ... }
+
+// Good
+type Args = { ... };
+export function useLiquorForm({ ... }: Args) { ... }
+```
+
+同一ファイル内に複数のフックが存在する場合や、Union 型を構成する内部型など、`Args` のみでは曖昧になる場合は意味のある名前を使ってよい。
+
+# `'use client'` 付け外しチェックリスト
+
+`'use client'` を付ける・外す際は必ず以下を確認すること。
+
+## 付ける場合（新しいエントリーポイントが生まれる）
+
+そのコンポーネントの Props に関数型（`() => void` など）がないか確認する。
+
+- **ある** かつ **呼び出し元が Server Component** → TS71007 が出る
+  - 関数を Server Action にするか、Client Component でラップして関数 Props を持ち込まない設計にする
+- **ない** または **呼び出し元が Client Component**（`'use client'` 付き）→ 問題なし
+
+## 外す場合（エントリーポイントが消える）
+
+- 親コンポーネントが `'use client'` であることを確認する（なければ内部で hooks が使えなくなる）
+- TS71007 の対象から外れるので、回避のために付けていた `Action` サフィックス（`onSubmitAction` など）があれば元の名前に戻す
+
 # コンポーネントのファイル構造
 
 `.tsx` コンポーネントファイルを作成・編集する際は、**ファイル名と同名の基盤コンポーネントを必ずファイルの先頭に定義すること。**

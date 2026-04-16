@@ -6,6 +6,7 @@ import {
   signOut,
   signUp,
   confirmSignUp,
+  confirmSignIn,
   getCurrentUser,
   fetchUserAttributes,
   updateUserAttributes,
@@ -57,6 +58,20 @@ export function useAuth() {
     return result;
   }, [loadUser]);
 
+  const loginWithX = useCallback(async (username: string, xUserId: string) => {
+    const result = await signIn({
+      username,
+      options: {
+        authFlowType: 'CUSTOM_WITHOUT_SRP',
+        clientMetadata: { xUserId },
+      },
+    });
+    if (result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE') {
+      await confirmSignIn({ challengeResponse: xUserId });
+    }
+    await loadUser();
+  }, [loadUser]);
+
   const logout = useCallback(async () => {
     await signOut();
     setUser(null);
@@ -79,6 +94,7 @@ export function useAuth() {
     isAdmin,
     isLoading,
     login,
+    loginWithX,
     logout,
     register,
     updateUserAttributes,

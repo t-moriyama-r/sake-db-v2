@@ -6,13 +6,13 @@ import { usePathname } from 'next/navigation';
 import { client } from '@/lib/amplify-client';
 import type { CategoryTreeNode } from '@/lib/server/categories/fetch';
 
-type CategoryTreeProps = {
+type Props = {
   categoryTree: CategoryTreeNode[];
   /** サーバー側で解決したアクティブカテゴリID（直アクセス時の初期値として使用）。 */
   activeCategoryId?: string | null;
 };
 
-export const CategoryTree = ({ categoryTree, activeCategoryId }: CategoryTreeProps) => {
+export const CategoryTree = ({ categoryTree, activeCategoryId }: Props) => {
   return (
     <aside className="hidden w-56 shrink-0 lg:block sticky top-10 self-start pt-8 max-h-[calc(100vh-2.5rem)] overflow-y-auto">
       <CategoryTreeContent categoryTree={categoryTree} activeCategoryId={activeCategoryId} />
@@ -20,12 +20,12 @@ export const CategoryTree = ({ categoryTree, activeCategoryId }: CategoryTreePro
   );
 };
 
-type CategoryTreeContentProps = {
+type ContentProps = {
   categoryTree: CategoryTreeNode[];
   activeCategoryId?: string | null;
 };
 
-export function CategoryTreeContent({ categoryTree, activeCategoryId: propActiveCategoryId }: CategoryTreeContentProps) {
+export function CategoryTreeContent({ categoryTree, activeCategoryId: propActiveCategoryId }: ContentProps) {
   const pathname = usePathname();
 
   const categoryMatch = pathname.match(/\/discovery\/category\/([^/]+)/);
@@ -90,7 +90,7 @@ export function CategoryTreeContent({ categoryTree, activeCategoryId: propActive
   );
 }
 
-type CategoryTreeItemProps = {
+type ItemProps = {
   node: CategoryTreeNode;
   depth?: number;
   activeCategoryId: string | null;
@@ -106,7 +106,7 @@ function CategoryTreeItem({
   ancestorIds,
   directParentId,
   pathIdSet,
-}: CategoryTreeItemProps) {
+}: ItemProps) {
   const isAncestor = ancestorIds.has(node.id);
   const isActive = node.id === activeCategoryId;
   // URLから計算した展開状態（stateなし）

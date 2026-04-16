@@ -5,14 +5,14 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button/Button';
 import type { AppUser } from '@/hooks/useAuth';
 
-type UserMenuProps = {
+type Props = {
   user: AppUser | null;
   isLogin: boolean;
   isAdmin: boolean;
   logout: () => void;
 };
 
-export const UserMenu = ({ user, isLogin, isAdmin, logout }: UserMenuProps) => {
+export const UserMenu = ({ user, isLogin, isAdmin, logout }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (

@@ -1,8 +1,8 @@
-type MobileSidebarButtonProps = {
+type Props = {
   onClick: () => void;
 };
 
-export const MobileSidebarButton = ({ onClick }: MobileSidebarButtonProps) => {
+export const MobileSidebarButton = ({ onClick }: Props) => {
   return (
     <button
       type="button"

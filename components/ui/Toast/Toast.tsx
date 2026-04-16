@@ -8,12 +8,12 @@ const typeClasses = {
   info:    'bg-primary text-primary-foreground',
 };
 
-type ToastContainerProps = {
+type Props = {
   toasts: Toast[];
   onRemove: (id: string) => void;
 };
 
-export const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
+export const ToastContainer = ({ toasts, onRemove }: Props) => {
   if (toasts.length === 0) return null;
 
   return (

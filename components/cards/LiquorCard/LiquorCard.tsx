@@ -6,11 +6,11 @@ import type { Schema } from '@/amplify/data/resource';
 
 type Liquor = Schema['Liquor']['type'];
 
-type LiquorCardProps = {
+type Props = {
   liquor: Liquor;
 };
 
-export const LiquorCard = ({ liquor }: LiquorCardProps) => {
+export const LiquorCard = ({ liquor }: Props) => {
   return (
     <Link
       href={routes.liquor.detail(liquor.id)}

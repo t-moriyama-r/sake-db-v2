@@ -5,6 +5,7 @@ import { AmplifyProvider } from '@/components/AmplifyProvider/AmplifyProvider';
 import { ThemeProvider } from '@/components/ThemeProvider/ThemeProvider';
 import { Header } from '@/components/layout/Header/Header';
 import { MobileSidebarProvider } from '@/components/layout/Sidebar/MobileSidebarContext';
+import { ErrorDialogProvider } from '@/components/ui/ErrorDialog/ErrorDialog';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 
@@ -19,10 +20,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="flex flex-col bg-background text-foreground">
         <ThemeProvider>
           <AmplifyProvider>
-            <MobileSidebarProvider>
-              <Header />
-              <main className="flex-1">{children}</main>
-            </MobileSidebarProvider>
+            <ErrorDialogProvider>
+              <MobileSidebarProvider>
+                <Header />
+                <main className="flex-1">{children}</main>
+              </MobileSidebarProvider>
+            </ErrorDialogProvider>
           </AmplifyProvider>
         </ThemeProvider>
       </body>

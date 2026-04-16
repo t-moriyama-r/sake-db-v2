@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { userEditSchema, type UserEditInput } from '@/schemas/auth';
+import { toJapaneseAuthError } from '@/lib/auth/errors';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
@@ -49,7 +50,7 @@ export default function MyPageEditPage() {
       await reload();
       setSuccess(true);
     } catch (err: unknown) {
-      setServerError(err instanceof Error ? err.message : '更新に失敗しました');
+      setServerError(toJapaneseAuthError(err, '更新に失敗しました'));
     }
   };
 
@@ -73,7 +74,7 @@ export default function MyPageEditPage() {
           <FormField
             label="新しいパスワード（変更する場合のみ）"
             type="password"
-            hint="7文字以上"
+            hint="8文字以上"
             error={errors.password?.message}
             {...register('password')}
           />

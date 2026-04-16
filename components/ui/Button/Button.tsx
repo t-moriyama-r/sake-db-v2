@@ -16,13 +16,13 @@ const sizeClasses: Record<Size, string> = {
   lg: 'px-6 py-3 text-lg',
 };
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
   size?: Size;
   loading?: boolean;
 };
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, Props>(
   ({ variant = 'primary', size = 'md', loading, disabled, children, className = '', ...props }, ref) => {
   return (
     <button

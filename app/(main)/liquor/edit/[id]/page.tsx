@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { fetchAllCategories } from '@/lib/server/categories/fetch';
 import { getGuestClient } from '@/lib/server/client';
-import { LiquorFormClient } from '@/components/liquor/LiquorFormClient/LiquorFormClient';
+import { LiquorForm } from '@/components/liquor/LiquorForm/LiquorForm';
 
 export default async function LiquorEditPage({
   params,
@@ -18,5 +18,5 @@ export default async function LiquorEditPage({
 
   if (!liquor) notFound();
 
-  return <LiquorFormClient liquor={liquor} categories={categories} />;
+  return <LiquorForm mode="EDIT" liquor={liquor} categories={categories} />;
 }

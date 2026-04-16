@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { passwordResetExeSchema, type PasswordResetExeInput } from '@/schemas/auth';
+import { toJapaneseAuthError } from '@/lib/auth/errors';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
 
@@ -31,7 +32,7 @@ export default function PasswordResetExePage() {
       });
       router.push('/auth/login');
     } catch (err: unknown) {
-      setServerError(err instanceof Error ? err.message : 'エラーが発生しました');
+      setServerError(toJapaneseAuthError(err));
     }
   };
 
@@ -62,7 +63,7 @@ export default function PasswordResetExePage() {
               label="新しいパスワード"
               type="password"
               required
-              hint="7文字以上"
+              hint="8文字以上"
               error={errors.password?.message}
               {...register('password')}
             />

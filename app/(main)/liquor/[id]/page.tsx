@@ -4,7 +4,7 @@ import { fetchBoardPosts } from '@/lib/server/boardPosts/fetch';
 import { fetchTags } from '@/lib/server/tags/fetch';
 import { fetchAllCategories, buildCategoryBreadcrumbs } from '@/lib/server/categories/fetch';
 import { getServerUser } from '@/lib/server/auth';
-import { LiquorDetailClient } from '@/components/liquor/LiquorDetailClient/LiquorDetailClient';
+import { LiquorDetail } from '@/components/liquor/LiquorDetail/LiquorDetail';
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -29,7 +29,7 @@ export default async function LiquorDetailPage({ params }: Props) {
   const serializableBoardPosts = JSON.parse(JSON.stringify(boardPosts)) as typeof boardPosts;
 
   return (
-    <LiquorDetailClient
+    <LiquorDetail
       initialLiquor={serializableLiquor}
       initialBoardPosts={serializableBoardPosts}
       initialTags={tags}

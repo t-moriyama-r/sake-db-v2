@@ -1,118 +1,53 @@
 'use client';
 
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
-import { liquorSchema, type LiquorInput } from '@/schemas/liquor';
 import type { Schema } from '@/amplify/data/resource';
-import { FormField } from '@/components/forms/FormField/FormField';
-import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
-import { Button } from '@/components/ui/Button/Button';
-import { CategoryCascadeSelect } from './CategoryCascadeSelect';
+import { useLiquorSave } from './useLiquorSave';
+import { LiquorFormFields } from './LiquorFormFields';
 
 type Category = Schema['Category']['type'];
 type Liquor = Schema['Liquor']['type'];
 
-type LiquorFormProps = {
+type NewProps = {
+  mode: 'NEW';
   categories: Category[];
-  defaultValues?: Partial<LiquorInput & { imageUrl?: string; imageBase64?: string }>;
-  liquor?: Liquor;
-  onSubmit: (data: LiquorInput) => Promise<void>;
-  submitLabel?: string;
+  categoryId?: string;
 };
 
-export const LiquorForm = ({ categories, defaultValues, liquor, onSubmit, submitLabel = '保存' }: LiquorFormProps) => {
-  const [serverError, setServerError] = useState('');
+type EditProps = {
+  mode: 'EDIT';
+  categories: Category[];
+  liquor: Liquor;
+};
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-  } = useForm<LiquorInput>({
-    resolver: zodResolver(liquorSchema),
-    defaultValues: {
-      categoryId: defaultValues?.categoryId ?? '',
-      name: defaultValues?.name ?? '',
-      description: defaultValues?.description ?? '',
-      youtube: defaultValues?.youtube ?? '',
-    },
-  });
+type Props = NewProps | EditProps;
 
-  const handleFormSubmit = async (data: LiquorInput) => {
-    setServerError('');
-    try {
-      await onSubmit(data);
-    } catch (err: unknown) {
-      setServerError(err instanceof Error ? err.message : '保存に失敗しました');
-    }
-  };
+export function LiquorForm(props: Props) {
+  const { save } = useLiquorSave(
+    props.mode === 'EDIT' ? { liquor: props.liquor } : {},
+  );
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-5">
-      {serverError && (
-        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
-      )}
-
-      <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-foreground-secondary">
-          カテゴリ <span className="text-destructive">*</span>
-        </label>
-        <Controller
-          name="categoryId"
-          control={control}
-          render={({ field }) => (
-            <CategoryCascadeSelect
-              categories={categories}
-              value={field.value}
-              onChange={field.onChange}
-              error={errors.categoryId?.message}
-            />
-          )}
+    <div className="mx-auto max-w-2xl px-4 py-8">
+      <h1 className="mb-6 text-2xl font-bold text-foreground">
+        {props.mode === 'EDIT' ? 'お酒を編集' : 'お酒を登録'}
+      </h1>
+      <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
+        <LiquorFormFields
+          categories={props.categories}
+          liquor={props.mode === 'EDIT' ? props.liquor : undefined}
+          defaultValues={
+            props.mode === 'EDIT'
+              ? {
+                  categoryId: props.liquor.categoryId,
+                  name: props.liquor.name,
+                  description: props.liquor.description ?? '',
+                  youtube: props.liquor.youtube ?? '',
+                }
+              : { categoryId: props.categoryId }
+          }
+          onSubmitAction={save}
         />
       </div>
-
-      <FormField
-        label="お酒の名前"
-        type="text"
-        required
-        error={errors.name?.message}
-        {...register('name')}
-      />
-
-      <FormField
-        as="textarea"
-        label="説明"
-        error={errors.description?.message}
-        rows={4}
-        {...register('description')}
-      />
-
-      <FormField
-        label="YouTube URL"
-        type="url"
-        placeholder="https://youtube.com/watch?v=..."
-        error={errors.youtube?.message}
-        {...register('youtube')}
-      />
-
-      <Controller
-        name="image"
-        control={control}
-        render={({ field }) => (
-          <ImageUpload
-            label="画像"
-            currentImageUrl={liquor?.imageUrl}
-            currentImageBase64={liquor?.imageBase64}
-            onChange={(f) => field.onChange(f)}
-            error={errors.image?.message as string}
-          />
-        )}
-      />
-
-      <Button type="submit" loading={isSubmitting}>
-        {submitLabel}
-      </Button>
-    </form>
+    </div>
   );
 }

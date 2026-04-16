@@ -1,45 +1,24 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import type { Schema } from '@/amplify/data/resource';
 
 type Category = Schema['Category']['type'];
 
-type CategoryCascadeSelectProps = {
+type Props = {
   categories: Category[];
   value: string;
   onChange: (id: string) => void;
   error?: string;
 };
 
-export function CategoryCascadeSelect({ categories, value, onChange, error }: CategoryCascadeSelectProps) {
-  const [selectedPath, setSelectedPath] = useState<string[]>([]);
-
-  const selectClass =
-    'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground ' +
-    'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring';
-
-  // 初期値がある場合にパスを復元
-  useEffect(() => {
-    if (value && categories.length > 0) {
-      const path = findPath(categories, value);
-      if (path.length > 0) setSelectedPath(path);
-    }
-  }, [value, categories]);
-
+export function CategoryCascadeSelect({ categories, value, onChange, error }: Props) {
+  const selectedPath = value && categories.length > 0 ? findPath(categories, value) : [];
   const levels = computeLevels(categories, selectedPath);
 
   const handleChange = (level: number, id: string) => {
-    const newPath = id ? [...selectedPath.slice(0, level), id] : selectedPath.slice(0, level);
-    setSelectedPath(newPath);
-
     if (!id) {
       // 「選択」に戻した場合は一つ上のレベルのIDを使う（なければ空）
       onChange(selectedPath[level - 1] ?? '');
       return;
     }
-
-    // 子があっても選択中のIDを確定値として渡す
     onChange(id);
   };
 
@@ -48,7 +27,7 @@ export function CategoryCascadeSelect({ categories, value, onChange, error }: Ca
       {levels.map((levelCategories, index) => (
         <select
           key={index}
-          className={selectClass}
+          className={SELECT_CLASS}
           value={selectedPath[index] ?? ''}
           onChange={(e) => handleChange(index, e.target.value)}
         >
@@ -62,6 +41,9 @@ export function CategoryCascadeSelect({ categories, value, onChange, error }: Ca
     </div>
   );
 }
+const SELECT_CLASS =
+  'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground ' +
+  'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring';
 
 function getChildren(categories: Category[], parentId: string): Category[] {
   return categories.filter((c) => c.parentId === parentId);

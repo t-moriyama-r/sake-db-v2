@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/Button/Button';
 
-type ImageUploadProps = {
+type Props = {
   label?: string;
   currentImageUrl?: string | null;
   currentImageBase64?: string | null;
@@ -17,7 +17,7 @@ export const ImageUpload = ({
   currentImageBase64,
   onChange,
   error,
-}: ImageUploadProps) => {
+}: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
 

@@ -1,10 +1,10 @@
 import Link from 'next/link';
 
-type PostButtonProps = {
+type Props = {
   categoryId: string | null;
 };
 
-export const PostButton = ({ categoryId }: PostButtonProps) => {
+export const PostButton = ({ categoryId }: Props) => {
   const href = categoryId ? `/liquor/create/${categoryId}` : '/liquor/create';
 
   return (

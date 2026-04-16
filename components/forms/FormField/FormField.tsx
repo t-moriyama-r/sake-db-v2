@@ -7,15 +7,15 @@ type BaseProps = {
   hint?: string;
 };
 
-type InputFieldProps = BaseProps & InputHTMLAttributes<HTMLInputElement> & {
+type InputProps = BaseProps & InputHTMLAttributes<HTMLInputElement> & {
   as?: 'input';
 };
 
-type TextareaFieldProps = BaseProps & TextareaHTMLAttributes<HTMLTextAreaElement> & {
+type TextareaProps = BaseProps & TextareaHTMLAttributes<HTMLTextAreaElement> & {
   as: 'textarea';
 };
 
-type FormFieldProps = InputFieldProps | TextareaFieldProps;
+type Props = InputProps | TextareaProps;
 
 const inputClass =
   'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground shadow-sm ' +
@@ -25,7 +25,7 @@ const inputClass =
 
 export const FormField = forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
-  FormFieldProps
+  Props
 >(({ label, error, required, hint, as, ...props }, ref) => {
   const id = (props as { id?: string }).id ?? label;
   return (

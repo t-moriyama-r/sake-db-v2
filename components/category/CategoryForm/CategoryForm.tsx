@@ -12,14 +12,14 @@ import { Button } from '@/components/ui/Button/Button';
 
 type Category = Schema['Category']['type'];
 
-type CategoryFormProps = {
+type Props = {
   defaultValues?: Partial<CategoryInput & { imageUrl?: string; imageBase64?: string }>;
   category?: Category;
   onSubmit: (data: CategoryInput) => Promise<void>;
   submitLabel?: string;
 };
 
-export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = '保存' }: CategoryFormProps) => {
+export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = '保存' }: Props) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [serverError, setServerError] = useState('');
 

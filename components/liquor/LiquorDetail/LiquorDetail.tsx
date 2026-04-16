@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { client } from '@/lib/amplify-client';
 import { useAuth } from '@/hooks/useAuth';
+import { useLiquorDetail } from './useLiquorDetail';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { Tag } from '@/components/ui/Tag/Tag';
 import { Button } from '@/components/ui/Button/Button';
@@ -17,9 +16,6 @@ import type { BoardPostRecord } from '@/lib/server/boardPosts/fetch';
 import type { TagRecord } from '@/lib/server/tags/fetch';
 import type { CategoryBreadcrumbItem } from '@/lib/server/categories/fetch';
 import type { ServerUser } from '@/lib/server/auth';
-import type { BoardPostInput } from '@/schemas/board';
-import { revalidateLiquorsCache } from '@/lib/server/liquors/revalidate';
-import { revalidateBoardPostsCache } from '@/lib/server/boardPosts/revalidate';
 
 type Props = {
   initialLiquor: LiquorRecord;
@@ -29,119 +25,32 @@ type Props = {
   categoryPath: CategoryBreadcrumbItem[];
 };
 
-export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTags, serverUser, categoryPath }: Props) {
+export function LiquorDetail({ initialLiquor, initialBoardPosts, initialTags, serverUser, categoryPath }: Props) {
   const router = useRouter();
-  const { user, isLogin, isAdmin } = useAuth();
+  const { isLogin, isAdmin, user } = useAuth();
 
-  const [liquor, setLiquor] = useState(initialLiquor);
-  const [boardPosts, setBoardPosts] = useState(initialBoardPosts);
-  const [tags, setTags] = useState(initialTags);
-  const [postFormOpen, setPostFormOpen] = useState(false);
-  const [deleteDialog, setDeleteDialog] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-  const [newTag, setNewTag] = useState('');
-  const [ratingValue, setRatingValue] = useState(() => {
-    if (!serverUser) return 0;
-    return [5, 4, 3, 2, 1].find((r) =>
-      (initialLiquor[`rate${r}Users` as keyof LiquorRecord] as string[] | null)?.includes(serverUser.id)
-    ) ?? 0;
-  });
-  const [ratingLoading, setRatingLoading] = useState(false);
+  const {
+    liquor,
+    boardPosts,
+    tags,
+    newTag,
+    setNewTag,
+    postFormOpen,
+    setPostFormOpen,
+    deleteDialog,
+    setDeleteDialog,
+    deleting,
+    ratingValue,
+    ratingLoading,
+    handleRate,
+    handlePost,
+    handleAddTag,
+    handleDeleteTag,
+    handleDelete,
+  } = useLiquorDetail({ initialLiquor, initialBoardPosts, initialTags, serverUser });
 
   const id = liquor.id;
-
-  const handleRate = async (rate: number) => {
-    if (!user) return;
-    setRatingLoading(true);
-    try {
-      const updated: Record<string, string[]> = {};
-      for (const r of [5, 4, 3, 2, 1]) {
-        const key = `rate${r}Users`;
-        const arr = (liquor[key as keyof LiquorRecord] as string[] | null | undefined) ?? [];
-        updated[key] = arr.filter((uid) => uid !== user.id);
-      }
-      if (rate !== ratingValue) {
-        const key = `rate${rate}Users`;
-        updated[key] = [...(updated[key] ?? []), user.id];
-        setRatingValue(rate);
-      } else {
-        setRatingValue(0);
-      }
-      const { data } = await client.models.Liquor.update({ id, ...updated });
-      if (data) setLiquor(stripLiquorRelations(data));
-      await revalidateLiquorsCache();
-    } finally {
-      setRatingLoading(false);
-    }
-  };
-
-  const handlePost = async (data: BoardPostInput) => {
-    const authMode = user ? 'userPool' : 'apiKey';
-    const postData = {
-      liquorId: id,
-      categoryId: liquor.categoryId,
-      categoryName: liquor.categoryName,
-      liquorName: liquor.name,
-      text: data.text,
-      rate: data.rate ?? undefined,
-      userId: user?.id,
-      userName: user ? user.name : (data.guestName || null),
-      userImageBase64: user?.imageBase64,
-    };
-    const { data: newPost, errors } = await client.models.BoardPost.create(postData, { authMode });
-    if (errors?.length) {
-      throw new Error(errors[0].message);
-    }
-    if (newPost) {
-      // Amplify の belongsTo リレーションは遅延ロード関数を含むため、シリアライズ可能な形に除外する
-      const { liquor: _liquorFn, ...cleanPost } = newPost as BoardPostRecord & { liquor?: unknown };
-      const updatedPosts = [...boardPosts, cleanPost as BoardPostRecord];
-      setBoardPosts(updatedPosts);
-      await updateBoardAvgRate(updatedPosts, authMode);
-      await revalidateBoardPostsCache();
-    }
-    setPostFormOpen(false);
-  };
-
-  /** 投稿リストから boardAvgRate・boardRateCount を再計算して Liquor を更新する */
-  const updateBoardAvgRate = async (posts: BoardPostRecord[], authMode: 'apiKey' | 'userPool' = 'userPool') => {
-    const rated = posts.filter((p) => p.rate != null);
-    const boardRateCount = rated.length > 0 ? rated.length : null;
-    const boardAvgRate = rated.length > 0
-      ? rated.reduce((acc, p) => acc + (p.rate ?? 0), 0) / rated.length
-      : null;
-    const { data: updated } = await client.models.Liquor.update({ id, boardAvgRate, boardRateCount }, { authMode });
-    if (updated) setLiquor(stripLiquorRelations(updated));
-    await revalidateLiquorsCache();
-  };
-
-  const handleAddTag = async () => {
-    if (!newTag.trim() || !isLogin) return;
-    await client.models.Tag.create({ liquorId: id, text: newTag.trim() });
-    const { data: tagList } = await client.models.Tag.list({ filter: { liquorId: { eq: id } } });
-    setTags(tagList.map(({ liquor: _liquorFn, ...tag }) => tag as TagRecord));
-    setNewTag('');
-  };
-
-  const handleDeleteTag = async (tagId: string) => {
-    await client.models.Tag.delete({ id: tagId });
-    setTags((prev) => prev.filter((t) => t.id !== tagId));
-  };
-
-  const handleDelete = async () => {
-    setDeleting(true);
-    try {
-      await client.models.Liquor.delete({ id });
-      router.push(`/category/${liquor.categoryId}`);
-    } finally {
-      setDeleting(false);
-      setDeleteDialog(false);
-    }
-  };
-
-
   const youtubeEmbedId = liquor.youtube?.match(/(?:v=|youtu\.be\/)([^&\s]+)/)?.[1];
-
   const canEdit = isAdmin || user?.id === liquor.createUserId;
 
   return (
@@ -322,10 +231,4 @@ export function LiquorDetailClient({ initialLiquor, initialBoardPosts, initialTa
       />
     </div>
   );
-}
-
-/** Amplify client の update/get 結果に含まれる遅延ロード関数（リレーション）を除去する */
-function stripLiquorRelations(data: LiquorRecord & Record<string, unknown>): LiquorRecord {
-  const { category: _cat, boardPosts: _bp, tags: _tags, flavorVotes: _fv, bookmarks: _bm, liquorHistories: _lh, ...rest } = data;
-  return rest as LiquorRecord;
 }
