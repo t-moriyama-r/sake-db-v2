@@ -2,26 +2,26 @@
 
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { liquorSchema, type LiquorInput } from '@/schemas/liquor';
-import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
+import { CategoryCascadeSelect } from './CategoryCascadeSelect';
 
 type Category = Schema['Category']['type'];
 type Liquor = Schema['Liquor']['type'];
 
 type LiquorFormProps = {
+  categories: Category[];
   defaultValues?: Partial<LiquorInput & { imageUrl?: string; imageBase64?: string }>;
   liquor?: Liquor;
   onSubmit: (data: LiquorInput) => Promise<void>;
   submitLabel?: string;
 };
 
-export const LiquorForm = ({ defaultValues, liquor, onSubmit, submitLabel = '保存' }: LiquorFormProps) => {
-  const [categories, setCategories] = useState<Category[]>([]);
+export const LiquorForm = ({ categories, defaultValues, liquor, onSubmit, submitLabel = '保存' }: LiquorFormProps) => {
   const [serverError, setServerError] = useState('');
 
   const {
@@ -39,10 +39,6 @@ export const LiquorForm = ({ defaultValues, liquor, onSubmit, submitLabel = '保
     },
   });
 
-  useEffect(() => {
-    client.models.Category.list().then(({ data }) => setCategories(data));
-  }, []);
-
   const handleFormSubmit = async (data: LiquorInput) => {
     setServerError('');
     try {
@@ -51,10 +47,6 @@ export const LiquorForm = ({ defaultValues, liquor, onSubmit, submitLabel = '保
       setServerError(err instanceof Error ? err.message : '保存に失敗しました');
     }
   };
-
-  const selectClass =
-    'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground ' +
-    'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring';
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-5">
@@ -66,13 +58,18 @@ export const LiquorForm = ({ defaultValues, liquor, onSubmit, submitLabel = '保
         <label className="text-sm font-medium text-foreground-secondary">
           カテゴリ <span className="text-destructive">*</span>
         </label>
-        <select className={selectClass} {...register('categoryId')}>
-          <option value="">-- カテゴリを選択 --</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
-        {errors.categoryId && <p className="text-xs text-destructive">{errors.categoryId.message}</p>}
+        <Controller
+          name="categoryId"
+          control={control}
+          render={({ field }) => (
+            <CategoryCascadeSelect
+              categories={categories}
+              value={field.value}
+              onChange={field.onChange}
+              error={errors.categoryId?.message}
+            />
+          )}
+        />
       </div>
 
       <FormField

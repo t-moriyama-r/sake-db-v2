@@ -14,7 +14,7 @@ type CategoryTreeProps = {
 
 export const CategoryTree = ({ categoryTree, activeCategoryId }: CategoryTreeProps) => {
   return (
-    <aside className="hidden w-56 shrink-0 lg:block">
+    <aside className="hidden w-56 shrink-0 lg:block sticky top-10 self-start pt-8 max-h-[calc(100vh-2.5rem)] overflow-y-auto">
       <CategoryTreeContent categoryTree={categoryTree} activeCategoryId={activeCategoryId} />
     </aside>
   );

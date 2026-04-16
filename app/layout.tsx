@@ -15,13 +15,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja" className={`${geistSans.variable} h-full antialiased`} suppressHydrationWarning>
-      <body className="flex h-full flex-col bg-background text-foreground overflow-hidden">
+    <html lang="ja" className={`${geistSans.variable} antialiased`} suppressHydrationWarning>
+      <body className="flex flex-col bg-background text-foreground">
         <ThemeProvider>
           <AmplifyProvider>
             <MobileSidebarProvider>
               <Header />
-              <main className="flex-1 overflow-hidden">{children}</main>
+              <main className="flex-1">{children}</main>
             </MobileSidebarProvider>
           </AmplifyProvider>
         </ThemeProvider>
