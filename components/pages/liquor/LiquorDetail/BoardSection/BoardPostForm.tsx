@@ -13,9 +13,10 @@ type Props = {
   defaultValues?: Partial<BoardPostInput>;
   submitLabel?: string;
   isLoggedIn?: boolean;
+  loading?: boolean;
 };
 
-export function BoardPostForm({ onSubmit, defaultValues, submitLabel = '投稿', isLoggedIn }: Props) {
+export function BoardPostForm({ onSubmit, defaultValues, submitLabel = '投稿', isLoggedIn, loading }: Props) {
   const [serverError, setServerError] = useState('');
 
   const {
@@ -40,6 +41,10 @@ export function BoardPostForm({ onSubmit, defaultValues, submitLabel = '投稿',
       setServerError(err instanceof Error ? err.message : '投稿に失敗しました');
     }
   };
+
+  if (loading) {
+    return <div className="py-8 text-center text-muted-foreground">読み込み中...</div>;
+  }
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">

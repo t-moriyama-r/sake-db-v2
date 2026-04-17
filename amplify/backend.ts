@@ -1,14 +1,13 @@
 import { defineBackend } from '@aws-amplify/backend';
 import { Duration } from 'aws-cdk-lib';
-import { CfnUserPool } from 'aws-cdk-lib/aws-cognito';
-import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import { Function as CdkFunction } from 'aws-cdk-lib/aws-lambda';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
-import { storage } from './storage/resource';
 import { buildSearchCache } from './functions/liquor/buildSearchCache/resource';
+import { storage } from './storage/resource';
 
 /**
  * @see https://docs.amplify.aws/react/build-a-backend/
@@ -21,7 +20,7 @@ const backend = defineBackend({
 });
 
 // ---- Cognito パスワードポリシー（8文字以上のみ） ----
-const cfnUserPool = backend.auth.resources.userPool.node.defaultChild as CfnUserPool;
+const { cfnUserPool } = backend.auth.resources.cfnResources;
 cfnUserPool.policies = {
   passwordPolicy: {
     minimumLength: 8,

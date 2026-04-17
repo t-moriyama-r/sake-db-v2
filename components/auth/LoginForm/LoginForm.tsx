@@ -10,6 +10,7 @@ import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
 import { useAuth } from '@/hooks/useAuth';
 import { toJapaneseAuthError } from '@/lib/auth/errors';
+import { routes } from '@/lib/routes';
 import { loginSchema, type LoginInput } from '@/schemas/auth';
 
 export const LoginForm = () => {
@@ -27,7 +28,7 @@ export const LoginForm = () => {
     setServerError('');
     try {
       await login(data.email, data.password);
-      router.push('/');
+      router.push(routes.home());
       router.refresh();
     } catch (err: unknown) {
       setServerError(toJapaneseAuthError(err, 'ログインに失敗しました'));

@@ -9,6 +9,7 @@ import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
+import { routes } from '@/lib/routes';
 
 type Category = Schema['Category']['type'];
 
@@ -71,13 +72,13 @@ export default function AdminPage() {
                 </p>
               </div>
               <div className="flex gap-2">
-                <Button variant="secondary" size="sm" onClick={() => router.push(`/category/edit/${cat.id}`)}>
+                <Button variant="secondary" size="sm" onClick={() => router.push(routes.category.edit(cat.id))}>
                   編集
                 </Button>
-                <Button variant="secondary" size="sm" onClick={() => router.push(`/category/create/${cat.id}`)}>
+                <Button variant="secondary" size="sm" onClick={() => router.push(routes.category.create(cat.id))}>
                   子を追加
                 </Button>
-                <Button variant="secondary" size="sm" onClick={() => router.push(`/liquor/create/${cat.id}`)}>
+                <Button variant="secondary" size="sm" onClick={() => router.push(routes.liquor.create(cat.id))}>
                   お酒を追加
                 </Button>
                 {!cat.readonly && (

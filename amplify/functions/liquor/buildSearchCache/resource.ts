@@ -10,4 +10,5 @@ export const buildSearchCache = defineFunction({
   /** 全件スキャン + gzip + S3 アップロードに十分な時間を確保 */
   timeoutSeconds: 300,
   memoryMB: 512,
+  resourceGroupName: 'data',
 });

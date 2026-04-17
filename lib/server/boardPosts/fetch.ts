@@ -1,7 +1,7 @@
-import { getGuestClient } from '../client';
-import { withCache, CACHE_TAGS } from '../cache';
-import { fetchAll } from '../amplify-list';
 import type { Schema } from '@/amplify/data/resource';
+import { fetchAll } from '../amplify-list';
+import { withCache, CACHE_TAGS } from '../cache';
+import { getGuestClient } from '../client';
 
 export type BoardPostRecord = Schema['BoardPost']['type'];
 

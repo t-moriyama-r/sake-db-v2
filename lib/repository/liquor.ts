@@ -1,5 +1,5 @@
-import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
+import { client } from '@/lib/amplify-client';
 
 type LiquorUpdateInput = Schema['Liquor']['updateType'];
 type LiquorCreateInput = Schema['Liquor']['createType'];

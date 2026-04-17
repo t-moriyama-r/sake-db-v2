@@ -9,6 +9,7 @@ import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
 import { useAuth } from '@/hooks/useAuth';
 import { toJapaneseAuthError } from '@/lib/auth/errors';
+import { routes } from '@/lib/routes';
 import { registerSchema, type RegisterInput } from '@/schemas/auth';
 
 type Step = 'form' | 'confirm';
@@ -47,7 +48,7 @@ export const RegisterForm = () => {
     try {
       await confirmSignUp({ username: email, confirmationCode: confirmCode });
       await login(email, password);
-      router.push('/');
+      router.push(routes.home());
       router.refresh();
     } catch (err: unknown) {
       setServerError(toJapaneseAuthError(err, '確認に失敗しました'));

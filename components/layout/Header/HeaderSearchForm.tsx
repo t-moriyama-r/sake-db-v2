@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { routes } from '@/lib/routes';
 
 export const HeaderSearchForm = () => {
   const [keyword, setKeyword] = useState('');
@@ -12,7 +13,7 @@ export const HeaderSearchForm = () => {
     e.preventDefault();
     const q = keyword.trim();
     if (!q) return;
-    router.push(`/discovery/search?q=${encodeURIComponent(q)}`);
+    router.push(`${routes.discovery.search()}?q=${encodeURIComponent(q)}`);
     inputRef.current?.blur();
   };
 

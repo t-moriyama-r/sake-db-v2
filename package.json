@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --experimental-https",
     "sandbox": "npx ampx sandbox --identifier sandbox --profile sake-db",
+    "sandbox:delete": "npx ampx sandbox delete --identifier sandbox --profile sake-db --yes",
+    "sandbox:reset": "npm run sandbox:delete && npm run sandbox",
     "start:local": "concurrently \"npm run sandbox\" \"npm run dev\"",
     "build": "next build",
     "start": "next start",
@@ -30,6 +32,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/parser": "^8.58.2",
     "aws-cdk-lib": "^2.234.1",
     "concurrently": "^9.2.1",
     "constructs": "^10.5.1",
@@ -37,6 +40,7 @@
     "esbuild": "^0.27.4",
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
+    "eslint-plugin-import": "^2.32.0",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"

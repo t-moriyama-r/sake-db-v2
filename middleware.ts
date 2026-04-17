@@ -39,6 +39,16 @@ function getGroups(token: string): string[] {
   }
 }
 
+/** 現在の CLIENT_ID と異なる古い Cognito Cookie を検出して削除する */
+function clearStaleCognitoCookies(request: NextRequest, response: NextResponse): void {
+  const prefix = 'CognitoIdentityServiceProvider.';
+  for (const cookie of request.cookies.getAll()) {
+    if (cookie.name.startsWith(prefix) && !cookie.name.startsWith(`${prefix}${CLIENT_ID}`)) {
+      response.cookies.delete(cookie.name);
+    }
+  }
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -55,7 +65,9 @@ export function middleware(request: NextRequest) {
   ].some((p) => pathname.startsWith(p));
 
   if (requiresAuth && !isAuthenticated) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    const res = NextResponse.redirect(new URL('/auth/login', request.url));
+    clearStaleCognitoCookies(request, res);
+    return res;
   }
 
   // 要 admin ルート
@@ -67,15 +79,21 @@ export function middleware(request: NextRequest) {
 
   if (requiresAdmin) {
     if (!isAuthenticated) {
-      return NextResponse.redirect(new URL('/auth/login', request.url));
+      const res = NextResponse.redirect(new URL('/auth/login', request.url));
+      clearStaleCognitoCookies(request, res);
+      return res;
     }
     const groups = getGroups(token!);
     if (!groups.includes('admin')) {
-      return NextResponse.redirect(new URL('/', request.url));
+      const res = NextResponse.redirect(new URL('/', request.url));
+      clearStaleCognitoCookies(request, res);
+      return res;
     }
   }
 
-  return NextResponse.next({ request: { headers: requestHeaders } });
+  const res = NextResponse.next({ request: { headers: requestHeaders } });
+  clearStaleCognitoCookies(request, res);
+  return res;
 }
 
 export const config = {

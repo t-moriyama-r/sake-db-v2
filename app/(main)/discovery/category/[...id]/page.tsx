@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
+import { Breadcrumb } from '@/components/ui/Breadcrumb/Breadcrumb';
 import { getServerUser } from '@/lib/server/auth';
 import {
   fetchAllCategories,
@@ -26,21 +27,17 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
 
   return (
     <div>
-      <nav className="mb-3 flex flex-wrap items-center gap-1 text-sm">
-        <Link href="/" className="text-link hover:underline">ホーム</Link>
-        {breadcrumbs.map((bc, i) => (
-          <span key={bc.id} className="flex items-center gap-1">
-            <span className="text-muted-foreground">›</span>
-            {i < breadcrumbs.length - 1 ? (
-              <Link href={`/discovery/category/${bc.id}`} className="text-link hover:underline">
-                {bc.name}
-              </Link>
-            ) : (
-              <span className="font-medium text-foreground-secondary">{bc.name}</span>
-            )}
-          </span>
-        ))}
-      </nav>
+      <Breadcrumb
+        className="mb-3"
+        items={[
+          { label: 'ホーム', href: '/' },
+          ...breadcrumbs.map((bc, i) =>
+            i < breadcrumbs.length - 1
+              ? { label: bc.name ?? '', href: `/discovery/category/${bc.id}` }
+              : { label: bc.name ?? '' }
+          ),
+        ]}
+      />
 
       {category && (
         <div className="mb-6">

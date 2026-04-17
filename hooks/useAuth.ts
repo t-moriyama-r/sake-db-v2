@@ -15,6 +15,7 @@ import {
   confirmResetPassword,
   type AuthUser,
 } from 'aws-amplify/auth';
+import { Hub } from 'aws-amplify/utils';
 
 export type AppUser = {
   id: string;
@@ -50,6 +51,21 @@ export function useAuth() {
 
   useEffect(() => {
     loadUser();
+
+    const unsubscribe = Hub.listen('auth', ({ payload }) => {
+      switch (payload.event) {
+        case 'signedIn':
+          loadUser();
+          break;
+        case 'signedOut':
+          setUser(null);
+          break;
+        default:
+          break;
+      }
+    });
+
+    return () => unsubscribe();
   }, [loadUser]);
 
   const login = useCallback(async (email: string, password: string) => {

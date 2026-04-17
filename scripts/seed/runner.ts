@@ -18,6 +18,8 @@ export type DataClient = ReturnType<typeof generateClient<Schema>>;
 export interface RunOptions {
   /** true のとき実際には書き込まず、投入予定データをログ表示のみ */
   dryRun: boolean;
+  /** true のとき既存レコードを全削除してから再投入する */
+  refresh: boolean;
 }
 
 export interface SeedResult {
@@ -70,6 +72,12 @@ export interface SeederConfig<T, TRecord extends { id: string }> {
   toExistingKey: (record: TRecord) => string;
 
   getLabel?: (item: T) => string;
+
+  /** refresh 時に既存レコード 1 件を削除する関数（省略時は refresh 不可） */
+  delete?: (
+    client: DataClient,
+    id: string,
+  ) => Promise<{ errors?: { message: string }[] | null }>;
 }
 
 // ================================================================
@@ -90,6 +98,26 @@ export function buildSeeder<T, TRecord extends { id: string }>(
       for (const record of existing) {
         existingMap.set(config.toExistingKey(record), record.id);
       }
+
+      // ── refresh: 既存レコードを全削除 ──────────────────────────
+      if (options.refresh && existing.length > 0) {
+        if (!config.delete) {
+          console.warn(`  ⚠ ${config.modelName} は delete 未定義のため refresh をスキップします`);
+        } else if (options.dryRun) {
+          console.log(`  (dry) ${existing.length} 件を削除予定`);
+        } else {
+          console.log(`  🗑 既存 ${existing.length} 件を削除中...`);
+          // 子→親の依存を避けるため逆順で削除
+          for (const record of [...existing].reverse()) {
+            const { errors } = await config.delete!(client, record.id);
+            if (errors?.length) {
+              console.error(`  ✗ 削除失敗 ${record.id}:`, errors[0].message);
+            }
+          }
+          existingMap.clear();
+        }
+      }
+      // ─────────────────────────────────────────────────────────────
 
       // オブジェクト参照 → DynamoDB UUID
       const idMap = new Map<T, string>();
@@ -148,6 +176,9 @@ export async function runAll(seeders: Seeder[], options: RunOptions): Promise<vo
 
   if (options.dryRun) {
     console.log('[DRY RUN モード: 実際には書き込みません]\n');
+  }
+  if (options.refresh) {
+    console.log('[REFRESH モード: 既存データを全削除して再投入します]\n');
   }
 
   const totals: SeedResult = { created: 0, skipped: 0, failed: 0 };
