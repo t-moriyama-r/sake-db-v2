@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Dialog } from '@/components/ui/Dialog/Dialog';
 import { Button } from '@/components/ui/Button/Button';
+import { Dialog } from '@/components/ui/Dialog/Dialog';
 
 export function ErrorDialogProvider({ children }: { children: React.ReactNode }) {
   const [message, setMessage] = useState('');

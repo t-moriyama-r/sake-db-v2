@@ -1,23 +1,24 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
-import { registerSchema, type RegisterInput } from '@/schemas/auth';
-import { useAuth } from '@/hooks/useAuth';
-import { toJapaneseAuthError } from '@/lib/auth/errors';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
+import { useAuth } from '@/hooks/useAuth';
+import { toJapaneseAuthError } from '@/lib/auth/errors';
+import { registerSchema, type RegisterInput } from '@/schemas/auth';
 
 type Step = 'form' | 'confirm';
 
 export const RegisterForm = () => {
   const router = useRouter();
-  const { register: registerUser, confirmSignUp } = useAuth();
+  const { register: registerUser, confirmSignUp, login } = useAuth();
   const [step, setStep] = useState<Step>('form');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [serverError, setServerError] = useState('');
   const [confirmCode, setConfirmCode] = useState('');
   const [confirming, setConfirming] = useState(false);
@@ -33,6 +34,7 @@ export const RegisterForm = () => {
     try {
       await registerUser(data.name, data.email, data.password);
       setEmail(data.email);
+      setPassword(data.password);
       setStep('confirm');
     } catch (err: unknown) {
       setServerError(toJapaneseAuthError(err, '登録に失敗しました'));
@@ -44,7 +46,9 @@ export const RegisterForm = () => {
     setConfirming(true);
     try {
       await confirmSignUp({ username: email, confirmationCode: confirmCode });
-      router.push('/auth/login');
+      await login(email, password);
+      router.push('/');
+      router.refresh();
     } catch (err: unknown) {
       setServerError(toJapaneseAuthError(err, '確認に失敗しました'));
     } finally {
@@ -115,7 +119,7 @@ export const RegisterForm = () => {
 
       <p className="text-center text-sm text-muted-foreground">
         すでにアカウントをお持ちの方は{' '}
-        <Link href="/auth/login" className="text-link hover:underline">
+        <Link href="/login" className="text-link hover:underline">
           ログイン
         </Link>
       </p>

@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
+import type { Metadata } from 'next';
 import './globals.css';
-import { AmplifyProvider } from '@/components/AmplifyProvider/AmplifyProvider';
-import { ThemeProvider } from '@/components/ThemeProvider/ThemeProvider';
 import { Header } from '@/components/layout/Header/Header';
 import { MobileSidebarProvider } from '@/components/layout/Sidebar/MobileSidebarContext';
 import { ErrorDialogProvider } from '@/components/ui/ErrorDialog/ErrorDialog';
+import { AmplifyProvider } from '@/providers/AmplifyProvider';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 

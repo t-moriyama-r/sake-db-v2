@@ -1,5 +1,5 @@
+import { LiquorForm } from '@/components/pages/liquor/LiquorForm/LiquorForm';
 import { fetchAllCategories } from '@/lib/server/categories/fetch';
-import { LiquorForm } from '@/components/liquor/LiquorForm/LiquorForm';
 
 export default async function LiquorCreatePage({
   params,

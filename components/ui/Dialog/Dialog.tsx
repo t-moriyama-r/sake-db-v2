@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '../Button/Button';
 
 type Props = {
@@ -13,22 +14,34 @@ type Props = {
 
 export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
 
   useEffect(() => {
     if (open) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
       document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
     } else {
+      document.documentElement.style.setProperty('--scrollbar-width', '0px');
       document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.documentElement.style.setProperty('--scrollbar-width', '0px');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
   }, [open]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
     >
       <div className="bg-surface rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
@@ -43,7 +56,8 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
           <div className="flex justify-end gap-2 border-t border-border px-6 py-4">{actions}</div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

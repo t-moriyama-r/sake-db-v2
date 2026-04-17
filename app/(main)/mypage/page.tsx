@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
-import { useAuth } from '@/hooks/useAuth';
-import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
+import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
+import { useAuth } from '@/hooks/useAuth';
+import { client } from '@/lib/amplify-client';
 
 type BookMark = Schema['BookMark']['type'];
 type Liquor = Schema['Liquor']['type'];

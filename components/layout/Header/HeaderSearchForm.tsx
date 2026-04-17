@@ -17,7 +17,7 @@ export const HeaderSearchForm = () => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex flex-1 min-w-0 items-center px-2 sm:px-4 max-w-xl">
+    <form onSubmit={handleSearch} className="flex w-full items-center">
       <div className="flex w-full rounded border border-border-input bg-surface focus-within:border-ring focus-within:ring-1 focus-within:ring-ring">
         <input
           ref={inputRef}

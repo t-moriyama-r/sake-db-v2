@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import {
   CognitoIdentityProviderClient,
@@ -5,7 +6,6 @@ import {
   AdminCreateUserCommand,
   AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-import crypto from 'crypto';
 import { encryptXSession } from '@/lib/server/x-session';
 
 export const runtime = 'nodejs';

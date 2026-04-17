@@ -1,5 +1,5 @@
+import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { fetchAllLiquorsRandomly } from '@/lib/server/liquors/fetch';
-import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
 
 export default async function HomePage() {
   const liquors = await fetchAllLiquorsRandomly();

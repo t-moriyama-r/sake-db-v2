@@ -1,10 +1,10 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import { CategoryForm } from '@/components/pages/category/CategoryForm/CategoryForm';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import type { CategoryInput } from '@/schemas/category';
-import { CategoryForm } from '@/components/category/CategoryForm/CategoryForm';
 
 export default function CategoryCreatePage() {
   const { parentCategoryId } = useParams<{ parentCategoryId: string }>();

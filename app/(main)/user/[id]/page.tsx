@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { client } from '@/lib/amplify-client';
+import { useParams } from 'next/navigation';
 import type { Schema } from '@/amplify/data/resource';
-import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
+import { StarRating } from '@/components/ui/StarRating/StarRating';
+import { client } from '@/lib/amplify-client';
 
 type BoardPost = Schema['BoardPost']['type'];
 

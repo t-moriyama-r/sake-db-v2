@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
-import { fetchLiquor } from '@/lib/server/liquors/fetch';
-import { fetchBoardPosts } from '@/lib/server/boardPosts/fetch';
-import { fetchTags } from '@/lib/server/tags/fetch';
-import { fetchAllCategories, buildCategoryBreadcrumbs } from '@/lib/server/categories/fetch';
+import { LiquorDetail } from '@/components/pages/liquor/LiquorDetail/LiquorDetail';
 import { getServerUser } from '@/lib/server/auth';
-import { LiquorDetail } from '@/components/liquor/LiquorDetail/LiquorDetail';
+import { fetchBoardPosts } from '@/lib/server/boardPosts/fetch';
+import { fetchAllCategories, buildCategoryBreadcrumbs } from '@/lib/server/categories/fetch';
+import { fetchLiquor } from '@/lib/server/liquors/fetch';
+import { fetchTags } from '@/lib/server/tags/fetch';
 
 type Props = { params: Promise<{ id: string }> };
 

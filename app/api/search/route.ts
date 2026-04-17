@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { gunzipSync } from 'node:zlib';
 import { unstable_cache } from 'next/cache';
-import { getGuestClient } from '@/lib/server/client';
+import { NextRequest, NextResponse } from 'next/server';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { CACHE_S3_KEY, type SearchRecord } from '@/amplify/functions/liquor/buildSearchCache/handler';
+import { getGuestClient } from '@/lib/server/client';
 
 const s3 = new S3Client({});
 

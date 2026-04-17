@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
+import { getServerUser } from '@/lib/server/auth';
 import { fetchCategory, fetchAllCategories } from '@/lib/server/categories/fetch';
 import { fetchLiquorsByCategories } from '@/lib/server/liquors/fetch';
-import { getServerUser } from '@/lib/server/auth';
-import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
 
 export default async function CategoryDetailPage({
   params,

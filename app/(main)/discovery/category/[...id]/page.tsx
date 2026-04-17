@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { LiquorCard } from '@/components/cards/LiquorCard/LiquorCard';
+import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
+import { getServerUser } from '@/lib/server/auth';
 import {
   fetchAllCategories,
   fetchCategory,
@@ -7,7 +8,6 @@ import {
   type CategoryRecord,
 } from '@/lib/server/categories/fetch';
 import { fetchLiquorsByCategories } from '@/lib/server/liquors/fetch';
-import { getServerUser } from '@/lib/server/auth';
 
 type Props = { params: Promise<{ id: string[] }> };
 

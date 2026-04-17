@@ -1,9 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { client } from '@/lib/amplify-client';
+import { useCurrentCategoryId } from '@/hooks/useCurrentCategoryId';
 import type { CategoryTreeNode } from '@/lib/server/categories/fetch';
 
 type Props = {
@@ -26,40 +24,7 @@ type ContentProps = {
 };
 
 export function CategoryTreeContent({ categoryTree, activeCategoryId: propActiveCategoryId }: ContentProps) {
-  const pathname = usePathname();
-
-  const categoryMatch = pathname.match(/\/discovery\/category\/([^/]+)/);
-  const urlCategoryId = categoryMatch?.[1] ?? null;
-
-  const liquorMatch = pathname.match(/^\/liquor\/([^/]+)$/);
-  const liquorId = liquorMatch?.[1] ?? null;
-
-  // フェッチ完了まで前の値を保持し続けることで、ページ遷移中のフラッシュを防ぐ。
-  // 直アクセス時はサーバーから渡された propActiveCategoryId を初期値として使用する。
-  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(
-    propActiveCategoryId ?? null,
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    if (urlCategoryId !== null) {
-      // カテゴリページ: URL から即時反映
-      setActiveCategoryId(urlCategoryId);
-    } else if (liquorId) {
-      // お酒ページ: フェッチ完了まで現在の値（前のページのカテゴリ）を保持し、完了後に更新
-      client.models.Liquor.get({ id: liquorId }, { authMode: 'identityPool' }).then(({ data }) => {
-        if (!cancelled) setActiveCategoryId(data?.categoryId ?? null);
-      });
-    } else {
-      // その他のページ: アクティブなし
-      setActiveCategoryId(null);
-    }
-
-    return () => {
-      cancelled = true;
-    };
-  }, [urlCategoryId, liquorId]);
+  const activeCategoryId = useCurrentCategoryId(propActiveCategoryId);
 
   const pathIds = activeCategoryId ? (findPath(activeCategoryId, categoryTree) ?? []) : [];
   // 祖先 ID セット（アクティブ自身を除く）

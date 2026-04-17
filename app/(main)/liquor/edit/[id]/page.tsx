@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
+import { LiquorForm } from '@/components/pages/liquor/LiquorForm/LiquorForm';
 import { fetchAllCategories } from '@/lib/server/categories/fetch';
 import { getGuestClient } from '@/lib/server/client';
-import { LiquorForm } from '@/components/liquor/LiquorForm/LiquorForm';
 
 export default async function LiquorEditPage({
   params,

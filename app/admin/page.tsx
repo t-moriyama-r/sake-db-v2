@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { client } from '@/lib/amplify-client';
+import { useRouter } from 'next/navigation';
 import type { Schema } from '@/amplify/data/resource';
-import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/Button/Button';
-import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
+import { useAuth } from '@/hooks/useAuth';
+import { client } from '@/lib/amplify-client';
 
 type Category = Schema['Category']['type'];
 

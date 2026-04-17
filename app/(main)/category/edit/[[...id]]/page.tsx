@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import type { Schema } from '@/amplify/data/resource';
+import { CategoryForm } from '@/components/pages/category/CategoryForm/CategoryForm';
+import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
-import type { Schema } from '@/amplify/data/resource';
 import type { CategoryInput } from '@/schemas/category';
-import { CategoryForm } from '@/components/category/CategoryForm/CategoryForm';
-import { Spinner } from '@/components/ui/Spinner/Spinner';
 
 type Category = Schema['Category']['type'];
 
