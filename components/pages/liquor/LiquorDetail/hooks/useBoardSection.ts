@@ -1,67 +1,40 @@
 'use client';
 
-import { useState } from 'react';
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { useMemo, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
-import type { BoardPostRecord } from '@/lib/server/boardPosts/fetch';
+import type { BoardPostRecord, SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 import { revalidateBoardPostsCache } from '@/lib/server/boardPosts/revalidate';
-import type { LiquorRecord } from '@/lib/server/liquors/fetch';
+import type { LiquorRecord, SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { revalidateLiquorsCache } from '@/lib/server/liquors/revalidate';
 import type { BoardPostInput } from '@/schemas/board';
 
 type Options = {
-  liquor: LiquorRecord;
-  initialBoardPosts: BoardPostRecord[];
-  onLiquorUpdateAction: (updated: LiquorRecord) => void;
+  liquor: SerializableLiquorRecord;
+  initialBoardPosts: SerializableBoardPostRecord[];
+  onLiquorUpdateAction: (updated: SerializableLiquorRecord) => void;
 };
 
 export function useBoardSection({ liquor, initialBoardPosts, onLiquorUpdateAction }: Options) {
   const { user } = useAuth();
-  const [boardPosts, setBoardPosts] = useState(initialBoardPosts);
-  const [postFormOpen, setPostFormOpen] = useState(false);
-  const [existingPost, setExistingPost] = useState<BoardPostRecord | null>(null);
-  const [postFetching, setPostFetching] = useState(false);
+  const [boardPosts, setBoardPosts] = useState<SerializableBoardPostRecord[]>(initialBoardPosts);
+  const [postFormOpen, setPostFormOpen] = useState<boolean>(false);
 
-  async function openPostForm(): Promise<void> {
+  const existingPost = useMemo(
+    () => (user ? (boardPosts.find((p) => p.userId === user.id) ?? null) : null),
+    [user, boardPosts],
+  );
+
+  function openPostForm(): void {
     setPostFormOpen(true);
-    setExistingPost(null);
-
-    if (!user) return;
-
-    setPostFetching(true);
-    try {
-      const session = await fetchAuthSession();
-      const sessionUserId = session.tokens?.accessToken?.payload?.sub as string | undefined;
-      if (!sessionUserId) return;
-
-      const { data } = await client.models.BoardPost.listBoardPostByUserId(
-        { userId: sessionUserId },
-        { filter: { liquorId: { eq: liquor.id } }, authMode: 'userPool' },
-      );
-      setExistingPost(data?.[0] ?? null);
-    } catch {
-      // セッション切れなどの場合は空フォームにフォールバック
-    } finally {
-      setPostFetching(false);
-    }
   }
 
   function closePostForm(): void {
     setPostFormOpen(false);
-    setExistingPost(null);
   }
 
   async function handlePost(data: BoardPostInput): Promise<void> {
-    let sessionUserId: string | undefined;
-    try {
-      const session = await fetchAuthSession();
-      sessionUserId = session.tokens?.accessToken?.payload?.sub as string | undefined;
-    } catch {
-      // 未ログインまたはセッション切れ
-    }
-
-    const authMode = sessionUserId ? 'userPool' : 'apiKey';
+    const authMode = user ? 'userPool' : 'apiKey';
 
     if (existingPost) {
       const { data: updatedPost, errors } = await client.models.BoardPost.update(
@@ -72,16 +45,16 @@ export function useBoardSection({ liquor, initialBoardPosts, onLiquorUpdateActio
           userName: user?.name ?? null,
           userImageBase64: user?.imageBase64,
         },
-        { authMode },
+        { authMode: 'userPool' },
       );
       if (errors?.length) throw new Error(errors[0].message);
       if (updatedPost) {
         const { liquor: _l, ...cleanPost } = updatedPost as BoardPostRecord & { liquor?: unknown };
         const updatedPosts = boardPosts.map((p) =>
-          p.id === existingPost.id ? (cleanPost as BoardPostRecord) : p,
+          p.id === existingPost.id ? (cleanPost as SerializableBoardPostRecord) : p,
         );
         setBoardPosts(updatedPosts);
-        await updateBoardAvgRate(updatedPosts, authMode);
+        await updateBoardAvgRate(updatedPosts, 'userPool');
       }
     } else {
       const { data: newPost, errors } = await client.models.BoardPost.create(
@@ -92,7 +65,7 @@ export function useBoardSection({ liquor, initialBoardPosts, onLiquorUpdateActio
           liquorName: liquor.name,
           text: data.text,
           rate: data.rate ?? undefined,
-          userId: sessionUserId,
+          userId: user?.id,
           userName: user?.name ?? (data.guestName || null),
           userImageBase64: user?.imageBase64,
         },
@@ -101,7 +74,7 @@ export function useBoardSection({ liquor, initialBoardPosts, onLiquorUpdateActio
       if (errors?.length) throw new Error(errors[0].message);
       if (newPost) {
         const { liquor: _l, ...cleanPost } = newPost as BoardPostRecord & { liquor?: unknown };
-        const updatedPosts = [...boardPosts, cleanPost as BoardPostRecord];
+        const updatedPosts = [...boardPosts, cleanPost as SerializableBoardPostRecord];
         setBoardPosts(updatedPosts);
         await updateBoardAvgRate(updatedPosts, authMode);
       }
@@ -110,24 +83,57 @@ export function useBoardSection({ liquor, initialBoardPosts, onLiquorUpdateActio
     closePostForm();
   }
 
-  async function updateBoardAvgRate(posts: BoardPostRecord[], authMode: 'apiKey' | 'userPool'): Promise<void> {
+  async function handleDelete(): Promise<void> {
+    if (!existingPost) return;
+
+    const { errors } = await client.models.BoardPost.delete(
+      { id: existingPost.id },
+      { authMode: 'userPool' },
+    );
+    if (errors?.length) throw new Error(errors[0].message);
+
+    const updatedPosts = boardPosts.filter((p) => p.id !== existingPost.id);
+    setBoardPosts(updatedPosts);
+    closePostForm();
+    await updateBoardAvgRate(updatedPosts, 'userPool');
+  }
+
+  async function updateBoardAvgRate(
+    posts: SerializableBoardPostRecord[],
+    authMode: 'apiKey' | 'userPool',
+  ): Promise<void> {
     const rated = posts.filter((p) => p.rate != null);
     const boardRateCount = rated.length > 0 ? rated.length : null;
-    const boardAvgRate = rated.length > 0
-      ? rated.reduce((acc, p) => acc + (p.rate ?? 0), 0) / rated.length
-      : null;
+    const boardAvgRate =
+      rated.length > 0 ? rated.reduce((acc, p) => acc + (p.rate ?? 0), 0) / rated.length : null;
     const { data: updated } = await client.models.Liquor.update(
       { id: liquor.id, boardAvgRate, boardRateCount },
       { authMode },
     );
     if (updated) {
-      const { category: _cat, boardPosts: _bp, tags: _tags, flavorVotes: _fv, bookmarks: _bm, liquorHistories: _lh, ...rest } = updated as LiquorRecord & Record<string, unknown>;
-      onLiquorUpdateAction(rest as LiquorRecord);
+      const {
+        category: _cat,
+        boardPosts: _bp,
+        tags: _tags,
+        flavorVotes: _fv,
+        bookmarks: _bm,
+        liquorHistories: _lh,
+        ...rest
+      } = updated as LiquorRecord & Record<string, unknown>;
+      onLiquorUpdateAction(rest as SerializableLiquorRecord);
     }
     await revalidateBoardPostsCache();
     await revalidateLiquorsCache();
   }
 
-  return { boardPosts, postFormOpen, existingPost, postFetching, openPostForm, closePostForm, handlePost };
+  return {
+    boardPosts,
+    postFormOpen,
+    existingPost,
+    userId: user?.id ?? null,
+    openPostForm,
+    closePostForm,
+    handlePost,
+    handleDelete,
+  };
 }
-

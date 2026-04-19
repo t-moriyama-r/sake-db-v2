@@ -15,7 +15,7 @@ const MobileSidebarContext = createContext<MobileSidebarContextType>({
 });
 
 export function MobileSidebarProvider({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <MobileSidebarContext.Provider value={{ isOpen, open: () => setIsOpen(true), close: () => setIsOpen(false) }}>
       {children}

@@ -10,14 +10,16 @@ import { boardPostSchema, type BoardPostInput } from '@/schemas/board';
 
 type Props = {
   onSubmit: (data: BoardPostInput) => Promise<void>;
+  onDelete?: () => Promise<void>;
   defaultValues?: Partial<BoardPostInput>;
   submitLabel?: string;
   isLoggedIn?: boolean;
   loading?: boolean;
 };
 
-export function BoardPostForm({ onSubmit, defaultValues, submitLabel = '投稿', isLoggedIn, loading }: Props) {
-  const [serverError, setServerError] = useState('');
+export function BoardPostForm({ onSubmit, onDelete, defaultValues, submitLabel = '投稿', isLoggedIn, loading }: Props) {
+  const [serverError, setServerError] = useState<string>('');
+  const [deleting, setDeleting] = useState<boolean>(false);
 
   const {
     register,
@@ -41,6 +43,18 @@ export function BoardPostForm({ onSubmit, defaultValues, submitLabel = '投稿',
       setServerError(err instanceof Error ? err.message : '投稿に失敗しました');
     }
   };
+
+  async function handleDelete() {
+    if (!onDelete) return;
+    setDeleting(true);
+    try {
+      await onDelete();
+    } catch (err: unknown) {
+      setServerError(err instanceof Error ? err.message : '削除に失敗しました');
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   if (loading) {
     return <div className="py-8 text-center text-muted-foreground">読み込み中...</div>;
@@ -87,9 +101,16 @@ export function BoardPostForm({ onSubmit, defaultValues, submitLabel = '投稿',
         {...register('text')}
       />
 
-      <Button type="submit" loading={isSubmitting}>
-        {submitLabel}
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button type="submit" loading={isSubmitting} className="flex-1">
+          {submitLabel}
+        </Button>
+        {onDelete && (
+          <Button type="button" variant="danger" loading={deleting} onClick={handleDelete}>
+            削除する
+          </Button>
+        )}
+      </div>
     </form>
   );
 }

@@ -16,7 +16,7 @@ import { loginSchema, type LoginInput } from '@/schemas/auth';
 export const LoginForm = () => {
   const router = useRouter();
   const { login } = useAuth();
-  const [serverError, setServerError] = useState('');
+  const [serverError, setServerError] = useState<string>('');
 
   const {
     register,

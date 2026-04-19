@@ -2,20 +2,18 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
-import type { Schema } from '@/amplify/data/resource';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
 import { liquorSchema, type LiquorInput } from '@/schemas/liquor';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { CategoryCascadeSelect } from './CategoryCascadeSelect';
 
-type Category = Schema['Category']['type'];
-type Liquor = Schema['Liquor']['type'];
-
 type Props = {
-  categories: Category[];
+  categories: SerializableCategoryRecord[];
   defaultValues?: Partial<LiquorInput>;
-  liquor?: Liquor;
+  liquor?: SerializableLiquorRecord;
   onSubmitAction: (data: LiquorInput) => Promise<void>;
 };
 export function LiquorFormFields({ categories, defaultValues, liquor, onSubmitAction }: Props) {

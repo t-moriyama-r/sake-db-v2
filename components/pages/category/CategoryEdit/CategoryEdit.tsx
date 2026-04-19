@@ -2,18 +2,16 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Schema } from '@/amplify/data/resource';
 import { CategoryForm } from '@/components/pages/category/CategoryForm/CategoryForm';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import { routes } from '@/lib/routes';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import type { CategoryInput } from '@/schemas/category';
-
-type Category = Schema['Category']['type'];
 
 type Props = {
   categoryId?: string;
-  category?: Category;
+  category?: SerializableCategoryRecord;
 };
 
 export const CategoryEdit = ({ categoryId, category }: Props) => {

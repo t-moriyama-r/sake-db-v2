@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button/Button';
 import { Dialog } from '@/components/ui/Dialog/Dialog';
 
 export const GuestMenu = () => {
-  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
 
   return (
     <div>

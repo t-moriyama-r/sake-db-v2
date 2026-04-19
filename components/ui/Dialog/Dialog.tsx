@@ -14,7 +14,7 @@ type Props = {
 
 export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
 

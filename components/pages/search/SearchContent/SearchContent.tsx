@@ -2,22 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import type { Schema } from '@/amplify/data/resource';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
-
-type Liquor = Schema['Liquor']['type'];
 
 export const SearchContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get('q') ?? '';
 
-  const [query, setQuery] = useState(initialQuery);
-  const [results, setResults] = useState<Liquor[]>([]);
-  const [searched, setSearched] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState<string>(initialQuery);
+  const [results, setResults] = useState<SerializableLiquorRecord[]>([]);
+  const [searched, setSearched] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
   const handleSearch = async (e?: React.FormEvent) => {
@@ -38,7 +36,7 @@ export const SearchContent = () => {
         setResults([]);
         return;
       }
-      const liquors = await res.json() as Liquor[];
+      const liquors = await res.json() as SerializableLiquorRecord[];
       setResults(liquors);
     } catch (err) {
       console.error('[search] exception:', err);

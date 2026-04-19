@@ -6,7 +6,7 @@ import {
   fetchAllCategories,
   fetchCategory,
   collectDescendantIds,
-  type CategoryRecord,
+  type SerializableCategoryRecord,
 } from '@/lib/server/categories/fetch';
 import { fetchLiquorsByCategories } from '@/lib/server/liquors/fetch';
 
@@ -71,7 +71,7 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
   );
 }
 
-function buildBreadcrumbs(categoryId: string, allCategories: CategoryRecord[]): CategoryRecord[] {
+function buildBreadcrumbs(categoryId: string, allCategories: SerializableCategoryRecord[]): SerializableCategoryRecord[] {
   const category = allCategories.find((c) => c.id === categoryId);
   if (!category) return [];
 

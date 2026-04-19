@@ -44,6 +44,18 @@ export const CATEGORIES = {
   // ── 醸造酒 ──
   日本酒:                 { id: 'cat-sake',             name: '日本酒' },
   ビール:                 { id: 'cat-beer',             name: 'ビール' },
+  ビールラガー:           { id: 'cat-beer-lager',       name: 'ラガー' },
+  ピルスナー:             { id: 'cat-beer-pilsner',     name: 'ピルスナー' },
+  ヘレス:                 { id: 'cat-beer-helles',      name: 'ヘレス' },
+  デュンケル:             { id: 'cat-beer-dunkel',      name: 'デュンケル' },
+  ボック:                 { id: 'cat-beer-bock',        name: 'ボック' },
+  ビールエール:           { id: 'cat-beer-ale',         name: 'エール' },
+  IPA:                    { id: 'cat-beer-ipa',         name: 'IPA' },
+  ペールエール:           { id: 'cat-beer-pale-ale',    name: 'ペールエール' },
+  スタウト:               { id: 'cat-beer-stout',       name: 'スタウト' },
+  ヴァイツェン:           { id: 'cat-beer-weizen',      name: 'ヴァイツェン' },
+  ベルジャン:             { id: 'cat-beer-belgian',     name: 'ベルジャン' },
+  フルーツビール:         { id: 'cat-beer-fruit',       name: 'フルーツビール' },
   赤ワイン:               { id: 'cat-red-wine',         name: '赤ワイン' },
   白ワイン:               { id: 'cat-white-wine',       name: '白ワイン' },
   ロゼワイン:             { id: 'cat-rose-wine',        name: 'ロゼワイン' },
@@ -53,6 +65,10 @@ export const CATEGORIES = {
   フルーツ系:             { id: 'cat-fruit',            name: 'フルーツ系' },
   ハーブ系:               { id: 'cat-herb',             name: 'ハーブ系' },
   ナッツ系:               { id: 'cat-nuts',             name: 'ナッツ系' },
+  コーヒー系:             { id: 'cat-coffee',           name: 'コーヒー系' },
+  カカオ系:               { id: 'cat-cacao',            name: 'カカオ系' },
+  カカオホワイト:         { id: 'cat-cacao-white',      name: 'ホワイト' },
+  カカオブラウン:         { id: 'cat-cacao-brown',      name: 'ブラウン' },
   リキュールその他:       { id: 'cat-liqueur-other',    name: 'その他' },
 } as const;
 
@@ -88,7 +104,28 @@ const tree: CategoryTree[] = [
   {
     id: 'cat-brewed', name: '醸造酒', readonly: true, versionNo: 1, children: [
       { ...CATEGORIES.日本酒, readonly: true, versionNo: 1 },
-      { ...CATEGORIES.ビール, readonly: true, versionNo: 1 },
+      {
+        ...CATEGORIES.ビール, readonly: true, versionNo: 1, children: [
+          {
+            ...CATEGORIES.ビールラガー, readonly: true, versionNo: 1, children: [
+              { ...CATEGORIES.ピルスナー,  readonly: true, versionNo: 1 },
+              { ...CATEGORIES.ヘレス,      readonly: true, versionNo: 1 },
+              { ...CATEGORIES.デュンケル,  readonly: true, versionNo: 1 },
+              { ...CATEGORIES.ボック,      readonly: true, versionNo: 1 },
+            ],
+          },
+          {
+            ...CATEGORIES.ビールエール, readonly: true, versionNo: 1, children: [
+              { ...CATEGORIES.IPA,          readonly: true, versionNo: 1 },
+              { ...CATEGORIES.ペールエール, readonly: true, versionNo: 1 },
+              { ...CATEGORIES.スタウト,     readonly: true, versionNo: 1 },
+              { ...CATEGORIES.ヴァイツェン, readonly: true, versionNo: 1 },
+              { ...CATEGORIES.ベルジャン,   readonly: true, versionNo: 1 },
+            ],
+          },
+          { ...CATEGORIES.フルーツビール, readonly: true, versionNo: 1 },
+        ],
+      },
       {
         id: 'cat-wine', name: 'ワイン', readonly: true, versionNo: 1, children: [
           { ...CATEGORIES.赤ワイン,             readonly: true, versionNo: 1 },
@@ -105,7 +142,17 @@ const tree: CategoryTree[] = [
     id: 'cat-liqueur', name: '混成酒(リキュール)', readonly: true, versionNo: 1, children: [
       { ...CATEGORIES.フルーツ系,       readonly: true, versionNo: 1 },
       { ...CATEGORIES.ハーブ系,         readonly: true, versionNo: 1 },
-      { ...CATEGORIES.ナッツ系,         readonly: true, versionNo: 1 },
+      {
+        ...CATEGORIES.ナッツ系, readonly: true, versionNo: 1, children: [
+          { ...CATEGORIES.コーヒー系, readonly: true, versionNo: 1 },
+          {
+            ...CATEGORIES.カカオ系, readonly: true, versionNo: 1, children: [
+              { ...CATEGORIES.カカオホワイト, readonly: true, versionNo: 1 },
+              { ...CATEGORIES.カカオブラウン, readonly: true, versionNo: 1 },
+            ],
+          },
+        ],
+      },
       { ...CATEGORIES.リキュールその他, readonly: true, versionNo: 1 },
     ],
   },

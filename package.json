@@ -13,10 +13,14 @@
     "lint": "eslint",
     "seed": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts",
     "seed:dry-run": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts --dry-run",
-    "invoke:search-cache": "cross-env AWS_PROFILE=sake-db npx tsx scripts/invoke-build-search-cache.ts"
+    "invoke:search-cache": "cross-env AWS_PROFILE=sake-db npx tsx scripts/invoke-build-search-cache.ts",
+    "cache:clear": "npx rimraf .next/cache"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.1030.0",
+    "@fortawesome/fontawesome-svg-core": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.0",
     "@hookform/resolvers": "^5.2.2",
     "aws-amplify": "^6.16.3",
     "next": "16.2.0",

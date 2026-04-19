@@ -1,22 +1,20 @@
 'use client';
 
-import type { Schema } from '@/amplify/data/resource';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { LiquorFormFields } from './LiquorFormFields';
 import { useLiquorSave } from './useLiquorSave';
 
-type Category = Schema['Category']['type'];
-type Liquor = Schema['Liquor']['type'];
-
 type NewProps = {
   mode: 'NEW';
-  categories: Category[];
+  categories: SerializableCategoryRecord[];
   categoryId?: string;
 };
 
 type EditProps = {
   mode: 'EDIT';
-  categories: Category[];
-  liquor: Liquor;
+  categories: SerializableCategoryRecord[];
+  liquor: SerializableLiquorRecord;
 };
 
 type Props = NewProps | EditProps;

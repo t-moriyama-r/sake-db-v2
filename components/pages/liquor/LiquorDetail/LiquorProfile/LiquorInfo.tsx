@@ -1,16 +1,21 @@
+import type { ReactNode } from 'react';
 import { LiquorRating } from '@/components/pages/liquor/common/LiquorRating/LiquorRating';
 import { calcMemberAvgRate, calcMemberRateCount } from '@/lib/liquor/rating';
-import type { LiquorRecord } from '@/lib/server/liquors/fetch';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 
 type Props = {
-  liquor: LiquorRecord;
+  liquor: SerializableLiquorRecord;
+  actions?: ReactNode;
 };
 
-export function LiquorInfo({ liquor }: Props) {
+export function LiquorInfo({ liquor, actions }: Props) {
   return (
     <>
       <p className="text-sm text-muted-foreground">{liquor.categoryName}</p>
-      <h1 className="mt-1 text-2xl font-bold text-foreground">{liquor.name}</h1>
+      <div className="mt-1 flex items-center gap-3">
+        <h1 className="text-2xl font-bold text-foreground">{liquor.name}</h1>
+        {actions}
+      </div>
       <div className="mt-2">
         <LiquorRating
           memberAvgRate={calcMemberAvgRate(liquor)}

@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

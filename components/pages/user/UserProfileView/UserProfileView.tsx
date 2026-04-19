@@ -3,15 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import type { Schema } from '@/amplify/data/resource';
+import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { client } from '@/lib/amplify-client';
 
-type BoardPost = Schema['BoardPost']['type'];
-
 type UserActivity = {
-  post: BoardPost;
+  post: SerializableBoardPostRecord;
   liquorName: string;
   liquorId: string;
 };
@@ -20,8 +18,8 @@ export function UserProfileView() {
   const { id } = useParams<{ id: string }>();
 
   const [posts, setPosts] = useState<UserActivity[]>([]);
-  const [userName, setUserName] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const load = async () => {
@@ -35,7 +33,7 @@ export function UserProfileView() {
           setUserName(userPosts[0].userName ?? '');
         }
 
-        const activities: UserActivity[] = userPosts.map((p) => ({
+        const activities: UserActivity[] = (JSON.parse(JSON.stringify(userPosts)) as SerializableBoardPostRecord[]).map((p) => ({
           post: p,
           liquorName: p.liquorName,
           liquorId: p.liquorId,

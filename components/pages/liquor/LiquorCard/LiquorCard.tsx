@@ -1,13 +1,11 @@
 import Link from 'next/link';
-import type { Schema } from '@/amplify/data/resource';
 import { LiquorRating } from '@/components/pages/liquor/common/LiquorRating/LiquorRating';
 import { calcMemberAvgRate, calcMemberRateCount } from '@/lib/liquor/rating';
 import { routes } from '@/lib/routes';
-
-type Liquor = Schema['Liquor']['type'];
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 
 type Props = {
-  liquor: Liquor;
+  liquor: SerializableLiquorRecord;
 };
 
 export const LiquorCard = ({ liquor }: Props) => {

@@ -28,7 +28,7 @@ export const boardModels = {
       allow.guest().to(['read']),
       allow.publicApiKey().to(['read', 'create']),
       allow.authenticated().to(['read', 'create']),
-      allow.owner().to(['update', 'delete']),
+      allow.owner().to(['create', 'update', 'delete']),
       allow.groups(['admin']),
     ]),
 };

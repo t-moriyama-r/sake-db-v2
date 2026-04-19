@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Schema } from '@/amplify/data/resource';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
@@ -10,15 +10,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import { routes } from '@/lib/routes';
 
-type BookMark = Schema['BookMark']['type'];
-type Liquor = Schema['Liquor']['type'];
-
 export function MyPageView() {
   const router = useRouter();
   const { user, isLogin, isLoading } = useAuth();
 
-  const [bookmarks, setBookmarks] = useState<Liquor[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [bookmarks, setBookmarks] = useState<SerializableLiquorRecord[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!isLoading && !isLogin) { router.replace('/auth/login'); return; }
@@ -29,9 +26,10 @@ export function MyPageView() {
       try {
         const { data: bms } = await client.models.BookMark.list();
         const liquorResults = await Promise.all(
-          bms.map((bm: BookMark) => client.models.Liquor.get({ id: bm.liquorId }))
+          bms.map((bm) => client.models.Liquor.get({ id: bm.liquorId }))
         );
-        setBookmarks(liquorResults.map((r) => r.data).filter(Boolean) as Liquor[]);
+        const liquors = liquorResults.map((r) => r.data).filter(Boolean);
+        setBookmarks(JSON.parse(JSON.stringify(liquors)) as SerializableLiquorRecord[]);
       } finally {
         setLoading(false);
       }

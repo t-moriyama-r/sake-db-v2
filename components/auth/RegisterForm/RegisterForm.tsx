@@ -18,11 +18,11 @@ export const RegisterForm = () => {
   const router = useRouter();
   const { register: registerUser, confirmSignUp, login } = useAuth();
   const [step, setStep] = useState<Step>('form');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [serverError, setServerError] = useState('');
-  const [confirmCode, setConfirmCode] = useState('');
-  const [confirming, setConfirming] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [serverError, setServerError] = useState<string>('');
+  const [confirmCode, setConfirmCode] = useState<string>('');
+  const [confirming, setConfirming] = useState<boolean>(false);
 
   const {
     register,

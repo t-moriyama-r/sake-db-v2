@@ -3,25 +3,23 @@
 import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
-import type { Schema } from '@/amplify/data/resource';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
 import { client } from '@/lib/amplify-client';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import { categorySchema, type CategoryInput } from '@/schemas/category';
-
-type Category = Schema['Category']['type'];
 
 type Props = {
   defaultValues?: Partial<CategoryInput & { imageUrl?: string; imageBase64?: string }>;
-  category?: Category;
+  category?: SerializableCategoryRecord;
   onSubmit: (data: CategoryInput) => Promise<void>;
   submitLabel?: string;
 };
 
 export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = '保存' }: Props) => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [serverError, setServerError] = useState('');
+  const [categories, setCategories] = useState<SerializableCategoryRecord[]>([]);
+  const [serverError, setServerError] = useState<string>('');
 
   const {
     register,
@@ -38,7 +36,9 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
   });
 
   useEffect(() => {
-    client.models.Category.list().then(({ data }) => setCategories(data));
+    client.models.Category.list().then(({ data }) =>
+      setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[])
+    );
   }, []);
 
   const handleFormSubmit = async (data: CategoryInput) => {

@@ -2,30 +2,36 @@
 
 import { useState } from 'react';
 import { client } from '@/lib/amplify-client';
-import type { TagRecord } from '@/lib/server/tags/fetch';
+import { revalidateTagsCache } from '@/lib/server/tags/revalidate';
+
+export type TagItem = { id: string; text: string };
 
 type Options = {
   liquorId: string;
-  initialTags: TagRecord[];
+  initialTags: TagItem[];
 };
 
 export function useLiquorTags({ liquorId, initialTags }: Options) {
-  const [tags, setTags] = useState(initialTags);
-  const [newTag, setNewTag] = useState('');
+  const [tags, setTags] = useState<TagItem[]>(initialTags);
 
-  async function handleAddTag(): Promise<void> {
-    if (!newTag.trim()) return;
-    await client.models.Tag.create({ liquorId, text: newTag.trim() });
+  async function handleAddTag(text: string): Promise<void> {
+    const trimmed = text.trim();
+    if (!trimmed) throw new Error('タグを入力してください');
+    if (tags.some((t) => t.text === trimmed)) throw new Error('同じタグがすでに存在します');
+    const { errors: createErrors } = await client.models.Tag.create({ liquorId, text: trimmed });
+    if (createErrors?.length) throw new Error(createErrors[0].message);
     const { data: tagList } = await client.models.Tag.list({ filter: { liquorId: { eq: liquorId } } });
-    setTags(tagList.map(({ liquor: _liquorFn, ...tag }) => tag as TagRecord));
-    setNewTag('');
+    setTags(tagList.map(({ id, text }) => ({ id, text })));
+    await revalidateTagsCache();
   }
 
   async function handleDeleteTag(tagId: string): Promise<void> {
-    await client.models.Tag.delete({ id: tagId });
+    const { errors } = await client.models.Tag.delete({ id: tagId });
+    if (errors?.length) throw new Error(errors[0].message);
     setTags((prev) => prev.filter((t) => t.id !== tagId));
+    await revalidateTagsCache();
   }
 
-  return { tags, newTag, setNewTag, handleAddTag, handleDeleteTag };
+  return { tags, handleAddTag, handleDeleteTag };
 }
 

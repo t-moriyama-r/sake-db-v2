@@ -11,8 +11,8 @@ type Options = {
 
 export function useLiquorDelete({ liquorId, categoryId }: Options) {
   const router = useRouter();
-  const [deleteDialog, setDeleteDialog] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
 
   async function handleDelete(): Promise<void> {
     setDeleting(true);

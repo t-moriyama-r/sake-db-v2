@@ -28,7 +28,7 @@ export type AppUser = {
 
 export function useAuth() {
   const [user, setUser] = useState<AppUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const loadUser = useCallback(async () => {
     try {

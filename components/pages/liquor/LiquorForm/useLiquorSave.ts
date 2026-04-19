@@ -1,15 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import type { Schema } from '@/amplify/data/resource';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { updateLiquor, createLiquorHistory, createLiquor } from '@/lib/repository/liquor';
 import type { LiquorInput } from '@/schemas/liquor';
 import { useLiquorFormActions } from './useLiquorFormActions';
 
-type Liquor = Schema['Liquor']['type'];
-
 type UseLiquorSaveOptions = {
-  liquor?: Liquor;
+  liquor?: SerializableLiquorRecord;
 };
 
 export function useLiquorSave({ liquor }: UseLiquorSaveOptions) {

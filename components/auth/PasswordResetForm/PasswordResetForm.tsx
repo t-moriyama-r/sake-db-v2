@@ -10,8 +10,8 @@ import { passwordResetSchema, type PasswordResetInput } from '@/schemas/auth';
 
 export function PasswordResetForm() {
   const { resetPassword } = useAuth();
-  const [sent, setSent] = useState(false);
-  const [serverError, setServerError] = useState('');
+  const [sent, setSent] = useState<boolean>(false);
+  const [serverError, setServerError] = useState<string>('');
 
   const {
     register,

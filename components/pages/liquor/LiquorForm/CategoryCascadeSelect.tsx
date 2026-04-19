@@ -1,9 +1,7 @@
-import type { Schema } from '@/amplify/data/resource';
-
-type Category = Schema['Category']['type'];
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 
 type Props = {
-  categories: Category[];
+  categories: SerializableCategoryRecord[];
   value: string;
   onChange: (id: string) => void;
   error?: string;
@@ -45,15 +43,15 @@ const SELECT_CLASS =
   'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground ' +
   'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring';
 
-function getChildren(categories: Category[], parentId: string): Category[] {
+function getChildren(categories: SerializableCategoryRecord[], parentId: string): SerializableCategoryRecord[] {
   return categories.filter((c) => c.parentId === parentId);
 }
 
-function computeLevels(categories: Category[], selectedPath: string[]): Category[][] {
+function computeLevels(categories: SerializableCategoryRecord[], selectedPath: string[]): SerializableCategoryRecord[][] {
   const roots = categories.filter((c) => !c.parentId);
   if (roots.length === 0) return [];
 
-  const levels: Category[][] = [roots];
+  const levels: SerializableCategoryRecord[][] = [roots];
   for (const id of selectedPath) {
     const children = getChildren(categories, id);
     if (children.length === 0) break;
@@ -63,7 +61,7 @@ function computeLevels(categories: Category[], selectedPath: string[]): Category
   return levels;
 }
 
-function findPath(categories: Category[], targetId: string): string[] {
+function findPath(categories: SerializableCategoryRecord[], targetId: string): string[] {
   const target = categories.find((c) => c.id === targetId);
   if (!target) return [];
   if (!target.parentId) return [target.id];
@@ -71,7 +69,7 @@ function findPath(categories: Category[], targetId: string): string[] {
   return [...parentPath, target.id];
 }
 
-function sortWithOtherLast(categories: Category[]): Category[] {
+function sortWithOtherLast(categories: SerializableCategoryRecord[]): SerializableCategoryRecord[] {
   return [...categories].sort((a, b) => {
     if (a.name === 'その他') return 1;
     if (b.name === 'その他') return -1;

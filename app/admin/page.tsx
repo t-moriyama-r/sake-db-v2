@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import type { Schema } from '@/amplify/data/resource';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import { Button } from '@/components/ui/Button/Button';
 import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
@@ -11,22 +11,20 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import { routes } from '@/lib/routes';
 
-type Category = Schema['Category']['type'];
-
 export default function AdminPage() {
   const router = useRouter();
   const { isAdmin, isLoading } = useAuth();
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<SerializableCategoryRecord[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
 
   useEffect(() => {
     if (!isLoading && !isAdmin) { router.replace('/'); return; }
     if (isAdmin) {
       client.models.Category.list()
-        .then(({ data }) => setCategories(data))
+        .then(({ data }) => setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]))
         .finally(() => setLoading(false));
     }
   }, [isAdmin, isLoading, router]);

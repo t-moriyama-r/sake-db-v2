@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { routes } from '@/lib/routes';
 
 export const HeaderSearchForm = () => {
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState<string>('');
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 

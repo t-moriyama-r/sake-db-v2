@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb/Breadcrumb';
 import type { CategoryBreadcrumbItem } from '@/lib/server/categories/fetch';
-import type { LiquorRecord } from '@/lib/server/liquors/fetch';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 
 type SubCategory = {
   id: string;
@@ -15,7 +15,7 @@ type Props = {
   categoryDescription?: string | null;
   breadcrumbs: CategoryBreadcrumbItem[];
   subCategories: SubCategory[];
-  liquors: LiquorRecord[];
+  liquors: SerializableLiquorRecord[];
   isAdmin: boolean;
 };
 

@@ -48,3 +48,9 @@ amplify_outputs*
 amplifyconfiguration*
 
 certificates
+
+# claude code
+.claude/settings.local.json
+
+# local db
+sake-db

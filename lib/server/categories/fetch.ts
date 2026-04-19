@@ -4,14 +4,15 @@ import { withCache, CACHE_TAGS } from '../cache';
 import { getGuestClient } from '../client';
 
 export type CategoryRecord = Schema['Category']['type'];
+export type SerializableCategoryRecord = Omit<CategoryRecord, 'parent' | 'children' | 'liquors' | 'categoryHistories'>;
 
 export const fetchAllCategories = withCache(
-  async (): Promise<CategoryRecord[]> => {
+  async (): Promise<SerializableCategoryRecord[]> => {
     console.log('[DEBUG] fetchAllCategories 開始');
     const client = getGuestClient();
     const all = await fetchAll((t, lim) => client.models.Category.list({ limit: lim, nextToken: t }));
     console.log('[DEBUG] fetchAllCategories 完了 件数:', all.length);
-    return all;
+    return JSON.parse(JSON.stringify(all)) as SerializableCategoryRecord[];
   },
   ['all-categories'],
   { tags: [CACHE_TAGS.categories], revalidate: 3600 },
@@ -19,7 +20,7 @@ export const fetchAllCategories = withCache(
 
 /** ルートカテゴリ（parentId が null）のみ取得する。 */
 export const fetchRootCategories = withCache(
-  async (): Promise<CategoryRecord[]> => {
+  async (): Promise<SerializableCategoryRecord[]> => {
     const all = await fetchAllCategories();
     return all.filter((c) => !c.parentId);
   },
@@ -47,7 +48,7 @@ export const fetchCategoryTree = withCache(
   async (): Promise<CategoryTreeNode[]> => {
     const all = await fetchAllCategories();
 
-    const build = (items: CategoryRecord[], parentId: string | null): CategoryTreeNode[] =>
+    const build = (items: SerializableCategoryRecord[], parentId: string | null): CategoryTreeNode[] =>
       items
         .filter((c) => (c.parentId ?? null) === parentId)
         .map(({ id, name, parentId: pid }) => ({
@@ -70,10 +71,10 @@ export const fetchCategoryTree = withCache(
 
 /** 指定 ID のカテゴリ単体を取得する。 */
 export const fetchCategory = withCache(
-  async (id: string): Promise<CategoryRecord | null> => {
+  async (id: string): Promise<SerializableCategoryRecord | null> => {
     const client = getGuestClient();
     const { data } = await client.models.Category.get({ id });
-    return data ?? null;
+    return data ? JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord : null;
   },
   ['category'],
   { tags: [CACHE_TAGS.categories], revalidate: 3600 },
@@ -82,7 +83,7 @@ export const fetchCategory = withCache(
 /** 指定カテゴリを起点に全子孫 ID を BFS で収集する（自身を含む）。 */
 export function collectDescendantIds(
   rootId: string,
-  allCategories: CategoryRecord[],
+  allCategories: SerializableCategoryRecord[],
 ): string[] {
   const childrenMap = new Map<string, string[]>();
   for (const cat of allCategories) {
@@ -108,7 +109,7 @@ export type CategoryBreadcrumbItem = { id: string; name: string };
 /** 指定カテゴリからルートまでの祖先を含むパンくずリストを返す（自身含む）。 */
 export function buildCategoryBreadcrumbs(
   categoryId: string,
-  allCategories: CategoryRecord[],
+  allCategories: SerializableCategoryRecord[],
 ): CategoryBreadcrumbItem[] {
   const category = allCategories.find((c) => c.id === categoryId);
   if (!category) return [];

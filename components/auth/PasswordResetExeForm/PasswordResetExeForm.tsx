@@ -14,8 +14,8 @@ import { passwordResetExeSchema, type PasswordResetExeInput } from '@/schemas/au
 export function PasswordResetExeForm() {
   const router = useRouter();
   const { confirmResetPassword } = useAuth();
-  const [serverError, setServerError] = useState('');
-  const [email, setEmail] = useState('');
+  const [serverError, setServerError] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
 
   const {
     register,

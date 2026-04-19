@@ -32,6 +32,21 @@ import { foo } from '@/lib/server/foo/foo';
 型は、それを最初に使う関数・コンポーネントの直上に定義する。
 ファイル先頭にまとめて列挙しない。
 
+## useState のジェネリクスルール
+
+`useState` には **必ずジェネリクスを明示する**。TypeScript が初期値から推論できる場合でも省略しない。
+
+```typescript
+// ❌ 禁止
+const [flag, setFlag] = useState(false);
+const [name, setName] = useState('');
+
+// ✅ 正しい
+const [flag, setFlag] = useState<boolean>(false);
+const [name, setName] = useState<string>('');
+const [items, setItems] = useState<Item[]>(initialItems);
+```
+
 ## コンポーネントファイル内の定義順
 
 コンポーネントファイルでは **コンポーネント本体を最初に書く**。ヘルパー関数・ユーティリティはコンポーネントの後に定義する。
@@ -72,4 +87,48 @@ async function helperFn() { ... }     // ヘルパー（後方）
 このプロジェクトで使用している Next.js は、学習データと異なる破壊的変更を含む可能性があります。
 コードを書く前に `node_modules/next/dist/docs/` 内の該当ガイドを必ず確認し、非推奨の警告に従ってください。
 <!-- END:nextjs-agent-rules -->
+
+## ルートパス生成ルール
+
+URL（`href`）は **直書き禁止**。必ず `lib/routes.ts` の `routes` オブジェクトを使うこと。
+
+```typescript
+// ❌ 禁止
+href: `/discovery/tag/${encodeURIComponent(tag)}`
+
+// ✅ 正しい
+import { routes } from '@/lib/routes';
+href: routes.discovery.tag(tag)
+```
+
+新しいルートが必要な場合は `lib/routes.ts` に追加してから使う。
+
+## サーバーサイド fetch 関数のシリアライズルール
+
+`lib/server/*/fetch.ts` の関数は **必ず `Serializable*` 型を返すこと**。
+
+- Amplify Gen2 のモデルには lazy loader 関数フィールドが含まれるため、Server Component から Client Component へ直接渡すとシリアライズエラーになる
+- fetch 関数の内部で `JSON.parse(JSON.stringify(data)) as Serializable*` を適用してから返す
+- `Serializable*` 型は同じファイル内で `Omit<XxxRecord, 'lazyField1' | 'lazyField2'>` として定義する
+- page コンポーネントで独自にシリアライズしてはならない（fetch 関数が責務を持つ）
+
+```typescript
+// ✅ 正しい: fetch 関数内でシリアライズ
+export type LiquorRecord = Schema['Liquor']['type'];
+export type SerializableLiquorRecord = Omit<LiquorRecord, 'category' | 'boardPosts' | ...>;
+
+export const fetchLiquor = withCache(
+  async (id: string): Promise<SerializableLiquorRecord | null> => {
+    const { data } = await client.models.Liquor.get({ id });
+    return data ? JSON.parse(JSON.stringify(data)) as SerializableLiquorRecord : null;
+  },
+  ...
+);
+
+// ❌ 禁止: page コンポーネントで手動シリアライズ
+const serializableLiquor = JSON.parse(JSON.stringify(liquor)) as SerializableLiquorRecord;
+```
+
+Client Component 内で Amplify クライアントを直接呼び出してデータを取得する場合も、
+状態に保存する前に `JSON.parse(JSON.stringify(data))` を適用して lazy loader を除去すること。
 

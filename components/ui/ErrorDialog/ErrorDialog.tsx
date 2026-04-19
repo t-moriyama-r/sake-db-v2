@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button/Button';
 import { Dialog } from '@/components/ui/Dialog/Dialog';
 
 export function ErrorDialogProvider({ children }: { children: React.ReactNode }) {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<string>('');
 
   useEffect(() => {
     const handler = (event: PromiseRejectionEvent) => {
@@ -30,7 +30,7 @@ export function ErrorDialogProvider({ children }: { children: React.ReactNode })
         title="エラー"
         actions={<Button onClick={handleClose}>閉じる</Button>}
       >
-        <p className="text-foreground-secondary">{message}</p>
+        <p className="text-red-600">{message}</p>
       </Dialog>
     </>
   );

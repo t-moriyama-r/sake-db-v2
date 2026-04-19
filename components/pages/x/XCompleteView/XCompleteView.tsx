@@ -8,7 +8,7 @@ import { routes } from '@/lib/routes';
 export function XCompleteView() {
   const router = useRouter();
   const { loginWithX } = useAuth();
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     (async () => {

@@ -15,8 +15,8 @@ import { userEditSchema, type UserEditInput } from '@/schemas/auth';
 export function MyPageEditForm() {
   const router = useRouter();
   const { user, isLogin, isLoading, updateUserAttributes, updatePassword, reload } = useAuth();
-  const [serverError, setServerError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [serverError, setServerError] = useState<string>('');
+  const [success, setSuccess] = useState<boolean>(false);
 
   const {
     register,
