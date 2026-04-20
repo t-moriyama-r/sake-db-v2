@@ -36,8 +36,7 @@ export function LiquorDetail({ initialLiquor, initialBoardPosts, initialTags, ca
 
         <BoardSection
           liquor={liquor}
-          initialBoardPosts={initialBoardPosts}
-          isLogin={isLogin}
+          boardPosts={initialBoardPosts}
           onLiquorUpdateAction={setLiquor}
         />
       </div>

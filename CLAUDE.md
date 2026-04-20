@@ -10,7 +10,7 @@
 1. コンポーネント名と同名のディレクトリを作成し、その中に同名の `.tsx` ファイルを置く
    - 例: `Button` → `components/ui/Button/Button.tsx`
 2. そのコンポーネントの内部からしか呼ばれないサブコンポーネントは、同ディレクトリ内に並列に定義する
-   - 例: `BoardPostForm`（`LiquorDetailClient` 内部専用）→ `components/liquor/LiquorDetailClient/BoardPostForm.tsx`
+   - 例: `CommentForm`（`LiquorDetailClient` 内部専用）→ `components/liquor/LiquorDetailClient/CommentForm.tsx`
 3. 外部からインポートする際はファイル名まで明示する
    - 例: `import { Button } from '@/components/ui/Button/Button'`
 

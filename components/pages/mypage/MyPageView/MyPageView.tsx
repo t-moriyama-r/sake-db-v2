@@ -18,7 +18,7 @@ export function MyPageView() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!isLoading && !isLogin) { router.replace('/auth/login'); return; }
+    if (!isLoading && !isLogin) { router.replace(routes.auth.login()); return; }
     if (!isLogin) return;
 
     const load = async () => {

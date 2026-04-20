@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Dialog } from '@/components/ui/Dialog/Dialog';
 import { Button } from '@/components/ui/Button/Button';
 
@@ -13,20 +13,19 @@ type Props = {
 export function TagAddInput({ open, onClose, onAddAction }: Props) {
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, startTransition] = useTransition();
 
-  async function handleAdd() {
-    setLoading(true);
-    try {
-      await onAddAction(value);
-      setValue('');
-      setError(null);
-      onClose();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : '追加に失敗しました');
-    } finally {
-      setLoading(false);
-    }
+  function handleAdd() {
+    startTransition(async () => {
+      try {
+        await onAddAction(value);
+        setValue('');
+        setError(null);
+        onClose();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : '追加に失敗しました');
+      }
+    });
   }
 
   function handleClose() {

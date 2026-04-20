@@ -21,7 +21,7 @@ export default function AdminPage() {
   const [deleting, setDeleting] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!isLoading && !isAdmin) { router.replace('/'); return; }
+    if (!isLoading && !isAdmin) { router.replace(routes.home()); return; }
     if (isAdmin) {
       client.models.Category.list()
         .then(({ data }) => setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]))
@@ -49,7 +49,7 @@ export default function AdminPage() {
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">管理画面</h1>
-        <Button onClick={() => router.push('/category/create/root')}>
+        <Button onClick={() => router.push(routes.category.create('root'))}>
           カテゴリを作成
         </Button>
       </div>
@@ -62,7 +62,7 @@ export default function AdminPage() {
           {rootCategories.map((cat) => (
             <div key={cat.id} className="flex items-center justify-between px-6 py-3">
               <div>
-                <Link href={`/category/${cat.id}`} className="font-medium text-foreground hover:text-primary">
+                <Link href={routes.category.detail(cat.id)} className="font-medium text-foreground hover:text-primary">
                   {cat.name}
                 </Link>
                 <p className="text-xs text-muted-foreground">

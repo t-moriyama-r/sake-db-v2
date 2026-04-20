@@ -69,6 +69,28 @@ export function useLiquorForm({ ... }: Args) { ... }
 
 同一ファイル内に複数のフックが存在する場合や、Union 型を構成する内部型など、`Args` のみでは曖昧になる場合は意味のある名前を使ってよい。
 
+# `'use client'` コンポーネントの Action Props 命名規則
+
+`'use client'` を持つコンポーネントに Server Action を Props として渡す場合、**必ず `on~~Action` という命名にすること**（`Action` サフィックスを必須とする）。
+
+```tsx
+// ❌ 禁止 — Action サフィックスがないと TS71007 が出る、または将来的に漏れる
+type Props = {
+  onSubmit: () => void;
+  onDelete: () => Promise<void>;
+};
+
+// ✅ 正しい — Server Action を受け取る props には必ず Action サフィックスを付ける
+type Props = {
+  onSubmitAction: () => void;
+  onDeleteAction: () => Promise<void>;
+};
+```
+
+**なぜ必要か：** Next.js は Server Component から Client Component へ関数を Props で渡す場合、その関数が Server Action でなければ TS71007 エラーを出す。`Action` サフィックスは「この props は Server Action を受け取る」という意図を明示し、付け忘れを防ぐ。
+
+**適用範囲：** `'use client'` コンポーネントが受け取る Props のうち、Server Action（`'use server'` または `use server` ディレクティブ付き関数）を想定するものすべてに適用する。Client Component 内部で定義したコールバック関数には不要。
+
 # `'use client'` 付け外しチェックリスト
 
 `'use client'` を付ける・外す際は必ず以下を確認すること。

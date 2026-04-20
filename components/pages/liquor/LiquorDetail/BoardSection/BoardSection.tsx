@@ -1,54 +1,39 @@
 'use client';
 
-import { Dialog } from '@/components/ui/Dialog/Dialog';
+import { useState } from 'react';
+import { Button } from '@/components/ui/Button/Button';
 import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
-import { useBoardSection } from '../hooks/useBoardSection';
-import { BoardPostForm } from './BoardPostForm';
-import { BoardPostList } from './BoardPostList';
+import { CommentFormDialog } from './CommentFormDialog';
+import { Comments } from './Comments';
 
 type Props = {
   liquor: SerializableLiquorRecord;
-  initialBoardPosts: SerializableBoardPostRecord[];
-  isLogin: boolean;
+  boardPosts: SerializableBoardPostRecord[];
   onLiquorUpdateAction: (updated: SerializableLiquorRecord) => void;
 };
 
-export function BoardSection({ liquor, initialBoardPosts, isLogin, onLiquorUpdateAction }: Props) {
-  const {
-    boardPosts,
-    postFormOpen,
-    existingPost,
-    userId,
-    openPostForm,
-    closePostForm,
-    handlePost,
-    handleDelete,
-  } = useBoardSection({ liquor, initialBoardPosts, onLiquorUpdateAction });
+export function BoardSection({ liquor, boardPosts: initialBoardPosts, onLiquorUpdateAction }: Props) {
+  const [boardPosts, setBoardPosts] = useState<SerializableBoardPostRecord[]>(initialBoardPosts);
+  const [commentFormOpen, setCommentFormOpen] = useState<boolean>(false);
 
   return (
-    <>
-      <BoardPostList
+    <section>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-bold text-foreground">みんなの投稿 ({boardPosts.length})</h2>
+        <Button size="sm" onClick={() => setCommentFormOpen(true)}>
+          投稿する
+        </Button>
+      </div>
+      <Comments boardPosts={boardPosts} />
+      <CommentFormDialog
+        open={commentFormOpen}
+        onCloseAction={() => setCommentFormOpen(false)}
+        liquor={liquor}
         boardPosts={boardPosts}
-        ownerId={userId}
-        onOpenPostFormAction={openPostForm}
-        onEditAction={openPostForm}
-        onDeleteAction={handleDelete}
+        onBoardPostsChangeAction={(posts) => setBoardPosts(posts)}
+        onLiquorUpdateAction={onLiquorUpdateAction}
       />
-
-      <Dialog
-        open={postFormOpen}
-        onClose={closePostForm}
-        title={existingPost ? '投稿を編集する' : '投稿する'}
-      >
-        <BoardPostForm
-          onSubmit={handlePost}
-          onDelete={existingPost ? handleDelete : undefined}
-          isLoggedIn={isLogin}
-          defaultValues={{ text: existingPost?.text ?? '', rate: existingPost?.rate ?? null }}
-          submitLabel={existingPost ? '更新する' : '投稿する'}
-        />
-      </Dialog>
-    </>
+    </section>
   );
 }

@@ -5,6 +5,7 @@ import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { updateLiquor, createLiquorHistory, createLiquor } from '@/lib/repository/liquor';
 import type { LiquorInput } from '@/schemas/liquor';
 import { useLiquorFormActions } from './useLiquorFormActions';
+import { routes } from '@/lib/routes';
 
 type UseLiquorSaveOptions = {
   liquor?: SerializableLiquorRecord;
@@ -49,7 +50,7 @@ export function useLiquorSave({ liquor }: UseLiquorSaveOptions) {
           updateUserName: liquor.updateUserName ?? undefined,
         });
 
-      router.push(`/liquor/${liquor.id}`);
+      router.push(routes.liquor.detail(liquor.id));
     } else {
       const categoryName = await resolveCategoryName(value.categoryId);
       const imageBase64 = await resolveImageBase64(value.image);
@@ -73,7 +74,7 @@ export function useLiquorSave({ liquor }: UseLiquorSaveOptions) {
         updateUserName: user?.name,
       });
 
-      router.push(`/liquor/${id}`);
+      if (id) router.push(routes.liquor.detail(id));
     }
   }
 

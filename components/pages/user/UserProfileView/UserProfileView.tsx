@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
+import { routes } from '@/lib/routes';
 import { client } from '@/lib/amplify-client';
 
 type UserActivity = {
@@ -84,7 +85,7 @@ export function UserProfileView() {
           <div className="flex flex-col gap-3">
             {posts.slice(0, 10).map(({ post, liquorName, liquorId }) => (
               <div key={post.id} className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-                <Link href={`/liquor/${liquorId}`} className="font-medium text-link hover:underline">
+                <Link href={routes.liquor.detail(liquorId)} className="font-medium text-link hover:underline">
                   {liquorName}
                 </Link>
                 <div className="mt-1 flex items-center gap-2">
@@ -113,7 +114,7 @@ export function UserProfileView() {
               {rated.map(({ post, liquorName, liquorId }) => (
                 <Link
                   key={post.id}
-                  href={`/liquor/${liquorId}`}
+                  href={routes.liquor.detail(liquorId)}
                   className="rounded-full border border-border bg-surface px-3 py-1 text-sm text-foreground-secondary hover:border-primary hover:text-primary shadow-sm"
                 >
                   {liquorName}

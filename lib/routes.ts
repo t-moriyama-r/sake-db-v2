@@ -13,6 +13,7 @@ export const routes = {
   discovery: {
     category: (id: string) => `/discovery/category/${id}`,
     search: () => '/discovery/search',
+    searchWithQuery: (q: string) => `/discovery/search?q=${encodeURIComponent(q)}`,
     tag: (tag: string) => `/discovery/tag/${encodeURIComponent(tag)}`,
   },
   mypage: {

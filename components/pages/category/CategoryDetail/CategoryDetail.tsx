@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { routes } from '@/lib/routes';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb/Breadcrumb';
 import type { CategoryBreadcrumbItem } from '@/lib/server/categories/fetch';
@@ -29,10 +30,10 @@ export function CategoryDetail({
   isAdmin,
 }: Props) {
   const breadcrumbItems = [
-    { label: 'ホーム', href: '/' },
+    { label: 'ホーム', href: routes.home() },
     ...breadcrumbs.map((bc, i) =>
       i < breadcrumbs.length - 1
-        ? { label: bc.name, href: `/category/${bc.id}` }
+        ? { label: bc.name, href: routes.category.detail(bc.id) }
         : { label: bc.name }
     ),
   ];
@@ -51,19 +52,19 @@ export function CategoryDetail({
         {isAdmin && (
           <div className="flex gap-2">
             <Link
-              href={`/category/edit/${categoryId}`}
+              href={routes.category.edit(categoryId)}
               className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors bg-muted text-foreground-secondary hover:bg-muted/70 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               編集
             </Link>
             <Link
-              href={`/liquor/create/${categoryId}`}
+              href={routes.liquor.create(categoryId)}
               className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               お酒を追加
             </Link>
             <Link
-              href={`/category/create/${categoryId}`}
+              href={routes.category.create(categoryId)}
               className="inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors bg-muted text-foreground-secondary hover:bg-muted/70 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               サブカテゴリを追加
@@ -79,7 +80,7 @@ export function CategoryDetail({
             {subCategories.map((sub) => (
               <Link
                 key={sub.id}
-                href={`/category/${sub.id}`}
+                href={routes.category.detail(sub.id)}
                 className="rounded-xl border border-border bg-surface p-4 text-center shadow-sm hover:shadow-md transition-shadow"
               >
                 <span className="text-sm font-medium text-foreground">{sub.name}</span>

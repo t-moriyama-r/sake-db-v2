@@ -26,7 +26,7 @@ export function MyPageEditForm() {
   } = useForm<UserEditInput>({ resolver: zodResolver(userEditSchema) });
 
   useEffect(() => {
-    if (!isLoading && !isLogin) { router.replace('/auth/login'); return; }
+    if (!isLoading && !isLogin) { router.replace(routes.auth.login()); return; }
     if (user) {
       reset({ name: user.name, email: user.email, profile: user.profile ?? '' });
     }

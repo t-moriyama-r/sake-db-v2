@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { routes } from '@/lib/routes';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb/Breadcrumb';
 import { getServerUser } from '@/lib/server/auth';
@@ -30,10 +31,10 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
       <Breadcrumb
         className="mb-3"
         items={[
-          { label: 'ホーム', href: '/' },
+          { label: 'ホーム', href: routes.home() },
           ...breadcrumbs.map((bc, i) =>
             i < breadcrumbs.length - 1
-              ? { label: bc.name ?? '', href: `/discovery/category/${bc.id}` }
+              ? { label: bc.name ?? '', href: routes.discovery.category(bc.id) }
               : { label: bc.name ?? '' }
           ),
         ]}
@@ -59,7 +60,7 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
           <p className="text-center text-muted-foreground">このカテゴリに登録されたお酒がありません。</p>
           {isLoggedIn && (
             <Link
-              href={`/liquor/create/${categoryId}`}
+              href={routes.liquor.create(categoryId)}
               className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors bg-primary text-primary-foreground hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               お酒を登録

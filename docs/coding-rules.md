@@ -13,7 +13,7 @@
 2. そのコンポーネントの内部からしか呼ばれないサブコンポーネントは、同ディレクトリ内に並列に定義する
    ```
    components/liquor/LiquorDetailClient/LiquorDetailClient.tsx
-   components/liquor/LiquorDetailClient/BoardPostForm.tsx  ← 内部専用
+   components/liquor/LiquorDetailClient/CommentForm.tsx  ← 内部専用
    ```
 
 ## インポート・エクスポート

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCurrentCategoryId } from '@/hooks/useCurrentCategoryId';
+import { routes } from '@/lib/routes';
 import type { CategoryTreeNode } from '@/lib/server/categories/fetch';
 
 type Props = {
@@ -36,7 +37,7 @@ export function CategoryTreeContent({ categoryTree, activeCategoryId: propActive
 
   return (
     <div className="rounded-lg border border-border bg-surface p-4">
-      <Link href="/" className="mb-3 block text-sm font-semibold text-foreground hover:text-primary hover:underline">
+      <Link href={routes.home()} className="mb-3 block text-sm font-semibold text-foreground hover:text-primary hover:underline">
         カテゴリ
       </Link>
       <ul className="space-y-0.5">
@@ -93,7 +94,7 @@ function CategoryTreeItem({
           {hasChildren ? (expanded ? '▾' : '▸') : ''}
         </span>
         <Link
-          href={`/discovery/category/${node.id}`}
+          href={routes.discovery.category(node.id)}
           className={`flex-1 py-1 text-sm break-words ${
             isActive
               ? 'font-medium text-primary'

@@ -20,7 +20,7 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
 
   useEffect(() => {
     if (!isAdmin) {
-      router.replace('/');
+      router.replace(routes.home());
     }
   }, [isAdmin, router]);
 

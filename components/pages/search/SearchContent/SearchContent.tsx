@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
+import { routes } from '@/lib/routes';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
@@ -15,37 +16,37 @@ export const SearchContent = () => {
   const [query, setQuery] = useState<string>(initialQuery);
   const [results, setResults] = useState<SerializableLiquorRecord[]>([]);
   const [searched, setSearched] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, startTransition] = useTransition();
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  const handleSearch = async (e?: React.FormEvent) => {
+  const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!query.trim()) return;
 
-    router.replace(`/discovery/search?q=${encodeURIComponent(query)}`);
-    setLoading(true);
+    router.replace(routes.discovery.searchWithQuery(query));
     setSearched(false);
     setSearchError(null);
 
-    try {
-      const res = await fetch(`/api/search?keyword=${encodeURIComponent(query)}&limit=50`);
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        const message = (data as { error?: string }).error ?? '検索リクエストが失敗しました';
-        setSearchError(message);
+    startTransition(async () => {
+      try {
+        const res = await fetch(`/api/search?keyword=${encodeURIComponent(query)}&limit=50`);
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          const message = (data as { error?: string }).error ?? '検索リクエストが失敗しました';
+          setSearchError(message);
+          setResults([]);
+          return;
+        }
+        const liquors = await res.json() as SerializableLiquorRecord[];
+        setResults(liquors);
+      } catch (err) {
+        console.error('[search] exception:', err);
+        setSearchError('検索中にエラーが発生しました');
         setResults([]);
-        return;
+      } finally {
+        setSearched(true);
       }
-      const liquors = await res.json() as SerializableLiquorRecord[];
-      setResults(liquors);
-    } catch (err) {
-      console.error('[search] exception:', err);
-      setSearchError('検索中にエラーが発生しました');
-      setResults([]);
-    } finally {
-      setLoading(false);
-      setSearched(true);
-    }
+    });
   };
 
   // 初回ロード時に q パラメータがあれば検索

@@ -1,72 +1,69 @@
 'use client';
 
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
+import { ActionErrorMessage } from '@/components/ui/ActionErrorMessage/ActionErrorMessage';
+import { useAuth } from '@/hooks/useAuth';
+import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { boardPostSchema, type BoardPostInput } from '@/schemas/board';
+import { useBoardPostMutations } from './hooks/mutations/useBoardPostMutations';
+
+type LiquorInfo = Pick<SerializableLiquorRecord, 'id' | 'categoryId' | 'categoryName' | 'name' | 'tags'>;
 
 type Props = {
-  onSubmit: (data: BoardPostInput) => Promise<void>;
-  onDelete?: () => Promise<void>;
-  defaultValues?: Partial<BoardPostInput>;
-  submitLabel?: string;
-  isLoggedIn?: boolean;
-  loading?: boolean;
+  liquor: LiquorInfo;
+  existingPost: SerializableBoardPostRecord | null;
+  boardPosts: SerializableBoardPostRecord[];
+  onBoardPostsChangeAction: (posts: SerializableBoardPostRecord[]) => void;
+  onLiquorUpdateAction: (updated: SerializableLiquorRecord) => void;
+  onCloseAction: () => void;
 };
 
-export function BoardPostForm({ onSubmit, onDelete, defaultValues, submitLabel = '投稿', isLoggedIn, loading }: Props) {
-  const [serverError, setServerError] = useState<string>('');
-  const [deleting, setDeleting] = useState<boolean>(false);
+export function CommentForm({
+  liquor,
+  existingPost,
+  boardPosts,
+  onBoardPostsChangeAction,
+  onLiquorUpdateAction,
+  onCloseAction,
+}: Props) {
+  const { user } = useAuth();
+  const submitLabel = existingPost ? '更新する' : '投稿する';
+
+  const { handleFormSubmit, handleDelete, actionError, deleting } = useBoardPostMutations({
+    liquor,
+    existingPost,
+    boardPosts,
+    onBoardPostsChangeAction,
+    onLiquorUpdateAction,
+    onCloseAction,
+  });
 
   const {
     register,
     handleSubmit,
     control,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<BoardPostInput>({
     resolver: zodResolver(boardPostSchema),
     defaultValues: {
-      text: defaultValues?.text ?? '',
-      rate: defaultValues?.rate ?? null,
-      guestName: defaultValues?.guestName ?? '',
+      text: existingPost?.text ?? '',
+      rate: existingPost?.rate ?? null,
+      guestName: '',
     },
   });
 
-  const handleFormSubmit = async (data: BoardPostInput) => {
-    setServerError('');
-    try {
-      await onSubmit(data);
-    } catch (err: unknown) {
-      setServerError(err instanceof Error ? err.message : '投稿に失敗しました');
-    }
-  };
-
-  async function handleDelete() {
-    if (!onDelete) return;
-    setDeleting(true);
-    try {
-      await onDelete();
-    } catch (err: unknown) {
-      setServerError(err instanceof Error ? err.message : '削除に失敗しました');
-    } finally {
-      setDeleting(false);
-    }
-  }
-
-  if (loading) {
-    return <div className="py-8 text-center text-muted-foreground">読み込み中...</div>;
-  }
+  const submitDisabled = existingPost !== null && !isDirty;
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-4">
-      {serverError && (
-        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
-      )}
+      <ActionErrorMessage message={actionError} />
 
-      {!isLoggedIn && (
+      {!user && (
         <FormField
           label="ニックネーム（任意）"
           placeholder="名無し"
@@ -102,10 +99,10 @@ export function BoardPostForm({ onSubmit, onDelete, defaultValues, submitLabel =
       />
 
       <div className="flex items-center gap-2">
-        <Button type="submit" loading={isSubmitting} className="flex-1">
+        <Button type="submit" loading={isSubmitting} disabled={submitDisabled} className="flex-1">
           {submitLabel}
         </Button>
-        {onDelete && (
+        {existingPost && (
           <Button type="button" variant="danger" loading={deleting} onClick={handleDelete}>
             削除する
           </Button>
