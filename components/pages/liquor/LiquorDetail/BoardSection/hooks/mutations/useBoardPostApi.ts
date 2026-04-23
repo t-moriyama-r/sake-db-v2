@@ -62,8 +62,13 @@ export function useBoardPostApi() {
       rated.length > 0
         ? rated.reduce((acc, p) => acc + (p.rate ?? 0), 0) / rated.length
         : null;
+    const rate5Users = posts.filter((p) => p.userId && p.rate === 5).map((p) => p.userId!);
+    const rate4Users = posts.filter((p) => p.userId && p.rate === 4).map((p) => p.userId!);
+    const rate3Users = posts.filter((p) => p.userId && p.rate === 3).map((p) => p.userId!);
+    const rate2Users = posts.filter((p) => p.userId && p.rate === 2).map((p) => p.userId!);
+    const rate1Users = posts.filter((p) => p.userId && p.rate === 1).map((p) => p.userId!);
     const { data } = await client.models.Liquor.update(
-      { id: liquorId, boardAvgRate, boardRateCount },
+      { id: liquorId, boardAvgRate, boardRateCount, rate5Users, rate4Users, rate3Users, rate2Users, rate1Users },
       { authMode },
     );
     await revalidateBoardPostsCache();
