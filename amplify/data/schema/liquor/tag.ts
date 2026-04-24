@@ -15,7 +15,7 @@ export const tagModels = {
     })
     .secondaryIndexes((index) => [index('text')])
     .authorization((allow) => [
-      allow.guest().to(['read']),
+      allow.guest().to(['read', 'create', 'delete']),
       allow.authenticated().to(['read', 'create', 'delete']),
       allow.groups(['admin']),
     ]),

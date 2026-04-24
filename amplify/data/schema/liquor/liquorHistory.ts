@@ -24,7 +24,8 @@ export const liquorHistoryModels = {
     })
     .authorization((allow) => [
       allow.guest().to(['read']),
-      allow.authenticated().to(['read']),
+      allow.authenticated().to(['read', 'create']),
       allow.groups(['admin']),
+      allow.publicApiKey(),
     ]),
 };

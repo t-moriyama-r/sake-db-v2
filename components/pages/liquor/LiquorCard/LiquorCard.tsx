@@ -36,6 +36,7 @@ export const LiquorCard = ({ liquor }: Props) => {
           memberRateCount={calcMemberRateCount(liquor)}
           allAvgRate={liquor.boardAvgRate}
           allRateCount={liquor.boardRateCount}
+          showMemberRating={false}
         />
       </div>
     </Link>

@@ -20,7 +20,7 @@ type EditProps = {
 type Props = NewProps | EditProps;
 
 export function LiquorForm(props: Props) {
-  const { save } = useLiquorSave(
+  const { save, saveError } = useLiquorSave(
     props.mode === 'EDIT' ? { liquor: props.liquor } : {},
   );
 
@@ -44,6 +44,7 @@ export function LiquorForm(props: Props) {
               : { categoryId: props.categoryId }
           }
           onSubmitAction={save}
+          saveError={saveError}
         />
       </div>
     </div>

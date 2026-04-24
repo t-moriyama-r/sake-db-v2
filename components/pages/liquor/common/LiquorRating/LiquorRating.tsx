@@ -5,9 +5,10 @@ type Props = {
   memberRateCount: number;
   allAvgRate?: number | null;
   allRateCount?: number | null;
+  showMemberRating?: boolean;
 };
 
-export function LiquorRating({ memberAvgRate, memberRateCount, allAvgRate, allRateCount }: Props) {
+export function LiquorRating({ memberAvgRate, memberRateCount, allAvgRate, allRateCount, showMemberRating = true }: Props) {
   return (
     <div className="flex items-center gap-1.5">
       {allAvgRate != null ? (
@@ -19,7 +20,7 @@ export function LiquorRating({ memberAvgRate, memberRateCount, allAvgRate, allRa
         {allAvgRate != null
           ? `${allAvgRate.toFixed(1)}/${allRateCount != null ? `${allRateCount}件` : '-'}`
           : null}
-        {memberAvgRate > 0
+        {showMemberRating && memberAvgRate > 0
           ? `（認証済 ${memberAvgRate.toFixed(1)}/${memberRateCount}件）`
           : null}
       </span>

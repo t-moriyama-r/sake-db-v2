@@ -15,8 +15,9 @@ type Props = {
   defaultValues?: Partial<LiquorInput>;
   liquor?: SerializableLiquorRecord;
   onSubmitAction: (data: LiquorInput) => Promise<void>;
+  saveError?: string;
 };
-export function LiquorFormFields({ categories, defaultValues, liquor, onSubmitAction }: Props) {
+export function LiquorFormFields({ categories, defaultValues, liquor, onSubmitAction, saveError }: Props) {
   const {
     register,
     handleSubmit,
@@ -88,6 +89,7 @@ export function LiquorFormFields({ categories, defaultValues, liquor, onSubmitAc
       <Button type="submit" loading={isSubmitting}>
         {liquor ? '更新する' : '登録する'}
       </Button>
+      {saveError && <p className="text-sm text-destructive">{saveError}</p>}
     </form>
   );
 }

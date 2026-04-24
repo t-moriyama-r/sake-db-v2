@@ -4,13 +4,14 @@ import { client } from '@/lib/amplify-client';
 type LiquorUpdateInput = Schema['Liquor']['updateType'];
 type LiquorCreateInput = Schema['Liquor']['createType'];
 type LiquorHistoryCreateInput = Schema['LiquorHistory']['createType'];
+type AuthMode = 'userPool' | 'apiKey' | 'identityPool';
 
-export async function updateLiquor(input: LiquorUpdateInput): Promise<void> {
-  await client.models.Liquor.update(input);
+export async function updateLiquor(input: LiquorUpdateInput, authMode?: AuthMode): Promise<void> {
+  await client.models.Liquor.update(input, authMode ? { authMode } : undefined);
 }
 
-export async function createLiquorHistory(input: LiquorHistoryCreateInput): Promise<void> {
-  await client.models.LiquorHistory.create(input);
+export async function createLiquorHistory(input: LiquorHistoryCreateInput, authMode?: AuthMode): Promise<void> {
+  await client.models.LiquorHistory.create(input, authMode ? { authMode } : undefined);
 }
 
 /** お酒を新規作成する。作成したお酒の id を返す。 */
