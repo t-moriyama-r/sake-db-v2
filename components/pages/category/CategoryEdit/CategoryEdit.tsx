@@ -16,13 +16,13 @@ type Props = {
 
 export const CategoryEdit = ({ categoryId, category }: Props) => {
   const router = useRouter();
-  const { user, isAdmin } = useAuth();
+  const { user, isLogin, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!isAdmin) {
+    if (!isLoading && !isLogin) {
       router.replace(routes.home());
     }
-  }, [isAdmin, router]);
+  }, [isLoading, isLogin, router]);
 
   const handleSubmit = async (data: CategoryInput) => {
     if (!user) return;

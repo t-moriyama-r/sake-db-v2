@@ -17,7 +17,7 @@ type Props = {
   breadcrumbs: CategoryBreadcrumbItem[];
   subCategories: SubCategory[];
   liquors: SerializableLiquorRecord[];
-  isAdmin: boolean;
+  isLoggedIn: boolean;
 };
 
 export function CategoryDetail({
@@ -27,7 +27,7 @@ export function CategoryDetail({
   breadcrumbs,
   subCategories,
   liquors,
-  isAdmin,
+  isLoggedIn,
 }: Props) {
   const breadcrumbItems = [
     { label: 'ホーム', href: routes.home() },
@@ -49,7 +49,7 @@ export function CategoryDetail({
             <p className="mt-2 text-foreground-secondary">{categoryDescription}</p>
           )}
         </div>
-        {isAdmin && (
+        {isLoggedIn && (
           <div className="flex gap-2">
             <Link
               href={routes.category.edit(categoryId)}

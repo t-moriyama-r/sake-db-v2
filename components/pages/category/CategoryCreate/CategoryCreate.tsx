@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CategoryForm } from '@/components/pages/category/CategoryForm/CategoryForm';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,7 +14,13 @@ type Props = {
 
 export const CategoryCreate = ({ parentCategoryId }: Props) => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isLogin, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !isLogin) {
+      router.replace(routes.home());
+    }
+  }, [isLoading, isLogin, router]);
 
   const handleSubmit = async (data: CategoryInput) => {
     await client.models.Category.create({

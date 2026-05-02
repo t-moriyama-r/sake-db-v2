@@ -22,7 +22,7 @@ export default async function CategoryDetailPage({
 
   const subCategories = allCategories.filter((c) => c.parentId === id);
   const breadcrumbs = buildCategoryBreadcrumbs(id, allCategories);
-  const isAdmin = user?.isAdmin ?? false;
+  const isLoggedIn = user !== null;
 
   return (
     <CategoryDetail
@@ -32,7 +32,7 @@ export default async function CategoryDetailPage({
       breadcrumbs={breadcrumbs}
       subCategories={subCategories}
       liquors={liquors}
-      isAdmin={isAdmin}
+      isLoggedIn={isLoggedIn}
     />
   );
 }

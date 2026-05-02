@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '@/lib/routes';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb/Breadcrumb';
@@ -42,7 +44,18 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
 
       {category && (
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-foreground">{category.name}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-foreground">{category.name}</h1>
+            {isLoggedIn && (
+              <Link
+                href={routes.category.edit(categoryId)}
+                className="inline-flex items-center justify-center rounded-md p-1.5 text-sm transition-colors text-foreground-secondary hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                aria-label="カテゴリを編集"
+              >
+                <FontAwesomeIcon icon={faPen} className="h-4 w-4" />
+              </Link>
+            )}
+          </div>
           {category.description && (
             <p className="mt-2 text-foreground-secondary">{category.description}</p>
           )}

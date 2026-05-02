@@ -10,7 +10,7 @@ export default async function CategoryCreatePage({
   const { parentCategoryId } = await params;
 
   const user = await getServerUser();
-  if (!user?.isAdmin) redirect('/');
+  if (!user) redirect('/');
 
   return <CategoryCreate parentCategoryId={parentCategoryId} />;
 }

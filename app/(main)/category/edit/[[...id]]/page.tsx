@@ -14,7 +14,7 @@ export default async function CategoryEditPage({
   const categoryId = id?.[0];
 
   const user = await getServerUser();
-  if (!user?.isAdmin) redirect('/');
+  if (!user) redirect('/');
 
   const category = categoryId ? await fetchCategory(categoryId) : undefined;
   if (categoryId && !category) redirect('/admin');
