@@ -61,3 +61,24 @@ Amplify データスキーマの編集（追加・変更・削除・ファイル
 
 各エージェントは独立して動作しますが、いずれも `CLAUDE.md` のプロジェクトルールに従います。
 
+## 日次ルーティン用エージェント
+
+日次ルーティン（claude.ai/code/routines）から自動実行される専門エージェント群。
+`routine-orchestrator` が起点となり、各エージェントを順番に呼び出す。
+
+| エージェント | 役割 |
+|---|---|
+| `routine-orchestrator` | 日次ルーティンの総合司令塔 |
+| `issue-manager` | GitHub issueの選定・完了処理・ラベル管理 |
+| `investigator` | コードベース調査・バグ発見・新規issue作成 |
+| `fixer` | issueの実装・ブランチ管理・コミット |
+| `reviewer` | 実装済みコードのレビュー・品質ゲート |
+| `pr-creator` | PR作成・issueリンク |
+| `spec-manager` | 仕様ドキュメント・CLAUDE.md の更新管理 |
+
+### ルーティンの Instructions（claude.ai/code/routines に設定）
+
+```
+routine-orchestrator エージェントを呼び出し、日次メンテナンスを実行してください。
+```
+
