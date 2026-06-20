@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { AppUser } from '@/hooks/useAuth';
+import { routes } from '@/lib/routes';
 
 type Props = {
   user: AppUser | null;
@@ -54,14 +55,14 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
       {menuOpen && (
         <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-border bg-surface py-1 shadow-lg">
           <div className="border-b border-border px-4 py-2 text-sm font-medium text-foreground">{user?.name}</div>
-          <Link href="/mypage" className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
+          <Link href={routes.mypage.index()} className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
             マイページ
           </Link>
-          <Link href="/mypage/edit" className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
+          <Link href={routes.mypage.edit()} className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
             プロフィール編集
           </Link>
           {isAdmin && (
-            <Link href="/admin" className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
+            <Link href={routes.admin()} className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
               管理画面
             </Link>
           )}

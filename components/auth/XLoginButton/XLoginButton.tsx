@@ -1,7 +1,9 @@
+import { routes } from '@/lib/routes';
+
 export function XLoginButton() {
   return (
     <a
-      href="/api/auth/x/login"
+      href={routes.auth.xLogin()}
       className="flex w-full items-center justify-center gap-2 rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
     >
       <XIcon />

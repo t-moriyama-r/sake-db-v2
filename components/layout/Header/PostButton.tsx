@@ -1,11 +1,12 @@
 import Link from 'next/link';
+import { routes } from '@/lib/routes';
 
 type Props = {
   categoryId: string | null;
 };
 
 export const PostButton = ({ categoryId }: Props) => {
-  const href = categoryId ? `/liquor/create/${categoryId}` : '/liquor/create';
+  const href = categoryId ? routes.liquor.create(categoryId) : routes.liquor.createRoot();
 
   return (
     <Link
