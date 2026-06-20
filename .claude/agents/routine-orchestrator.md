@@ -1,6 +1,6 @@
 ---
 name: routine-orchestrator
-description: 日次ルーティンの総合司令塔。issue-manager・fixer・reviewer・pr-creator・investigator・spec-manager を順番に呼び出し、日次メンテナンス作業を完遂する。
+description: 日次ルーティンの総合司令塔。PHASE 0〜4のフローに従い、日次作業を完遂する。
 ---
 
 # 役割
