@@ -102,16 +102,23 @@ const { user, isLogin, isAdmin, login, logout, register } = useAuth();
 | `/discovery/category` | カテゴリ一覧 | 全員 |
 | `/discovery/category/[id]` | カテゴリ絞り込み | 全員 |
 | `/discovery/search?q=...` | キーワード検索 | 全員 |
+| `/discovery/tag/[tag]` | タグ検索 | 全員 |
 | `/liquor/[id]` | お酒詳細・レビュー・タグ | 全員 |
-| `/liquor/create/[categoryId]` | お酒登録 | 要ログイン |
-| `/liquor/edit/[id]` | お酒編集 | 要ログイン or 管理者 |
+| `/liquor/create` | お酒登録（カテゴリ未指定） | 全員 |
+| `/liquor/create/[categoryId]` | お酒登録 | 全員 |
+| `/liquor/edit/[id]` | お酒編集 | 全員 |
+| `/category/[id]` | カテゴリ詳細 | 全員 |
+| `/category/create/[parentCategoryId]` | カテゴリ作成 | 要ログイン |
+| `/category/edit/[id]` | カテゴリ編集 | 要ログイン |
 | `/mypage` | マイページ・ブックマーク | 要ログイン |
 | `/mypage/edit` | プロフィール編集 | 要ログイン |
 | `/user/[id]` | ユーザー公開プロフィール | 全員 |
 | `/login` | ログイン | - |
 | `/register` | 新規登録 | - |
 | `/password-reset` | パスワードリセット申請 | - |
-| `/admin` | 管理画面 | 要管理者 |
+| `/password-reset-exe` | パスワードリセット実行 | - |
+| `/admin` | 管理画面（カテゴリ管理） | 要管理者 |
+| `/api/auth/x/login` | X (Twitter) OAuth 開始 | - |
 
 ## 未実装機能（Lambda 実装待ち）
 
