@@ -26,9 +26,7 @@ export const routes = {
   auth: {
     login: () => '/login',
     register: () => '/register',
-    authRegister: () => '/auth/register',
     passwordReset: () => '/password-reset',
-    authPasswordReset: () => '/auth/password-reset',
     passwordResetExe: () => '/password-reset-exe',
     xLogin: () => '/api/auth/x/login',
   },

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
+import { routes } from '@/lib/routes';
 
 /** Server Component から渡せるシリアライズ可能な最小型 */
 type CategoryNode = { id: string; name: string };
@@ -47,7 +48,7 @@ const CategoryTreeItem = ({ category, depth = 0 }: CategoryTreeItemProps) => {
           {loading ? '…' : expanded ? '▾' : '▸'}
         </button>
         <Link
-          href={`/discovery/category/${category.id}`}
+          href={routes.discovery.category(category.id)}
           className="flex-1 py-1 text-sm text-gray-700 hover:text-blue-600 hover:underline truncate"
         >
           {category.name}
