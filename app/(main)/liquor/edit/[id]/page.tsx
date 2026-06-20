@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { LiquorForm } from '@/components/pages/liquor/LiquorForm/LiquorForm';
 import { fetchAllCategories } from '@/lib/server/categories/fetch';
-import { fetchLiquor } from '@/lib/server/liquors/fetch';
+import { fetchLiquor, fetchLiquorHistories } from '@/lib/server/liquors/fetch';
 
 export default async function LiquorEditPage({
   params,
@@ -10,12 +10,13 @@ export default async function LiquorEditPage({
 }) {
   const { id } = await params;
 
-  const [liquor, categories] = await Promise.all([
+  const [liquor, categories, histories] = await Promise.all([
     fetchLiquor(id),
     fetchAllCategories(),
+    fetchLiquorHistories(id),
   ]);
 
   if (!liquor) notFound();
 
-  return <LiquorForm mode="EDIT" liquor={liquor} categories={categories} />;
+  return <LiquorForm mode="EDIT" liquor={liquor} categories={categories} histories={histories} />;
 }

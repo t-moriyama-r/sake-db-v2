@@ -11,6 +11,9 @@ export type SerializableLiquorRecord = Omit<
   tags: { id: string; text: string }[];
 };
 
+export type LiquorHistoryRecord = Schema['LiquorHistory']['type'];
+export type SerializableLiquorHistoryRecord = Omit<LiquorHistoryRecord, 'liquor'>;
+
 /** 単一のお酒を取得する。タグはリレーションから一緒に取得する。 */
 export const fetchLiquor = withCache(
   async (id: string): Promise<SerializableLiquorRecord | null> => {
@@ -98,6 +101,22 @@ export const fetchLiquorsByTag = withCache(
   },
   ['liquors-by-tag'],
   { tags: [CACHE_TAGS.liquors, CACHE_TAGS.tags], revalidate: 300 },
+);
+
+/** 指定したお酒の編集履歴を取得する。versionNo の降順で返す。 */
+export const fetchLiquorHistories = withCache(
+  async (liquorId: string): Promise<SerializableLiquorHistoryRecord[]> => {
+    const client = getGuestClient();
+    const { data } = await client.models.LiquorHistory.list({
+      filter: { liquorId: { eq: liquorId } },
+    });
+    const sorted = (data ?? [])
+      .filter((h): h is NonNullable<typeof h> => h !== null)
+      .sort((a, b) => (b.versionNo ?? 0) - (a.versionNo ?? 0));
+    return JSON.parse(JSON.stringify(sorted)) as SerializableLiquorHistoryRecord[];
+  },
+  ['liquor-histories'],
+  { tags: [CACHE_TAGS.liquors], revalidate: 900 },
 );
 
 const CHUNK_SIZE = 100;
