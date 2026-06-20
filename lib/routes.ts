@@ -28,5 +28,6 @@ export const routes = {
     passwordReset: () => '/password-reset',
     passwordResetExe: () => '/password-reset-exe',
     xLogin: () => '/api/auth/x/login',
+    xComplete: () => '/x/complete',
   },
 };

@@ -7,6 +7,7 @@ import {
   AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import outputs from '@/amplify_outputs.json';
+import { routes } from '@/lib/routes';
 import { encryptXSession } from '@/lib/server/x-session';
 
 export const runtime = 'nodejs';
@@ -22,12 +23,12 @@ export async function GET(request: NextRequest) {
   const codeVerifier = request.cookies.get('x_oauth_code_verifier')?.value;
 
   if (!code || !state || state !== storedState || !codeVerifier) {
-    return NextResponse.redirect(new URL('/auth/login?error=oauth_failed', request.url));
+    return NextResponse.redirect(new URL(`${routes.auth.login()}?error=oauth_failed`, request.url));
   }
 
   const xUser = await exchangeCodeForUser(code, codeVerifier, request.url);
   if (!xUser) {
-    return NextResponse.redirect(new URL('/auth/login?error=oauth_failed', request.url));
+    return NextResponse.redirect(new URL(`${routes.auth.login()}?error=oauth_failed`, request.url));
   }
 
   const username = `x_${xUser.id}`;
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
     expiresAt: Date.now() + 5 * 60 * 1000,
   });
 
-  const response = NextResponse.redirect(new URL('/auth/x/complete', request.url));
+  const response = NextResponse.redirect(new URL(routes.auth.xComplete(), request.url));
   response.cookies.set('x_session', token, {
     httpOnly: true, sameSite: 'lax', maxAge: 300, path: '/',
   });
