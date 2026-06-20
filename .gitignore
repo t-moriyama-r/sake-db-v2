@@ -52,5 +52,8 @@ certificates
 # claude code
 .claude/settings.local.json
 
+# JetBrains IDE
+.idea/
+
 # local db
 sake-db
