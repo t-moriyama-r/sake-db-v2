@@ -8,10 +8,8 @@ export type SerializableCategoryRecord = Omit<CategoryRecord, 'parent' | 'childr
 
 export const fetchAllCategories = withCache(
   async (): Promise<SerializableCategoryRecord[]> => {
-    console.log('[DEBUG] fetchAllCategories 開始');
     const client = getGuestClient();
     const all = await fetchAll((t, lim) => client.models.Category.list({ limit: lim, nextToken: t }));
-    console.log('[DEBUG] fetchAllCategories 完了 件数:', all.length);
     return JSON.parse(JSON.stringify(all)) as SerializableCategoryRecord[];
   },
   ['all-categories'],
