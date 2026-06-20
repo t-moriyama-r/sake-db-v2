@@ -44,8 +44,8 @@ export function MyPageEditForm() {
           ...(data.profile !== undefined ? { profile: data.profile } : {}),
         },
       });
-      if (data.password) {
-        await updatePassword({ oldPassword: '', newPassword: data.password });
+      if (data.password && data.currentPassword) {
+        await updatePassword({ oldPassword: data.currentPassword, newPassword: data.password });
       }
       await reload();
       setSuccess(true);
@@ -71,6 +71,12 @@ export function MyPageEditForm() {
           <FormField label="名前" type="text" required error={errors.name?.message} {...register('name')} />
           <FormField label="メールアドレス" type="email" required error={errors.email?.message} {...register('email')} />
           <FormField as="textarea" label="プロフィール" rows={3} error={errors.profile?.message} {...register('profile')} />
+          <FormField
+            label="現在のパスワード（パスワードを変更する場合のみ）"
+            type="password"
+            error={errors.currentPassword?.message}
+            {...register('currentPassword')}
+          />
           <FormField
             label="新しいパスワード（変更する場合のみ）"
             type="password"

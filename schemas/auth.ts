@@ -31,8 +31,19 @@ export const userEditSchema = z.object({
     z.string().length(0),
     z.string().min(8, 'パスワードは8文字以上で入力してください'),
   ]).optional(),
+  currentPassword: z.string().optional(),
   profile: z.string().optional(),
-});
+}).refine(
+  (v) => {
+    const hasNewPassword = v.password && v.password.length > 0;
+    const hasCurrentPassword = v.currentPassword && v.currentPassword.length > 0;
+    return !hasNewPassword || hasCurrentPassword;
+  },
+  {
+    message: '新しいパスワードを設定する場合は現在のパスワードを入力してください',
+    path: ['currentPassword'],
+  },
+);
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
