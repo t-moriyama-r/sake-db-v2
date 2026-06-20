@@ -19,8 +19,8 @@ reviewer が LGTM を出したブランチに対して Pull Request を作成す
 ## 1. 差分確認
 
 ```bash
-git log main..HEAD --oneline
-git diff main..HEAD --stat
+git log develop..HEAD --oneline
+git diff develop..HEAD --stat
 ```
 
 ## 2. PR作成
@@ -44,7 +44,7 @@ Closes #<issue番号>
 | <ページ名> | `<パス（例: /discovery/tag/日本酒）>` |
 EOF
 )" \
-  --base main
+  --base develop
 ```
 
 ## 3. PR URLの記録
@@ -54,6 +54,6 @@ EOF
 # ルール
 
 - PRのタイトルは**日本語**で記述する（issueタイトルをそのまま使う場合も日本語であることを確認する）
-- PRは必ず `main` ブランチへのマージを対象とする
+- PRは必ず `develop` ブランチへのマージを対象とする
 - draft PRは作成しない（レビュー済みのものだけPR化する）
 - 1ブランチ = 1PR = 1issue の対応を維持する
