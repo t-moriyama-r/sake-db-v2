@@ -1,8 +1,11 @@
-import type { Metadata } from 'next';
 import { Geist } from 'next/font/google';
+import type { Metadata } from 'next';
 import './globals.css';
-import { AmplifyProvider } from '@/components/AmplifyProvider';
-import { Header } from '@/components/layout/Header';
+import { Header } from '@/components/layout/Header/Header';
+import { MobileSidebarProvider } from '@/components/layout/Sidebar/MobileSidebarContext';
+import { ErrorDialogProvider } from '@/components/ui/ErrorDialog/ErrorDialog';
+import { AmplifyProvider } from '@/providers/AmplifyProvider';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 
@@ -13,12 +16,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col bg-gray-50">
-        <AmplifyProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-        </AmplifyProvider>
+    <html lang="ja" className={`${geistSans.variable} antialiased`} suppressHydrationWarning>
+      <body className="flex flex-col bg-background text-foreground">
+        <ThemeProvider>
+          <AmplifyProvider>
+            <ErrorDialogProvider>
+              <MobileSidebarProvider>
+                <Header />
+                <main className="flex-1">{children}</main>
+              </MobileSidebarProvider>
+            </ErrorDialogProvider>
+          </AmplifyProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

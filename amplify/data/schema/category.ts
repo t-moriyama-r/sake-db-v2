@@ -10,7 +10,7 @@ export const categorySchema = {
    * カテゴリ（階層構造）
    *
    * - 自己参照リレーション: parent / children (parentId で結合)
-   * - 公開読み取り可能、書き込みは admin グループのみ
+   * - 公開読み取り可能、書き込みはログイン済みユーザーから可能
    */
   Category: a
     .model({
@@ -34,7 +34,7 @@ export const categorySchema = {
     })
     .authorization((allow) => [
       allow.guest().to(['read']),
-      allow.authenticated().to(['read']),
+      allow.authenticated(),
       allow.groups(['admin']),
       /** シードスクリプト用（apiKey による書き込みを許可） */
       allow.publicApiKey(),
@@ -58,7 +58,7 @@ export const categorySchema = {
     })
     .authorization((allow) => [
       allow.guest().to(['read']),
-      allow.authenticated().to(['read']),
+      allow.authenticated(),
       allow.groups(['admin']),
     ]),
 

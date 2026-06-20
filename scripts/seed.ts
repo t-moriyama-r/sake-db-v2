@@ -6,6 +6,7 @@
  *
  * オプション:
  *   --dry-run  実際には書き込まず、投入予定データをログ表示のみ
+ *   --refresh  既存データを全削除してから再投入する（完全初期化）
  *
  * 前提条件:
  *   - npx ampx sandbox が起動済みで amplify_outputs.json が存在すること
@@ -16,9 +17,9 @@
  *   2. 下記の `seeders` 配列に追加する
  */
 
-import { runAll } from './seed/runner';
 import { categoriesSeeder } from './seed/categories';
 import { liquorsSeeder } from './seed/liquors';
+import { runAll } from './seed/runner';
 
 const seeders = [
   categoriesSeeder,
@@ -28,6 +29,7 @@ const seeders = [
 
 runAll(seeders, {
   dryRun: process.argv.includes('--dry-run'),
+  refresh: process.argv.includes('--refresh'),
 }).catch((err: unknown) => {
   console.error('シードスクリプトでエラーが発生しました:', err);
   process.exit(1);

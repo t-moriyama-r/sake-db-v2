@@ -19,24 +19,32 @@ function decodeJwtPayload(token: string): Record<string, unknown> {
  */
 export async function getServerUser(): Promise<ServerUser | null> {
   const clientId: string | undefined = outputs?.auth?.user_pool_client_id;
+  console.log('[getServerUser] clientId:', clientId);
   if (!clientId) return null;
 
   const cookieStore = await cookies();
+  const allCookieNames = cookieStore.getAll().map((c) => c.name);
+  console.log('[getServerUser] all cookie names:', allCookieNames);
 
   const lastUser = cookieStore.get(
     `CognitoIdentityServiceProvider.${clientId}.LastAuthUser`,
   )?.value;
+  console.log('[getServerUser] lastUser:', lastUser);
   if (!lastUser) return null;
 
   const accessToken = cookieStore.get(
     `CognitoIdentityServiceProvider.${clientId}.${lastUser}.accessToken`,
   )?.value;
+  console.log('[getServerUser] accessToken found:', !!accessToken);
   if (!accessToken) return null;
 
   try {
     const payload = decodeJwtPayload(accessToken);
     const exp = payload.exp as number;
-    if (exp * 1000 < Date.now()) return null;
+    if (exp * 1000 < Date.now()) {
+      console.log('[getServerUser] token expired');
+      return null;
+    }
 
     const groups = (payload['cognito:groups'] as string[] | undefined) ?? [];
     return {
@@ -44,7 +52,8 @@ export async function getServerUser(): Promise<ServerUser | null> {
       username: lastUser,
       isAdmin: groups.includes('admin'),
     };
-  } catch {
+  } catch (e) {
+    console.log('[getServerUser] error:', e);
     return null;
   }
 }

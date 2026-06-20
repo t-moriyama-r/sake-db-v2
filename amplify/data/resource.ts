@@ -1,12 +1,9 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
-import { adminSchema } from './schema/admin';
-import { affiliateSchema } from './schema/affiliate';
 import { bookmarkSchema } from './schema/bookmark';
 import { categorySchema } from './schema/category';
-import { flavorSchema } from './schema/flavor';
-import { liquorSchema } from './schema/liquor';
-import { recommendSchema } from './schema/recommend';
+import { liquorSchema } from './schema/liquor/index';
 import { userSchema } from './schema/user';
+import { buildSearchCache } from '../functions/liquor/buildSearchCache/resource';
 
 /**
  * sake-db GraphQL スキーマを Amplify Gen 2 に移植したデータスキーマ。
@@ -23,13 +20,9 @@ import { userSchema } from './schema/user';
  *   フロントエンドから直接 client.models.UserProfile を操作すること。
  */
 const schema = a.schema({
-  ...adminSchema,
-  ...affiliateSchema,
   ...bookmarkSchema,
   ...categorySchema,
-  ...flavorSchema,
   ...liquorSchema,
-  ...recommendSchema,
   ...userSchema,
 });
 
@@ -43,5 +36,12 @@ export const data = defineData({
     /** 未ログインユーザーのアクセスには identityPool を使用 */
     /** シードスクリプトなどサーバーサイド処理用 API キー */
     apiKeyAuthorizationMode: { expiresInDays: 365 },
+  },
+  /**
+   * Data にアクセスする Lambda 関数を登録する。
+   * buildSearchCache: EventBridge で 1 時間ごとに実行される検索インデックス構築関数。
+   */
+  functions: {
+    buildSearchCache,
   },
 });

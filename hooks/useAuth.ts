@@ -6,6 +6,7 @@ import {
   signOut,
   signUp,
   confirmSignUp,
+  confirmSignIn,
   getCurrentUser,
   fetchUserAttributes,
   updateUserAttributes,
@@ -14,6 +15,7 @@ import {
   confirmResetPassword,
   type AuthUser,
 } from 'aws-amplify/auth';
+import { Hub } from 'aws-amplify/utils';
 
 export type AppUser = {
   id: string;
@@ -26,7 +28,7 @@ export type AppUser = {
 
 export function useAuth() {
   const [user, setUser] = useState<AppUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const loadUser = useCallback(async () => {
     try {
@@ -49,12 +51,41 @@ export function useAuth() {
 
   useEffect(() => {
     loadUser();
+
+    const unsubscribe = Hub.listen('auth', ({ payload }) => {
+      switch (payload.event) {
+        case 'signedIn':
+          loadUser();
+          break;
+        case 'signedOut':
+          setUser(null);
+          break;
+        default:
+          break;
+      }
+    });
+
+    return () => unsubscribe();
   }, [loadUser]);
 
   const login = useCallback(async (email: string, password: string) => {
     const result = await signIn({ username: email, password });
     await loadUser();
     return result;
+  }, [loadUser]);
+
+  const loginWithX = useCallback(async (username: string, xUserId: string) => {
+    const result = await signIn({
+      username,
+      options: {
+        authFlowType: 'CUSTOM_WITHOUT_SRP',
+        clientMetadata: { xUserId },
+      },
+    });
+    if (result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE') {
+      await confirmSignIn({ challengeResponse: xUserId });
+    }
+    await loadUser();
   }, [loadUser]);
 
   const logout = useCallback(async () => {
@@ -79,6 +110,7 @@ export function useAuth() {
     isAdmin,
     isLoading,
     login,
+    loginWithX,
     logout,
     register,
     updateUserAttributes,
