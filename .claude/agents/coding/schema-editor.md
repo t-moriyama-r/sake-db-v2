@@ -6,7 +6,7 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 
 # 共通ルール
 
-@../../CLAUDE.md
+@../../../CLAUDE.md
 
 # Amplify スキーマ編集ルール
 

@@ -7,6 +7,16 @@ description: GitHub issueの管理を担当。「AI調査結果承認済・修�
 
 日次ルーティンにおける GitHub issue の管理全般を担う。
 
+# 引数
+
+| 引数 | 必須 | 説明 |
+|---|---|---|
+| `task` | ✓ | `select`（issue選定）/ `complete`（完了処理）/ `pr-comment`（PRコメント） |
+| `issue` | `complete` 時 | 完了したissueの番号 |
+| `pr_url` | `complete` 時 | 作成されたPRのURL |
+| `pr` | `pr-comment` 時 | コメント対象PR番号 |
+| `body` | `pr-comment` 時 | コメント本文 |
+
 # タスク: 着手issue選定
 
 1. 以下のコマンドで一覧取得する
@@ -39,4 +49,4 @@ investigator が作成した `AI調査結果確認待ち` ラベルのissueを�
 
 # 共通ルール
 
-@../../CLAUDE.md
+@../../../CLAUDE.md

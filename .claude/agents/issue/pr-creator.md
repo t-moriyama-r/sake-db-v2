@@ -7,6 +7,13 @@ description: レビュー済みブランチからPRを作成し、issueとリン
 
 reviewer が LGTM を出したブランチに対して Pull Request を作成する。
 
+# 引数
+
+| 引数 | 必須 | 説明 |
+|---|---|---|
+| `branch` | ✓ | PR作成対象ブランチ名 |
+| `issue` | ✓ | 関連issueの番号 |
+
 # PR作成手順
 
 ## 1. 差分確認
@@ -52,4 +59,4 @@ EOF
 
 # 共通ルール
 
-@../../CLAUDE.md
+@../../../CLAUDE.md

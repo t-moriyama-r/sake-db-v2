@@ -13,30 +13,40 @@
 
 ## サブエージェント
 
-### `general` — 汎用エージェント
+### 汎用 (`.claude/agents/`)
 
-専門エージェントが担当しないタスクに使用する汎用エージェント。  
-`CLAUDE.md` のプロジェクトルールを参照する。
+| エージェント | 役割 |
+|---|---|
+| `routine-orchestrator` | 日次ルーティンの総合司令塔 |
 
-### `coder` — コーディング担当エージェント
+### コーディング (`.claude/agents/coding/`)
 
-コンポーネント実装・関数追加・バグ修正・リファクタリングなど、  
-**コードを書くタスクはすべてこのエージェントが処理する**。
+| エージェント | 役割 |
+|---|---|
+| `coder` | コンポーネント実装・関数追加・バグ修正・リファクタリング |
+| `fixer` | issueの実装・差し戻し修正・ブランチ管理・コミット |
+| `reviewer` | 実装済みコードのレビュー・品質ゲート |
+| `review-responder` | オープンPRのレビューコメントを読んでコードを修正 |
+| `schema-editor` | Amplify スキーマ（`amplify/data/schema/`）の編集 |
 
-主なルール：
+`coder` の主なルール：
 - `index.tsx` / `index.ts` ファイル名禁止（ディレクトリ名と同名のファイルを使う）
 - props 型名は `Props` に統一
 - コンポーネント本体を先に書き、ヘルパーは `function` 宣言で後方に定義
 
-### `schema-editor` — Amplify スキーマ編集エージェント
-
-`amplify/data/schema/` の編集を担当する専門エージェント。  
-**スキーマを編集する際は必ずこのエージェントを使うこと**（後述の `/edit-schema` コマンド経由が推奨）。
-
-主なルール：
+`schema-editor` の主なルール：
 - 1ファイル1スキーマ（複数の `a.model()` を混在させない）
 - 編集後は `amplify/data/resource.ts` の import を更新
 - `npx tsc --noEmit` で型チェックを行い、エラーを修正
+
+### issue管理 (`.claude/agents/issue/`)
+
+| エージェント | 役割 |
+|---|---|
+| `issue-manager` | GitHub issueの選定・完了処理・ラベル管理 |
+| `investigator` | コードベース調査・バグ発見・新規issue作成 |
+| `pr-creator` | PR作成・issueリンク |
+| `spec-manager` | 仕様ドキュメント・CLAUDE.md の更新管理 |
 
 ## スラッシュコマンド
 
@@ -61,22 +71,12 @@ Amplify データスキーマの編集（追加・変更・削除・ファイル
 
 各エージェントは独立して動作しますが、いずれも `CLAUDE.md` のプロジェクトルールに従います。
 
-## 日次ルーティン用エージェント
+## 日次ルーティン
 
-日次ルーティン（claude.ai/code/routines）から自動実行される専門エージェント群。
-`routine-orchestrator` が起点となり、各エージェントを順番に呼び出す。
+`routine-orchestrator` が起点となり、`coding/` と `issue/` 配下のエージェントを順番に呼び出す。
+詳細なフローは `.claude/agents/routine-orchestrator.md` を参照。
 
-| エージェント | 役割 |
-|---|---|
-| `routine-orchestrator` | 日次ルーティンの総合司令塔 |
-| `issue-manager` | GitHub issueの選定・完了処理・ラベル管理 |
-| `investigator` | コードベース調査・バグ発見・新規issue作成 |
-| `fixer` | issueの実装・ブランチ管理・コミット |
-| `reviewer` | 実装済みコードのレビュー・品質ゲート |
-| `pr-creator` | PR作成・issueリンク |
-| `spec-manager` | 仕様ドキュメント・CLAUDE.md の更新管理 |
-
-### ルーティンの Instructions（claude.ai/code/routines に設定）
+### Instructions（claude.ai/code/routines に設定）
 
 ```
 routine-orchestrator エージェントを呼び出し、日次メンテナンスを実行してください。

@@ -6,7 +6,6 @@ description: 日次ルーティンの総合司令塔。issue-manager・fixer・r
 # 役割
 
 毎日深夜に自動実行される日次ルーティンを統括する。
-各専門エージェントをオーケストレーションし、リポジトリを健全な状態に保つ。
 
 # 使用するGitHubラベル
 
@@ -18,61 +17,75 @@ description: 日次ルーティンの総合司令塔。issue-manager・fixer・r
 
 # 実行フロー
 
+`エージェント名(引数)` の形式でエージェントを呼び出す。引数仕様は各エージェントファイルを参照。
+
+## PHASE 0: PRレビューコメント対応
+
+```
+open_prs ← gh pr list --state open
+for pr in open_prs with 未対応レビューコメント:
+  review-responder(pr=<pr>)
+  reviewer(task=verify, pr=<pr>)   # 再指摘 → review-responder 再修正（最大2回）
+  issue-manager(task=pr-comment, pr=<pr>, body="レビューコメント対応済み")
+```
+
+オープンPRなし、または未対応コメントなし → スキップ
+
 ## PHASE 1: issue選定
 
-`issue-manager` エージェントを呼び出す。
-ラベル `AI調査結果承認済・修正待ち` の未着手issueを3〜4件選定させる。
+```
+issues ← issue-manager(task=select)
+count >= 3 → PHASE 2
+count <= 2 → PHASE 1.5
+```
 
-- 3件以上選定できた場合 → PHASE 2へ
-- 2件以下の場合 → PHASE 1.5へ
+## PHASE 1.5: 課題発見
 
-## PHASE 1.5: 課題発見（issueが不足している場合）
-
-`investigator` エージェントを呼び出し、リポジトリを調査させて
-ラベル `AI調査結果確認待ち` で新規issueを作成させる（最大5件）。
-作成したissueは今回の実装対象にせず、人間の承認を待つ。
-その後、選定できた件数分だけ PHASE 2 を実行する。
+```
+investigator(task=scan)  # 明確な課題がなければissue作成不要
+→ PHASE 2（選定済み件数分のみ）
+```
 
 ## PHASE 2: 実装ループ（issue 1件ずつ）
 
-選定されたissueに対して以下を順に実行：
-
-1. `fixer` エージェントを呼び出し、ブランチ作成・実装・コミット・プッシュを行わせる
-2. `reviewer` エージェントを呼び出し、実装内容をレビューさせる
-   - LGTM → 次のステップへ
-   - 差し戻し → fixer に修正させてから再レビュー（最大2回）
-3. `pr-creator` エージェントを呼び出し、PRを作成させる
-4. `issue-manager` エージェントを呼び出し、以下を行わせる
-   - ラベルを `AI調査結果承認済・修正待ち` から `AI修正PR作成済` に付け替える
-   - issueにPR URLをコメントする（issueはクローズしない。人間がマージ後にクローズする）
+```
+for issue in issues:
+  branch ← fixer(task=implement, issue=<issue>)
+  result ← reviewer(task=review, branch=<branch>, issue=<issue>)
+  if LGTM:
+    pr_url ← pr-creator(branch=<branch>, issue=<issue>)
+    issue-manager(task=complete, issue=<issue>, pr_url=<pr_url>)
+  else if retries < 2:
+    fixer(task=fix, branch=<branch>, feedback=<reviewer出力>)
+    → retry reviewer
+  else:
+    skip → サマリーに記録
+```
 
 ## PHASE 3: ドキュメント更新
 
-`spec-manager` エージェントを呼び出し、今回の実装内容をドキュメントに反映させる。
+```
+spec-manager(changes=<PHASE 2の実装サマリー>)
+```
 
 ## PHASE 4: サマリー出力
 
-以下の形式で作業結果をまとめて出力する：
-
 ```
 # 日次ルーティン完了サマリー
-
+## レビューコメント対応済み
+- PR #<pr_number> <title>：<対応概要>
 ## 実装完了（PR作成済）
 - #<number> <title> → PR #<pr_number>
-
 ## 新規登録（承認待ち）
 - #<number> <title>
-
 ## スキップ
-- （差し戻し2回で断念したissueを記載）
+- （差し戻し2回で断念したissue）
 ```
 
 # 原則
 
-- 各エージェントへの指示は明確に。曖昧なまま委譲しない
-- エラーが発生したissueはスキップして次のissueに進む（止まらない）
-- 人間の確認が必要な判断（破壊的変更・大規模リファクタリング等）は実装せず、issueコメントに記録する
-- issueについたコメントは必ず `gh issue view <number>` で確認してから実装に着手する
+- エラーが発生したissueはスキップして次へ進む（止まらない）
+- 破壊的変更・大規模リファクタリングは実装せず、issueコメントに記録する
 
 # 共通ルール
 

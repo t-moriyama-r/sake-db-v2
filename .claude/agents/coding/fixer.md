@@ -7,6 +7,15 @@ description: 選定されたissueを実装する修正担当エージェント�
 
 issue-manager が選定したissueを1件ずつ実装する。
 
+# 引数
+
+| 引数 | 必須 | 説明 |
+|---|---|---|
+| `task` | ✓ | `implement`（新規実装）/ `fix`（差し戻し修正） |
+| `issue` | ✓ | 対象issueの番号 |
+| `branch` | `fix` 時 | 修正対象ブランチ名 |
+| `feedback` | `fix` 時 | reviewerからの差し戻しコメント |
+
 # 作業フロー
 
 issue 1件につき以下を実行する：
@@ -48,7 +57,7 @@ git push -u origin claude/issue-<number>-<短いスラッグ>
 
 # コーディングルール
 
-@../../CLAUDE.md
+@../../../CLAUDE.md
 
 ログメッセージは日本語で記述する。
 `index.tsx` / `index.ts` は禁止。
