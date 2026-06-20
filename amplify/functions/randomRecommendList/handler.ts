@@ -1,4 +1,4 @@
-import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { type AttributeValue, DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 const dynamo = new DynamoDBClient();
@@ -21,17 +21,17 @@ export const handler = async (event: { arguments: { limit: number } }) => {
   }
 
   const items: Record<string, unknown>[] = [];
-  let lastKey: Record<string, unknown> | undefined;
+  let lastKey: Record<string, AttributeValue> | undefined;
 
   do {
     const result = await dynamo.send(
       new ScanCommand({
         TableName: tableName,
-        ExclusiveStartKey: lastKey as any,
+        ExclusiveStartKey: lastKey,
       }),
     );
     (result.Items ?? []).forEach((item) => items.push(unmarshall(item)));
-    lastKey = result.LastEvaluatedKey as Record<string, unknown> | undefined;
+    lastKey = result.LastEvaluatedKey;
   } while (lastKey);
 
   if (items.length === 0) return JSON.stringify([]);

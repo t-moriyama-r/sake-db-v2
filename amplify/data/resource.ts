@@ -1,9 +1,9 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
+import { buildSearchCache } from '../functions/liquor/buildSearchCache/resource';
 import { bookmarkSchema } from './schema/bookmark';
 import { categorySchema } from './schema/category';
 import { liquorSchema } from './schema/liquor/index';
 import { userSchema } from './schema/user';
-import { buildSearchCache } from '../functions/liquor/buildSearchCache/resource';
 
 /**
  * sake-db GraphQL スキーマを Amplify Gen 2 に移植したデータスキーマ。
