@@ -3,5 +3,6 @@ import { SidebarClient } from './SidebarClient';
 
 export const Sidebar = async () => {
   const rootCategories = await fetchRootCategories();
-  return <SidebarClient rootCategories={rootCategories} />;
+  const nodes = rootCategories.map(({ id, name }) => ({ id, name }));
+  return <SidebarClient rootCategories={nodes} />;
 };

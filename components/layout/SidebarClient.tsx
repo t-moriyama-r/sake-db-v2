@@ -5,10 +5,13 @@ import { useState } from 'react';
 import { client } from '@/lib/amplify-client';
 import type { Schema } from '@/amplify/data/resource';
 
+/** Server Component から渡せるシリアライズ可能な最小型 */
+type CategoryNode = { id: string; name: string };
+/** Client 側で子カテゴリを取得したときに使うフル型 */
 type Category = Schema['Category']['type'];
 
 type CategoryTreeItemProps = {
-  category: Category;
+  category: CategoryNode;
   depth?: number;
 };
 
@@ -62,7 +65,7 @@ const CategoryTreeItem = ({ category, depth = 0 }: CategoryTreeItemProps) => {
 };
 
 type SidebarClientProps = {
-  rootCategories: Category[];
+  rootCategories: CategoryNode[];
 };
 
 export const SidebarClient = ({ rootCategories }: SidebarClientProps) => (

@@ -59,8 +59,12 @@ export const fetchLiquorsByCategories = withCache(
 export const fetchRandomLiquors = withCache(
   async (limit: number): Promise<LiquorRecord[]> => {
     const client = getGuestClient();
-    const { data } = await client.queries.randomRecommendList({ limit });
-    return data ? (JSON.parse(data as string) as LiquorRecord[]) : [];
+    const { data, errors } = await client.queries.randomRecommendList({ limit });
+    if (errors?.length) {
+      console.warn('randomRecommendList でエラーが発生しました:', JSON.stringify(errors));
+    }
+    if (!data) return [];
+    return JSON.parse(data as string) as LiquorRecord[];
   },
   ['random-liquors'],
   { tags: [CACHE_TAGS.liquors], revalidate: 300 },

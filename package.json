@@ -13,6 +13,8 @@
     "seed:dry-run": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts --dry-run"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1058.0",
+    "@aws-sdk/util-dynamodb": "^3.996.2",
     "@hookform/resolvers": "^5.2.2",
     "aws-amplify": "^6.16.3",
     "next": "16.2.0",
