@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CategoryForm } from '@/components/pages/category/CategoryForm/CategoryForm';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
+import { convertFileToBase64 } from '@/lib/client/fileUtils';
 import { routes } from '@/lib/routes';
 import type { CategoryInput } from '@/schemas/category';
 
@@ -56,12 +57,4 @@ export const CategoryCreate = ({ parentCategoryId }: Props) => {
   );
 };
 
-async function convertFileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
 
