@@ -75,3 +75,9 @@ git push -u origin claude/issue-<number>-<短いスラッグ>
 - 機能追加: `feat:`
 - リファクタリング: `refactor:`
 - ドキュメント: `docs:`
+
+# ブランチ運用ルール
+
+- **ベースブランチは常に `develop`**。呼び出し時に別のブランチ名が渡されても無視する
+- 作業ブランチは `claude/issue-<number>-<slug>` 形式で `develop` から切る
+- PRのマージ先も `develop`
