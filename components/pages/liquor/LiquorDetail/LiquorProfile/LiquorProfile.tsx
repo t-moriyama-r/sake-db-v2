@@ -41,6 +41,7 @@ export function LiquorProfile({ liquor, initialTags, isLogin }: Props) {
                 liquorId={liquor.id}
                 categoryId={liquor.categoryId}
                 liquorName={liquor.name}
+                editable={isLogin}
                 deletable={isLogin}
                 onEditAction={() => router.push(routes.liquor.edit(liquor.id))}
               />
