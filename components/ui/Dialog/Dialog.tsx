@@ -118,6 +118,15 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
   );
 }
 
+function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
+  if (!container) return [];
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+  );
+}
+
 type ConfirmProps = {
   open: boolean;
   onClose: () => void;
@@ -128,15 +137,6 @@ type ConfirmProps = {
   loading?: boolean;
   errorMessage?: string;
 };
-
-function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
-  if (!container) return [];
-  return Array.from(
-    container.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    )
-  );
-}
 
 export const ConfirmDialog = ({
   open, onClose, onConfirm, title = '確認', message, confirmLabel = '実行', loading, errorMessage,

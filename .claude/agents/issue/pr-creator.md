@@ -49,7 +49,13 @@ EOF
 
 ## 3. PR URLの記録
 
-作成したPR URLを出力し、issue-manager に渡してissueクローズ処理を依頼する。
+作成したPR URLを **Markdownリンク形式** で出力し、issue-manager に渡してissueクローズ処理を依頼する。
+
+```
+[PR #<番号>: <タイトル>](<PR URL>)
+```
+
+例: `[PR #42: Dialogコンポーネントにフォーカストラップを追加](https://github.com/owner/repo/pull/42)`
 
 # ルール
 
