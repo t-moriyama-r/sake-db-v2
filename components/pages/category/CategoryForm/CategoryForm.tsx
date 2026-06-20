@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { FormField } from '@/components/forms/FormField/FormField';
@@ -50,16 +50,6 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
     }
   };
 
-  const selectableCategories = useMemo<React.JSX.Element[]>(
-    () =>
-      categories
-        .filter((c) => c.id !== category?.id)
-        .map((c) => (
-          <option key={c.id} value={c.id}>{c.name}</option>
-        )),
-    [categories, category]
-  );
-
   const selectClass =
     'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground ' +
     'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring';
@@ -74,7 +64,11 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
         <label className="text-sm font-medium text-foreground-secondary">親カテゴリ</label>
         <select className={selectClass} {...register('parentId')}>
           <option value="">-- なし（ルートカテゴリ）--</option>
-          {selectableCategories}
+          {categories
+            .filter((c) => c.id !== category?.id)
+            .map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
         </select>
       </div>
 
