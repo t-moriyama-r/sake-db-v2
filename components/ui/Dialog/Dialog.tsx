@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '../Button/Button';
+import { useDialogFocus } from './useDialogFocus';
+import { useScrollLock } from './useScrollLock';
 
 type Props = {
   open: boolean;
@@ -14,29 +16,12 @@ type Props = {
 
 export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState<boolean>(false);
+  const titleId = useId();
 
-  useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
+  useScrollLock(open);
+  const { dialogRef } = useDialogFocus({ open, onClose });
 
-  useEffect(() => {
-    if (open) {
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
-      document.body.style.overflow = 'hidden';
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    } else {
-      document.documentElement.style.setProperty('--scrollbar-width', '0px');
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    }
-    return () => {
-      document.documentElement.style.setProperty('--scrollbar-width', '0px');
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    };
-  }, [open]);
-
-  if (!open || !mounted) return null;
+  if (!open || typeof document === 'undefined') return null;
 
   return createPortal(
     <div
@@ -44,11 +29,24 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
     >
-      <div className="bg-surface rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
+        className="bg-surface rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col"
+      >
         {title && (
           <div className="flex items-center justify-between border-b border-border px-6 py-4">
-            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-            <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground">✕</button>
+            <h2 id={titleId} className="text-lg font-semibold text-foreground">{title}</h2>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="ダイアログを閉じる"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              ✕
+            </button>
           </div>
         )}
         <div className="flex-1 overflow-auto px-6 py-4">{children}</div>
