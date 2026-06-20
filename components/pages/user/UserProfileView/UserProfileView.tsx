@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
-import { routes } from '@/lib/routes';
+import { ToastContainer } from '@/components/ui/Toast/Toast';
+import { useToast } from '@/hooks/useToast';
 import { client } from '@/lib/amplify-client';
+import { routes } from '@/lib/routes';
+import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 
 type UserActivity = {
   post: SerializableBoardPostRecord;
@@ -17,6 +19,8 @@ type UserActivity = {
 
 export function UserProfileView() {
   const { id } = useParams<{ id: string }>();
+
+  const { toasts, addToast, removeToast } = useToast();
 
   const [posts, setPosts] = useState<UserActivity[]>([]);
   const [userName, setUserName] = useState<string>('');
@@ -45,14 +49,24 @@ export function UserProfileView() {
         );
 
         setPosts(activities);
+      } catch (error) {
+        console.error('ユーザー投稿の取得に失敗しました:', error);
+        addToast('データの読み込みに失敗しました', 'error');
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [id]);
+  }, [id, addToast]);
 
-  if (loading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
+  if (loading) {
+    return (
+      <>
+        <div className="flex justify-center py-32"><Spinner size="lg" /></div>
+        <ToastContainer toasts={toasts} onRemove={removeToast} />
+      </>
+    );
+  }
 
   const ratedPosts = {
     5: posts.filter((p) => p.post.rate === 5),
@@ -124,6 +138,7 @@ export function UserProfileView() {
           </section>
         );
       })}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
 }

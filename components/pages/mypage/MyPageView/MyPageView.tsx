@@ -2,17 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
+import { ToastContainer } from '@/components/ui/Toast/Toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/hooks/useToast';
 import { client } from '@/lib/amplify-client';
 import { routes } from '@/lib/routes';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 
 export function MyPageView() {
   const router = useRouter();
   const { user, isLogin, isLoading } = useAuth();
+
+  const { toasts, addToast, removeToast } = useToast();
 
   const [bookmarks, setBookmarks] = useState<SerializableLiquorRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,15 +34,23 @@ export function MyPageView() {
         );
         const liquors = liquorResults.map((r) => r.data).filter(Boolean);
         setBookmarks(JSON.parse(JSON.stringify(liquors)) as SerializableLiquorRecord[]);
+      } catch (error) {
+        console.error('ブックマークの取得に失敗しました:', error);
+        addToast('ブックマークの読み込みに失敗しました', 'error');
       } finally {
         setLoading(false);
       }
     };
     load();
-  }, [isLogin, isLoading, router]);
+  }, [isLogin, isLoading, router, addToast]);
 
   if (isLoading || loading) {
-    return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
+    return (
+      <>
+        <div className="flex justify-center py-32"><Spinner size="lg" /></div>
+        <ToastContainer toasts={toasts} onRemove={removeToast} />
+      </>
+    );
   }
 
   return (
@@ -73,6 +85,7 @@ export function MyPageView() {
           </div>
         )}
       </section>
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
 }
