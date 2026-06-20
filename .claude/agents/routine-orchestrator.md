@@ -24,8 +24,10 @@ description: 日次ルーティンの総合司令塔。issue-manager・fixer・r
 ```
 open_prs ← gh pr list --state open
 for pr in open_prs with 未対応レビューコメント:
-  review-responder(pr=<pr>)
-  reviewer(task=verify, pr=<pr>)   # 再指摘 → review-responder 再修正（最大2回）
+  review-responder(pr=<pr>, task=fix)          # 修正・コミット・プッシュ（返信はまだしない）
+  reviewer(task=verify, pr=<pr>)               # LGTM → 次へ / NG → review-responder 再修正（最大2回）
+  # reviewer が LGTM を確認した後、各レビューコメントへ返信
+  review-responder(pr=<pr>, task=reply)
   issue-manager(task=pr-comment, pr=<pr>, body="レビューコメント対応済み")
 ```
 
