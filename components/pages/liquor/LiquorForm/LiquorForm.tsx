@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
-import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
-import { fetchLiquorHistories, type LiquorHistoryRecord } from '@/lib/repository/liquor';
-import { LiquorFormFields, type LiquorFormFieldsRef } from './LiquorFormFields';
+import type { SerializableLiquorHistoryRecord, SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
+import { LiquorFormFields } from './LiquorFormFields';
 import { LiquorHistoryPanel } from './LiquorHistoryPanel';
 import { useLiquorSave } from './useLiquorSave';
 
@@ -18,33 +17,36 @@ type EditProps = {
   mode: 'EDIT';
   categories: SerializableCategoryRecord[];
   liquor: SerializableLiquorRecord;
+  histories: SerializableLiquorHistoryRecord[];
 };
 
 type Props = NewProps | EditProps;
+
+type RollbackValues = {
+  categoryId: string;
+  name: string;
+  description: string;
+  youtube: string;
+  imageBase64?: string | null;
+  version: number;
+};
 
 export function LiquorForm(props: Props) {
   const { save, saveError } = useLiquorSave(
     props.mode === 'EDIT' ? { liquor: props.liquor } : {},
   );
 
-  const formRef = useRef<LiquorFormFieldsRef>(null);
-  const [histories, setHistories] = useState<LiquorHistoryRecord[]>([]);
+  const [rollbackValues, setRollbackValues] = useState<RollbackValues | null>(null);
 
-  useEffect(() => {
-    if (props.mode !== 'EDIT') return;
-    fetchLiquorHistories(props.liquor.id).then(setHistories).catch(() => {
-      console.warn('編集履歴の取得に失敗しました');
-    });
-  }, [props.mode, props.mode === 'EDIT' ? props.liquor.id : null]);
-
-  const handleRollback = (history: LiquorHistoryRecord) => {
-    formRef.current?.resetToValues({
+  const handleRollback = (history: SerializableLiquorHistoryRecord) => {
+    setRollbackValues((prev) => ({
       categoryId: history.categoryId,
       name: history.name,
       description: history.description ?? '',
       youtube: history.youtube ?? '',
-      imageBase64: history.imageBase64,
-    });
+      imageBase64: history.imageBase64 ?? null,
+      version: (prev?.version ?? 0) + 1,
+    }));
   };
 
   const isEdit = props.mode === 'EDIT';
@@ -57,27 +59,29 @@ export function LiquorForm(props: Props) {
       <div className={isEdit ? 'grid gap-6 lg:grid-cols-[1fr_280px]' : undefined}>
         <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
           <LiquorFormFields
-            ref={formRef}
+            key={rollbackValues?.version ?? 'initial'}
             categories={props.categories}
             liquor={isEdit ? props.liquor : undefined}
             defaultValues={
-              isEdit
+              rollbackValues ??
+              (isEdit
                 ? {
                     categoryId: props.liquor.categoryId,
                     name: props.liquor.name,
                     description: props.liquor.description ?? '',
                     youtube: props.liquor.youtube ?? '',
                   }
-                : { categoryId: props.categoryId }
+                : { categoryId: props.categoryId })
             }
+            initialImageBase64={rollbackValues?.imageBase64 ?? (isEdit ? props.liquor.imageBase64 : undefined)}
             onSubmitAction={save}
             saveError={saveError}
           />
         </div>
         {isEdit && (
           <LiquorHistoryPanel
-            histories={histories}
-            currentVersionNo={props.liquor.versionNo ?? 0}
+            histories={props.histories}
+            currentVersionNo={(props.liquor.versionNo ?? 1) - 1}
             onSelectAction={handleRollback}
           />
         )}

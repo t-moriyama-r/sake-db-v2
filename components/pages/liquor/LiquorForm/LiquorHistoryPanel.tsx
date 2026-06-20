@@ -1,11 +1,11 @@
 'use client';
 
-import type { LiquorHistoryRecord } from '@/lib/repository/liquor';
+import type { SerializableLiquorHistoryRecord } from '@/lib/server/liquors/fetch';
 
 type Props = {
-  histories: LiquorHistoryRecord[];
+  histories: SerializableLiquorHistoryRecord[];
   currentVersionNo: number;
-  onSelectAction: (history: LiquorHistoryRecord) => void;
+  onSelectAction: (history: SerializableLiquorHistoryRecord) => void;
 };
 
 export function LiquorHistoryPanel({ histories, currentVersionNo, onSelectAction }: Props) {
@@ -31,18 +31,25 @@ export function LiquorHistoryPanel({ histories, currentVersionNo, onSelectAction
 }
 
 type HistoryItemProps = {
-  history: LiquorHistoryRecord;
+  history: SerializableLiquorHistoryRecord;
   isCurrent: boolean;
-  onSelectAction: (history: LiquorHistoryRecord) => void;
+  onSelectAction: (history: SerializableLiquorHistoryRecord) => void;
 };
 
 function HistoryItem({ history: h, isCurrent, onSelectAction }: HistoryItemProps) {
   return (
     <li
-      className={`flex flex-col gap-0.5 rounded-lg px-3 py-2 cursor-pointer hover:bg-surface-hover transition-colors ${isCurrent ? 'opacity-50 pointer-events-none' : ''}`}
+      className={`flex flex-col gap-0.5 rounded-lg px-3 py-2 transition-colors cursor-pointer hover:bg-surface-hover ${isCurrent ? 'bg-surface-hover' : ''}`}
       onClick={() => onSelectAction(h)}
     >
-      <span className="text-sm font-bold text-foreground">v{h.versionNo}</span>
+      <span className="flex items-center gap-2">
+        <span className="text-sm font-bold text-foreground">v{h.versionNo}</span>
+        {isCurrent && (
+          <span className="text-xs font-medium px-1.5 py-0.5 rounded border border-border text-foreground-secondary">
+            現在
+          </span>
+        )}
+      </span>
       <span className="text-xs text-foreground-secondary">
         {new Date(h.updatedAt).toLocaleString('ja-JP')}
         {h.updateUserName && <span>（{h.updateUserName}）</span>}
