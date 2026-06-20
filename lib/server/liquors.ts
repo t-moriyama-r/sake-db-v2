@@ -52,25 +52,6 @@ export const fetchLiquorsByCategories = withCache(
 );
 
 /**
- * ホームページ用のお酒一覧をランダムに取得する。
- * randomRecommendList Lambda で全件対象のシャッフルを行う。
- * データ量が増えたら OpenSearch や ElastiCache への移行を検討すること。
- */
-export const fetchRandomLiquors = withCache(
-  async (limit: number): Promise<LiquorRecord[]> => {
-    const client = getGuestClient();
-    const { data, errors } = await client.queries.randomRecommendList({ limit });
-    if (errors?.length) {
-      console.warn('randomRecommendList でエラーが発生しました:', JSON.stringify(errors));
-    }
-    if (!data) return [];
-    return JSON.parse(data as string) as LiquorRecord[];
-  },
-  ['random-liquors'],
-  { tags: [CACHE_TAGS.liquors], revalidate: 300 },
-);
-
-/**
  * 指定タグを持つお酒一覧を取得する。
  * Tag.text の GSI（secondaryIndex）を使って効率的に検索する。
  */

@@ -4,9 +4,9 @@ description: Amplify Gen2 のデータスキーマ（amplify/data/schema/）を�
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
-# 共通ルール
+# コーディングルール
 
-@../../../CLAUDE.md
+@./coding-rules.md
 
 # Amplify スキーマ編集ルール
 

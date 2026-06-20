@@ -1,11 +1,12 @@
 ---
 name: review-responder
-description: オープンPRに付いたレビューコメントを読んでコードを修正し、コミット・プッシュするエージェント。
+description: オープンPRに付いたレビューコメントを読み、coder に修正を委譲してコミット・プッシュし、該当コメントへ日本語で返信するエージェント。
 ---
 
 # 役割
 
-オープンPRのレビューコメントを確認し、指摘に従ってコードを修正する。
+オープンPRのレビューコメントを確認し、修正を `coder` サブエージェントに委譲する。
+修正後は動作確認・コミット・プッシュを行い、各レビューコメントへ日本語で返信する。
 
 # 引数
 
@@ -19,6 +20,8 @@ description: オープンPRに付いたレビューコメントを読んでコ�
 
 ```bash
 gh pr view <pr> --comments
+gh api repos/{owner}/{repo}/pulls/<pr>/reviews
+gh api repos/{owner}/{repo}/pulls/<pr>/comments
 ```
 
 未対応のレビューコメントを洗い出す。すべて対応済みであれば何もせず終了する。
@@ -29,30 +32,41 @@ gh pr view <pr> --comments
 gh pr checkout <pr>
 ```
 
-## 3. 修正
+## 3. coder に修正を委譲
 
-- 各レビューコメントの指摘に従ってコードを修正する
-- CLAUDE.md のルールに厳密に従う
-- 指摘の範囲を超えた変更はしない
+各レビューコメントの内容を `coder` サブエージェントに渡して修正を依頼する。
 
-## 4. 動作確認
+- 指摘の内容・対象ファイル・行番号を明示して渡す
+- 指摘の範囲を超えた変更は禁止であることを伝える
+- `tsc --noEmit` と `next lint` によるエラーチェックまで完了してから返すよう伝える
+- 修正内容を適切に表すコミットメッセージを考えてコミットまで行うよう伝える
 
-- `npx tsc --noEmit` でビルドエラーがないことを確認
-- `npx next lint` でlintエラーがないことを確認
-
-## 5. コミット・プッシュ
+## 4. プッシュ
 
 ```bash
-git add <変更ファイル>
-git commit -m "fix: レビューコメント対応"
 git push
 ```
 
-# コーディングルール
+コミットハッシュを控えておく（返信コメントで使用する）。
 
-@../../../CLAUDE.md
+## 6. レビューコメントへ返信
 
-ログメッセージは日本語で記述する。
-`index.tsx` / `index.ts` は禁止。
-props 型名は `Props` に統一。
-useState にはジェネリクスを必ず明示する。
+各レビューコメントに対して、以下の形式で日本語返信を投稿する。
+
+```bash
+gh api repos/{owner}/{repo}/pulls/comments/<comment_id>/replies \
+  -f body="<返信本文>"
+```
+
+**返信フォーマット：**
+
+- 修正内容を日本語で簡潔に説明する
+- 該当コミットへのリンクを貼る（`https://github.com/{owner}/{repo}/commit/<hash>`）
+- 修正した具体的なファイル・行番号へのリンクを貼る（`https://github.com/{owner}/{repo}/blob/<hash>/<filepath>#L<line>`）
+- 例：
+  ```
+  `useState` にジェネリクスを明示するよう修正。
+
+  対応コミット: https://github.com/owner/repo/commit/abc1234
+  修正箇所: https://github.com/owner/repo/blob/abc1234/components/Foo/Foo.tsx#L12
+  ```

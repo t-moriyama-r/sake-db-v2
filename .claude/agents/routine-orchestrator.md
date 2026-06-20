@@ -58,8 +58,16 @@ for issue in issues:
   else if retries < 2:
     fixer(task=fix, branch=<branch>, feedback=<reviewer出力>)
     → retry reviewer
-  else:
-    skip → サマリーに記録
+  else:  # 2回リトライしても LGTM 未達
+    reviewer が実装の複雑さ・ブロッカーを評価する
+    if 「粒度が大きすぎて分割可能」と判断:
+      investigator に子issueの作成を依頼
+      元issueに「分割した子issue番号・理由」をコメントして残す
+    else:
+      元issueに「何を試みたか・何がブロッカーか」をコメントして残す
+    ブランチを削除: git push origin --delete <branch>
+    元issueのラベルを「AI調査結果承認済・修正待ち」に戻す
+    サマリーの「スキップ」欄に理由とともに記録
 ```
 
 ## PHASE 3: ドキュメント更新

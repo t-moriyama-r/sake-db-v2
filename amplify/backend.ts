@@ -54,10 +54,4 @@ new Rule(scheduleStack, 'BuildSearchCacheRule', {
   schedule: Schedule.rate(Duration.hours(1)),
   targets: [new LambdaFunction(buildCacheFn)],
 });
-// randomRecommendList: allow.resource() がこのAmplifyバージョンに存在しないため
-// CDKレベルでDynamoDBアクセス権とテーブル名環境変数を直接付与する。
-const liquorTable = backend.data.resources.tables['Liquor'];
-const randomRecommendListFn = backend.randomRecommendList.resources.lambda;
-liquorTable.grantReadData(randomRecommendListFn);
-randomRecommendListFn.addEnvironment('LIQUOR_TABLE_NAME', liquorTable.tableName);
 

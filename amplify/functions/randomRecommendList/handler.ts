@@ -1,6 +1,5 @@
 import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
-import type { Schema } from '../../data/resource';
 
 const dynamo = new DynamoDBClient();
 
@@ -13,7 +12,7 @@ const dynamo = new DynamoDBClient();
  * Amplify データクライアントを使わず DynamoDB SDK で直接アクセスする。
  * backend.ts で grantReadData と LIQUOR_TABLE_NAME 環境変数を付与済み。
  */
-export const handler: Schema['randomRecommendList']['functionHandler'] = async (event) => {
+export const handler = async (event: { arguments: { limit: number } }) => {
   const { limit } = event.arguments;
   const tableName = process.env.LIQUOR_TABLE_NAME;
   if (!tableName) {

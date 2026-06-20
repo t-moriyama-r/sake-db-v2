@@ -46,7 +46,3 @@ description: GitHub issueの管理を担当。「AI調査結果承認済・修�
 
 investigator が作成した `AI調査結果確認待ち` ラベルのissueを一覧表示し、
 承認待ち件数をサマリーとして出力する（承認操作は人間が行う）。
-
-# 共通ルール
-
-@../../../CLAUDE.md

@@ -24,7 +24,6 @@
 | エージェント | 役割 |
 |---|---|
 | `coder` | コンポーネント実装・関数追加・バグ修正・リファクタリング |
-| `fixer` | issueの実装・差し戻し修正・ブランチ管理・コミット |
 | `reviewer` | 実装済みコードのレビュー・品質ゲート |
 | `review-responder` | オープンPRのレビューコメントを読んでコードを修正 |
 | `schema-editor` | Amplify スキーマ（`amplify/data/schema/`）の編集 |
@@ -44,6 +43,7 @@
 | エージェント | 役割 |
 |---|---|
 | `issue-manager` | GitHub issueの選定・完了処理・ラベル管理 |
+| `fixer` | issueの実装・差し戻し修正・ブランチ管理・コミット |
 | `investigator` | コードベース調査・バグ発見・新規issue作成 |
 | `pr-creator` | PR作成・issueリンク |
 | `spec-manager` | 仕様ドキュメント・CLAUDE.md の更新管理 |
