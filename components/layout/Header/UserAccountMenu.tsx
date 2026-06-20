@@ -32,6 +32,8 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
       <button
         className="flex items-center gap-1.5 rounded px-2 py-1 hover:bg-muted transition-colors cursor-pointer"
         onClick={() => setMenuOpen((v) => !v)}
+        aria-label="アカウントメニューを開く"
+        aria-expanded={menuOpen}
       >
         {user?.imageBase64 ? (
           <Image src={user.imageBase64} width={32} height={32} className="h-8 w-8 rounded-full object-cover" alt={user.name ?? ''} />
@@ -47,6 +49,7 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
           xmlns="http://www.w3.org/2000/svg"
           className={`h-3 w-3 text-muted-foreground transition-transform ${menuOpen ? 'rotate-180' : ''}`}
           viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          aria-hidden="true"
         >
           <polyline points="6 9 12 15 18 9" />
         </svg>
