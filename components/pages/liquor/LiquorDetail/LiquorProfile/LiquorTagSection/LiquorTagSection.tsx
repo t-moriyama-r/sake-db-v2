@@ -9,9 +9,10 @@ import { TagAddInput } from './TagAddInput';
 type Props = {
   liquorId: string;
   initialTags: TagItem[];
+  isLogin: boolean;
 };
 
-export function LiquorTagSection({ liquorId, initialTags }: Props) {
+export function LiquorTagSection({ liquorId, initialTags, isLogin }: Props) {
   const { tags, handleAddTag, handleDeleteTag } = useLiquorTags({ liquorId, initialTags });
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -25,10 +26,10 @@ export function LiquorTagSection({ liquorId, initialTags }: Props) {
     <div className="mt-4 flex flex-wrap items-center gap-2">
       <TagList
         tags={tagData}
-        deletable={true}
+        deletable={isLogin}
         onDelete={handleDeleteTag}
       />
-      {
+      {isLogin && (
         tags.length === 0 ? (
           <button
             type="button"
@@ -49,13 +50,12 @@ export function LiquorTagSection({ liquorId, initialTags }: Props) {
             <span className="text-base leading-none">+</span>
           </button>
         )
-      }
-        <TagAddInput
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          onAddAction={handleAddTag}
-        />
-      
+      )}
+      <TagAddInput
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onAddAction={handleAddTag}
+      />
     </div>
   );
 }

@@ -50,6 +50,7 @@ export function LiquorProfile({ liquor, initialTags, isLogin }: Props) {
           <LiquorTagSection
             liquorId={liquor.id}
             initialTags={initialTags}
+            isLogin={isLogin}
           />
         </div>
       </div>
