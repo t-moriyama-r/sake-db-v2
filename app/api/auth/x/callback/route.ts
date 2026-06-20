@@ -6,16 +6,13 @@ import {
   AdminCreateUserCommand,
   AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
-// eslint-disable-next-line import/order
+import outputs from '@/amplify_outputs.json';
 import { encryptXSession } from '@/lib/server/x-session';
 
 export const runtime = 'nodejs';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const outputs = require('@/amplify_outputs.json');
-
 const cognito = new CognitoIdentityProviderClient({ region: 'ap-northeast-1' });
-const USER_POOL_ID: string = outputs?.auth?.user_pool_id;
+const USER_POOL_ID: string | undefined = outputs?.auth?.user_pool_id;
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -92,6 +89,10 @@ async function exchangeCodeForUser(code: string, codeVerifier: string, requestUr
 }
 
 async function ensureCognitoUser(username: string, displayName: string): Promise<void> {
+  if (!USER_POOL_ID) {
+    console.error('USER_POOL_IDが設定されていません。amplify_outputs.jsonを確認してください。');
+    throw new Error('USER_POOL_IDが未設定です');
+  }
   try {
     await cognito.send(new AdminGetUserCommand({ UserPoolId: USER_POOL_ID, Username: username }));
   } catch {
