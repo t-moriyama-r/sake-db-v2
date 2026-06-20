@@ -19,6 +19,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<boolean>(false);
+  const [deleteError, setDeleteError] = useState<string>('');
 
   useEffect(() => {
     if (!isLoading && !isAdmin) { router.replace(routes.home()); return; }
@@ -32,12 +33,15 @@ export default function AdminPage() {
   const handleDelete = async () => {
     if (!deleteId) return;
     setDeleting(true);
+    setDeleteError('');
     try {
       await client.models.Category.delete({ id: deleteId });
       setCategories((prev) => prev.filter((c) => c.id !== deleteId));
+      setDeleteId(null);
+    } catch (e: unknown) {
+      setDeleteError(e instanceof Error ? e.message : '削除に失敗しました');
     } finally {
       setDeleting(false);
-      setDeleteId(null);
     }
   };
 
@@ -92,12 +96,13 @@ export default function AdminPage() {
 
       <ConfirmDialog
         open={!!deleteId}
-        onClose={() => setDeleteId(null)}
+        onClose={() => { setDeleteId(null); setDeleteError(''); }}
         onConfirm={handleDelete}
         title="カテゴリを削除"
         message="このカテゴリを削除してもよろしいですか？サブカテゴリとお酒への影響を確認してください。"
         confirmLabel="削除する"
         loading={deleting}
+        errorMessage={deleteError}
       />
     </div>
   );
