@@ -10,6 +10,7 @@ import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import { routes } from '@/lib/routes';
+import { useCategoryDelete } from '@/app/admin/useCategoryDelete';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -17,9 +18,9 @@ export default function AdminPage() {
 
   const [categories, setCategories] = useState<SerializableCategoryRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState<boolean>(false);
-  const [deleteError, setDeleteError] = useState<string>('');
+
+  const { deleteId, deleting, deleteError, startDelete, cancelDelete, handleDelete } =
+    useCategoryDelete({ setCategories });
 
   useEffect(() => {
     if (!isLoading && !isAdmin) { router.replace(routes.home()); return; }
@@ -29,21 +30,6 @@ export default function AdminPage() {
         .finally(() => setLoading(false));
     }
   }, [isAdmin, isLoading, router]);
-
-  const handleDelete = async () => {
-    if (!deleteId) return;
-    setDeleting(true);
-    setDeleteError('');
-    try {
-      await client.models.Category.delete({ id: deleteId });
-      setCategories((prev) => prev.filter((c) => c.id !== deleteId));
-      setDeleteId(null);
-    } catch (e: unknown) {
-      setDeleteError(e instanceof Error ? e.message : '削除に失敗しました');
-    } finally {
-      setDeleting(false);
-    }
-  };
 
   if (isLoading || loading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
 
@@ -84,7 +70,7 @@ export default function AdminPage() {
                   お酒を追加
                 </Button>
                 {!cat.readonly && (
-                  <Button variant="danger" size="sm" onClick={() => setDeleteId(cat.id)}>
+                  <Button variant="danger" size="sm" onClick={() => startDelete(cat.id)}>
                     削除
                   </Button>
                 )}
@@ -96,7 +82,7 @@ export default function AdminPage() {
 
       <ConfirmDialog
         open={!!deleteId}
-        onClose={() => { setDeleteId(null); setDeleteError(''); }}
+        onClose={cancelDelete}
         onConfirm={handleDelete}
         title="カテゴリを削除"
         message="このカテゴリを削除してもよろしいですか？サブカテゴリとお酒への影響を確認してください。"
