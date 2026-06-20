@@ -1,9 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
-import { client } from '@/lib/amplify-client';
+import Link from 'next/link';
 import type { Schema } from '@/amplify/data/resource';
+import { client } from '@/lib/amplify-client';
 import { routes } from '@/lib/routes';
 
 /** Server Component から渡せるシリアライズ可能な最小型 */
@@ -30,7 +30,7 @@ const CategoryTreeItem = ({ category, depth = 0 }: CategoryTreeItemProps) => {
       });
       setChildren(data);
       setExpanded(true);
-    } catch (e) {
+    } catch (e: unknown) {
       console.warn('子カテゴリの取得に失敗しました:', e);
     } finally {
       setLoading(false);

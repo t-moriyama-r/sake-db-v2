@@ -63,4 +63,8 @@ async function main() {
   console.log('Done.');
 }
 
-main().catch((e) => { console.error(e.message); process.exit(1); });
+main().catch((e: unknown) => {
+  const message = e instanceof Error ? e.message : String(e);
+  console.error(message);
+  process.exit(1);
+});
