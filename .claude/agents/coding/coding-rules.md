@@ -148,3 +148,19 @@ components/layout/Header/Header.tsx
 コンポーネントの props 型名は **`Props`** に統一する。
 
 同一ファイル内に複数コンポーネントが存在する場合、メインコンポーネントの props は `Props`、サブコンポーネントの props はコンポーネント名プレフィックスを外した短い名前（`ContentProps`・`ItemProps` など）を使う。Union 型を構成するための内部型は `Props` に統一せず意味のある名前を維持する。
+
+## 仕様ファイルルール（`.spec.md`）
+
+意図した挙動（特に非自明なもの）は `.spec.md` に記録する。
+
+### 配置ルール
+
+- **ページ固有の仕様**: `page.tsx` と同じディレクトリに `page.spec.md` を置く
+  - 例: `app/(main)/liquor/[id]/page.spec.md`
+- **複数ページにまたがるコンポーネントの仕様**: コンポーネントと同ディレクトリに `ComponentName.spec.md` を置く
+  - 例: `components/ui/Button/Button.spec.md`
+
+### AIへの指示
+
+バグ調査・issue作成・コードレビューを行う前に、対象ページのディレクトリにある **`page.spec.md`** を必ず確認すること。
+意図した挙動を誤ってissue化することを防ぐため。`page.spec.md` がなければ `ComponentName.spec.md` も確認すること。

@@ -42,8 +42,15 @@ count <= 2 → PHASE 1.5
 ## PHASE 1.5: 課題発見
 
 ```
-investigator(task=scan)  # 明確な課題がなければissue作成不要
-→ PHASE 2（選定済み件数分のみ）
+pending_count ← gh issue list --label "AI調査結果承認済・修正待ち" のカウント
+              + gh issue list --label "AI調査結果確認待ち" のカウント
+
+if pending_count >= 10:
+  PHASE 1.5 をスキップ（investigator を呼ばない）
+  → PHASE 2（選定済み件数分のみ）
+else:
+  investigator(task=scan)  # 明確な課題がなければissue作成不要
+  → PHASE 2（選定済み件数分のみ）
 ```
 
 ## PHASE 2: 実装ループ（issue 1件ずつ）
