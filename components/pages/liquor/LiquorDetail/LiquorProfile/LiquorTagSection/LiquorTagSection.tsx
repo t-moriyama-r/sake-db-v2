@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { useLiquorTags, type TagItem } from '@/components/pages/liquor/LiquorDetail/hooks/useLiquorTags';
 import { TagList } from '@/components/ui/TagList/TagList';
 import { routes } from '@/lib/routes';
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export function LiquorTagSection({ liquorId, initialTags }: Props) {
+  const { isLogin } = useAuth();
   const { tags, handleAddTag, handleDeleteTag } = useLiquorTags({ liquorId, initialTags });
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -25,10 +27,10 @@ export function LiquorTagSection({ liquorId, initialTags }: Props) {
     <div className="mt-4 flex flex-wrap items-center gap-2">
       <TagList
         tags={tagData}
-        deletable={true}
+        deletable={isLogin}
         onDelete={handleDeleteTag}
       />
-      {
+      {isLogin && (
         tags.length === 0 ? (
           <button
             type="button"
@@ -49,8 +51,8 @@ export function LiquorTagSection({ liquorId, initialTags }: Props) {
             <span className="text-base leading-none">+</span>
           </button>
         )
-      }
-        <TagAddInput
+      )}
+      <TagAddInput
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           onAddAction={handleAddTag}
