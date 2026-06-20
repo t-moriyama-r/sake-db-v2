@@ -26,6 +26,10 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
 
   const handleSubmit = async (data: CategoryInput) => {
     if (!user) return;
+    let imageBase64: string | undefined = category?.imageBase64 ?? undefined;
+    if (data.image) {
+      imageBase64 = await convertFileToBase64(data.image);
+    }
     if (categoryId && category) {
       await client.models.CategoryHistory.create({
         categoryId,
@@ -44,6 +48,7 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
         name: data.name,
         parentId: data.parentId || undefined,
         description: data.description ?? undefined,
+        imageBase64,
         versionNo: (category.versionNo ?? 0) + 1,
         updateUserId: user.id,
         updateUserName: user.name,
@@ -54,6 +59,7 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
         name: data.name,
         parentId: data.parentId || undefined,
         description: data.description ?? undefined,
+        imageBase64,
         readonly: false,
         versionNo: 1,
         createUserId: user.id,
@@ -91,4 +97,13 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
     </div>
   );
 };
+
+async function convertFileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 

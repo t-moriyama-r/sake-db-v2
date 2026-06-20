@@ -23,10 +23,15 @@ export const CategoryCreate = ({ parentCategoryId }: Props) => {
   }, [isLoading, isLogin, router]);
 
   const handleSubmit = async (data: CategoryInput) => {
+    let imageBase64: string | undefined;
+    if (data.image) {
+      imageBase64 = await convertFileToBase64(data.image);
+    }
     await client.models.Category.create({
       name: data.name,
       parentId: data.parentId || parentCategoryId || undefined,
       description: data.description ?? undefined,
+      imageBase64,
       readonly: false,
       createUserId: user?.id,
       createUserName: user?.name,
@@ -50,4 +55,13 @@ export const CategoryCreate = ({ parentCategoryId }: Props) => {
     </div>
   );
 };
+
+async function convertFileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
