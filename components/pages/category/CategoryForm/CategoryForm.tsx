@@ -7,8 +7,7 @@ import { FormField } from '@/components/forms/FormField/FormField';
 import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
 import { client } from '@/lib/amplify-client';
-import { collectDescendantIds } from '@/lib/server/categories/fetch';
-import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
+import { collectDescendantIds, type SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import { categorySchema, type CategoryInput } from '@/schemas/category';
 
 type Props = {
@@ -52,7 +51,7 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
   };
 
   const excludeIds = category
-    ? new Set([category.id, ...collectDescendantIds(category.id, categories)])
+    ? new Set(collectDescendantIds(category.id, categories))
     : new Set<string>();
 
   const selectClass =
