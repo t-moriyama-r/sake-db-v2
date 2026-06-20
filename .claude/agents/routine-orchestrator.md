@@ -14,6 +14,7 @@ description: 日次ルーティンの総合司令塔。PHASE 0〜4のフロー�
 | `AI調査結果承認済・修正待ち` | 人間が承認済み。Claudeが着手してよいissue |
 | `AI修正PR作成済` | Claude が実装・PR作成まで完了 |
 | `AI調査結果確認待ち` | Claude が調査・作成した。人間の承認待ち |
+| `AI調査結果済・Close承認待ち` | 調査の結果、対応不要と判断した。人間がCloseするまで待機 |
 
 # 実行フロー
 
@@ -63,16 +64,20 @@ else:
 
 ```
 【各issueの処理手順】
-1. fixer(task=implement, issue=<issue>) → branch を取得
-2. reviewer(task=review, branch=<branch>, issue=<issue>) → result を取得
-3. result が LGTM の場合:
+1. fixer(task=implement, issue=<issue>) → branch または "対応不要" を取得
+2. fixer が "対応不要" を返した場合:
+     issue-manager(task=skip, issue=<issue>, reason=<fixerが示した理由>)
+     → このissueはスキップ。次のissueへ進む ★
+   fixer が branch を返した場合は手順3へ
+3. reviewer(task=review, branch=<branch>, issue=<issue>) → result を取得
+4. result が LGTM の場合:
      pr_url ← pr-creator(branch=<branch>, issue=<issue>)
      issue-manager(task=complete, issue=<issue>, pr_url=<pr_url>)
      → このissueは完了。次のissueへ進む ★
    result が NG かつ retries < 2 の場合:
      fixer(task=fix, branch=<branch>, feedback=<reviewer出力>)
      手順2へ戻ってレビューを再実行（最大2回）
-   result が NG かつ retries >= 2 の場合:
+   result が NG かつ retries >= 2 の場合（手順4）:
      reviewer が実装の複雑さ・ブロッカーを評価する
      「粒度が大きすぎて分割可能」と判断した場合:
        investigator に子issueの作成を依頼

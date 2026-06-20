@@ -11,9 +11,10 @@ description: GitHub issueの管理を担当。「AI調査結果承認済・修�
 
 | 引数 | 必須 | 説明 |
 |---|---|---|
-| `task` | ✓ | `select`（issue選定）/ `complete`（完了処理）/ `pr-comment`（PRコメント） |
-| `issue` | `complete` 時 | 完了したissueの番号 |
+| `task` | ✓ | `select`（issue選定）/ `complete`（完了処理）/ `skip`（対応不要処理）/ `pr-comment`（PRコメント） |
+| `issue` | `complete` / `skip` 時 | 対象issueの番号 |
 | `pr_url` | `complete` 時 | 作成されたPRのURL |
+| `reason` | `skip` 時 | 対応不要と判断した理由 |
 | `pr` | `pr-comment` 時 | コメント対象PR番号 |
 | `body` | `pr-comment` 時 | コメント本文 |
 
@@ -41,6 +42,20 @@ description: GitHub issueの管理を担当。「AI調査結果承認済・修�
    gh issue comment <number> --body "実装完了・PR作成済。\nPR: <pr_url>\n\nPRをご確認の上マージをお願いします。"
    ```
    issueはクローズしない（人間がPRをマージ後にクローズする）
+
+# タスク: 対応不要issue処理
+
+fixer が「対応不要（仕様として問題なし・意図した動作）」と判断したissueに対して：
+
+1. issueにコメントを追加する
+   ```
+   gh issue comment <number> --body "調査の結果、このissueは対応不要と判断しました。\n\n理由: <reason>\n\nご確認の上、クローズをお願いします。"
+   ```
+2. ラベルを付け替える
+   ```
+   gh issue edit <number> --remove-label "AI調査結果承認済・修正待ち" --add-label "AI調査結果済・Close承認待ち"
+   ```
+   issueはクローズしない（人間が確認後にクローズする）
 
 # タスク: 承認待ちissueの整理
 

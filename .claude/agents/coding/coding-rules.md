@@ -127,6 +127,70 @@ const serializableLiquor = JSON.parse(JSON.stringify(liquor)) as SerializableLiq
 Client Component 内で Amplify クライアントを直接呼び出してデータを取得する場合も、
 状態に保存する前に `JSON.parse(JSON.stringify(data))` を適用して lazy loader を除去すること。
 
+## Amplify 設定値の取得ルール
+
+Cognito User Pool ID などの Amplify 設定値は **ハードコード禁止**。`amplify_outputs.json` から動的に読み込むこと。
+
+```typescript
+// ❌ 禁止
+const USER_POOL_ID = 'ap-northeast-1_CqSONoI3Y';
+
+// ✅ 正しい
+import outputs from '@/amplify_outputs.json';
+const USER_POOL_ID: string | undefined = outputs?.auth?.user_pool_id;
+```
+
+`undefined` になる可能性があるため、使用前に undefined ガードを行うこと。
+
+## catch ブロックの型安全性ルール
+
+`catch` 節の変数には必ず `: unknown` を明示する。`e.message` などのプロパティへの直接アクセスは禁止。`instanceof Error` で型ガードしてから使うこと。
+
+```typescript
+// ❌ 禁止
+} catch (e) {
+  console.error(e.message);
+}
+
+// ✅ 正しい
+} catch (e: unknown) {
+  console.error('処理に失敗しました:', e instanceof Error ? e.message : String(e));
+}
+```
+
+## アクセシビリティ（ARIA）ルール
+
+### 装飾目的のアイコン・SVG
+
+スクリーンリーダーに読み上げさせる必要のない装飾目的の SVG / アイコンには `aria-hidden="true"` を付ける。
+
+```tsx
+// ✅ 正しい
+<svg aria-hidden="true" ...>...</svg>
+```
+
+### インタラクティブ要素のラベル
+
+アイコンのみで構成された `button` や `a` など、テキストコンテンツが存在しないインタラクティブ要素には `aria-label` を付ける。
+
+```tsx
+// ✅ 正しい
+<button aria-label="検索">
+  <svg aria-hidden="true">...</svg>
+</button>
+```
+
+### 開閉状態を持つボタン
+
+ドロップダウンなど開閉状態を持つボタンには `aria-expanded={isOpen}` を付ける。
+
+```tsx
+// ✅ 正しい
+<button aria-label="アカウントメニューを開く" aria-expanded={menuOpen}>
+  ...
+</button>
+```
+
 ## ログメッセージ
 
 `console.warn` / `console.error` などのログメッセージは**日本語**で記述する。
