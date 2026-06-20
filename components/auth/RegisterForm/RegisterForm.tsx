@@ -120,7 +120,7 @@ export const RegisterForm = () => {
 
       <p className="text-center text-sm text-muted-foreground">
         すでにアカウントをお持ちの方は{' '}
-        <Link href="/login" className="text-link hover:underline">
+        <Link href={routes.auth.login()} className="text-link hover:underline">
           ログイン
         </Link>
       </p>

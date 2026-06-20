@@ -72,12 +72,12 @@ export const LoginForm = () => {
       <XLoginButton />
 
       <div className="flex flex-col items-center gap-1 text-sm">
-        <Link href="/auth/password-reset" className="text-link hover:underline">
+        <Link href={routes.auth.passwordReset()} className="text-link hover:underline">
           パスワードを忘れた方
         </Link>
         <p className="text-muted-foreground">
           アカウントをお持ちでない方は{' '}
-          <Link href="/auth/register" className="text-link hover:underline">
+          <Link href={routes.auth.register()} className="text-link hover:underline">
             新規登録
           </Link>
         </p>

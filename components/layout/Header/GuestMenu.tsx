@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { LoginForm } from '@/components/auth/LoginForm/LoginForm';
 import { Button } from '@/components/ui/Button/Button';
 import { Dialog } from '@/components/ui/Dialog/Dialog';
+import { routes } from '@/lib/routes';
 
 export const GuestMenu = () => {
   const [loginDialogOpen, setLoginDialogOpen] = useState<boolean>(false);
@@ -33,7 +34,7 @@ export const GuestMenu = () => {
         <div className="flex flex-col gap-3">
           <LoginForm />
           <Link
-            href="/register"
+            href={routes.auth.register()}
             onClick={() => setLoginDialogOpen(false)}
             className="flex w-full items-center justify-center gap-2 rounded-md bg-blue-500 px-4 py-2 font-medium text-white transition hover:bg-blue-600"
           >
