@@ -3,12 +3,12 @@
 import type { SerializableLiquorHistoryRecord } from '@/lib/server/liquors/fetch';
 
 type Props = {
-  histories: SerializableLiquorHistoryRecord[];
+  histories?: SerializableLiquorHistoryRecord[];
   currentVersionNo: number;
   onSelectAction: (history: SerializableLiquorHistoryRecord) => void;
 };
 
-export function LiquorHistoryPanel({ histories, currentVersionNo, onSelectAction }: Props) {
+export function LiquorHistoryPanel({ histories = [], currentVersionNo, onSelectAction }: Props) {
   return (
     <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
       <h2 className="mb-3 text-sm font-semibold text-foreground">編集履歴</h2>
