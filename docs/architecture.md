@@ -119,6 +119,8 @@ const { user, isLogin, isAdmin, login, logout, register } = useAuth();
 | `/password-reset-exe` | パスワードリセット実行 | - |
 | `/admin` | 管理画面（カテゴリ管理） | 要管理者 |
 | `/api/auth/x/login` | X (Twitter) OAuth 開始 | - |
+| `/api/auth/x/callback` | X (Twitter) OAuth コールバック（内部） | - |
+| `/x/complete` | X (Twitter) OAuth 完了・Cognito サインイン処理 | - |
 
 ## 未実装機能（Lambda 実装待ち）
 
