@@ -49,8 +49,8 @@ export function UserProfileView() {
         );
 
         setPosts(activities);
-      } catch (error) {
-        console.error('ユーザー投稿の取得に失敗しました:', error);
+      } catch (e: unknown) {
+        console.error('ユーザー投稿の取得に失敗しました:', e instanceof Error ? e.message : String(e));
         addToast('データの読み込みに失敗しました', 'error');
       } finally {
         setLoading(false);
