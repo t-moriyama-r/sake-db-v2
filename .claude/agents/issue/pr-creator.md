@@ -41,7 +41,7 @@ Closes #<issue番号>
 ## 影響ページと動作確認URL
 | ページ | URL |
 |---|---|
-| <ページ名> | `<パス（例: /discovery/tag/日本酒）>` |
+| <ページ名> | `https://localhost:3000<パス（例: /discovery/tag/日本酒）>` |
 EOF
 )" \
   --base develop

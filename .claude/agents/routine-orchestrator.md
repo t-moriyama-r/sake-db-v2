@@ -53,29 +53,38 @@ else:
   → PHASE 2（選定済み件数分のみ）
 ```
 
-## PHASE 2: 実装ループ（issue 1件ずつ）
+## PHASE 2: 実装ループ（issue 1件ずつ・全件必ず処理する）
+
+**重要: PHASE 1 で選定した全issueを必ず処理すること。1件完了しても止まらず、次のissueへ進む。**
+
+選定されたissueを1番目から順に処理する。各issueの処理手順：
 
 ```
-for issue in issues:
-  branch ← fixer(task=implement, issue=<issue>)
-  result ← reviewer(task=review, branch=<branch>, issue=<issue>)
-  if LGTM:
-    pr_url ← pr-creator(branch=<branch>, issue=<issue>)
-    issue-manager(task=complete, issue=<issue>, pr_url=<pr_url>)
-  else if retries < 2:
-    fixer(task=fix, branch=<branch>, feedback=<reviewer出力>)
-    → retry reviewer
-  else:  # 2回リトライしても LGTM 未達
-    reviewer が実装の複雑さ・ブロッカーを評価する
-    if 「粒度が大きすぎて分割可能」と判断:
-      investigator に子issueの作成を依頼
-      元issueに「分割した子issue番号・理由」をコメントして残す
-    else:
-      元issueに「何を試みたか・何がブロッカーか」をコメントして残す
-    ブランチを削除: git push origin --delete <branch>
-    元issueのラベルを「AI調査結果承認済・修正待ち」に戻す
-    サマリーの「スキップ」欄に理由とともに記録
+【各issueの処理手順】
+1. fixer(task=implement, issue=<issue>) → branch を取得
+2. reviewer(task=review, branch=<branch>, issue=<issue>) → result を取得
+3. result が LGTM の場合:
+     pr_url ← pr-creator(branch=<branch>, issue=<issue>)
+     issue-manager(task=complete, issue=<issue>, pr_url=<pr_url>)
+     → このissueは完了。次のissueへ進む ★
+   result が NG かつ retries < 2 の場合:
+     fixer(task=fix, branch=<branch>, feedback=<reviewer出力>)
+     手順2へ戻ってレビューを再実行（最大2回）
+   result が NG かつ retries >= 2 の場合:
+     reviewer が実装の複雑さ・ブロッカーを評価する
+     「粒度が大きすぎて分割可能」と判断した場合:
+       investigator に子issueの作成を依頼
+       元issueに「分割した子issue番号・理由」をコメントして残す
+     それ以外:
+       元issueに「何を試みたか・何がブロッカーか」をコメントして残す
+     ブランチを削除: git push origin --delete <branch>
+     元issueのラベルを「AI調査結果承認済・修正待ち」に戻す
+     サマリーの「スキップ」欄に理由とともに記録
+     → このissueはスキップ。次のissueへ進む ★
 ```
+
+★ **「次のissueへ進む」は必須**。選定された全issueの処理が完了するまで PHASE 2 を繰り返す。
+例: 4件選定された場合 → 4件全て処理してから PHASE 3 へ。途中で止まらない。
 
 ## PHASE 3: ドキュメント更新
 
