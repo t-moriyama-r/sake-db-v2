@@ -53,11 +53,11 @@ export function LiquorTagSection({ liquorId, initialTags }: Props) {
         )
       )}
       <TagAddInput
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          onAddAction={handleAddTag}
-        />
-      
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onAddAction={handleAddTag}
+      />
+
     </div>
   );
 }
