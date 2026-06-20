@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '../Button/Button';
 
@@ -14,9 +14,9 @@ type Props = {
 
 export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState<boolean>(false);
-
-  useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const titleId = useId();
 
   useEffect(() => {
     if (open) {
@@ -36,7 +36,51 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
     };
   }, [open]);
 
-  if (!open || !mounted) return null;
+  // ダイアログ開閉時のフォーカス管理
+  useEffect(() => {
+    if (open) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
+      const firstFocusable = getFocusableElements(dialogRef.current)[0];
+      firstFocusable?.focus();
+    } else {
+      previousFocusRef.current?.focus();
+      previousFocusRef.current = null;
+    }
+  }, [open]);
+
+  // Escape キーでダイアログを閉じる、Tab キーでフォーカストラップ
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const focusable = getFocusableElements(dialogRef.current);
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => { document.removeEventListener('keydown', handleKeyDown); };
+  }, [open, onClose]);
+
+  if (!open || typeof document === 'undefined') return null;
 
   return createPortal(
     <div
@@ -44,11 +88,24 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4"
       onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
     >
-      <div className="bg-surface rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
+        className="bg-surface rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col"
+      >
         {title && (
           <div className="flex items-center justify-between border-b border-border px-6 py-4">
-            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-            <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground">✕</button>
+            <h2 id={titleId} className="text-lg font-semibold text-foreground">{title}</h2>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="ダイアログを閉じる"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              ✕
+            </button>
           </div>
         )}
         <div className="flex-1 overflow-auto px-6 py-4">{children}</div>
@@ -71,6 +128,15 @@ type ConfirmProps = {
   loading?: boolean;
   errorMessage?: string;
 };
+
+function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
+  if (!container) return [];
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )
+  );
+}
 
 export const ConfirmDialog = ({
   open, onClose, onConfirm, title = '確認', message, confirmLabel = '実行', loading, errorMessage,
