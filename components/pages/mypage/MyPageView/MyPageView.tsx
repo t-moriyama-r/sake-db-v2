@@ -1,75 +1,30 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
-import { Button } from '@/components/ui/Button/Button';
-import { Spinner } from '@/components/ui/Spinner/Spinner';
-import { ToastContainer } from '@/components/ui/Toast/Toast';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/hooks/useToast';
-import { client } from '@/lib/amplify-client';
-import { routes } from '@/lib/routes';
+import type { ServerUserProfile } from '@/lib/server/auth';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
+import { MyPageActions } from './MyPageActions';
 
-export function MyPageView() {
-  const router = useRouter();
-  const { user, isLogin, isLoading } = useAuth();
+type Props = {
+  userProfile: ServerUserProfile;
+  bookmarks: SerializableLiquorRecord[];
+};
 
-  const { toasts, addToast, removeToast } = useToast();
-
-  const [bookmarks, setBookmarks] = useState<SerializableLiquorRecord[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (!isLoading && !isLogin) { router.replace(routes.auth.login()); return; }
-    if (!isLogin) return;
-
-    const load = async () => {
-      setLoading(true);
-      try {
-        const { data: bms } = await client.models.BookMark.list();
-        const liquorResults = await Promise.all(
-          bms.map((bm) => client.models.Liquor.get({ id: bm.liquorId }))
-        );
-        const liquors = liquorResults.map((r) => r.data).filter(Boolean);
-        setBookmarks(JSON.parse(JSON.stringify(liquors)) as SerializableLiquorRecord[]);
-      } catch (error) {
-        console.error('ブックマークの取得に失敗しました:', error);
-        addToast('ブックマークの読み込みに失敗しました', 'error');
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
-  }, [isLogin, isLoading, router, addToast]);
-
-  if (isLoading || loading) {
-    return (
-      <>
-        <div className="flex justify-center py-32"><Spinner size="lg" /></div>
-        <ToastContainer toasts={toasts} onRemove={removeToast} />
-      </>
-    );
-  }
-
+export function MyPageView({ userProfile, bookmarks }: Props) {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-8 flex items-start gap-4">
-        {user?.imageBase64 ? (
-          <img src={user.imageBase64} alt={user.name} className="h-20 w-20 rounded-full object-cover" />
+        {userProfile.imageBase64 ? (
+          <Image src={userProfile.imageBase64} alt={userProfile.name} width={80} height={80} className="h-20 w-20 rounded-full object-cover" unoptimized />
         ) : (
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-avatar-bg text-2xl font-bold text-avatar-fg">
-            {user?.name?.[0] ?? '?'}
+            {userProfile.name?.[0] ?? '?'}
           </div>
         )}
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-foreground">{user?.name}</h1>
-          <p className="text-sm text-muted-foreground">{user?.email}</p>
-          {user?.profile && <p className="mt-2 text-foreground-secondary">{user.profile}</p>}
-          <Button variant="secondary" size="sm" className="mt-3" onClick={() => router.push(routes.mypage.edit())}>
-            プロフィールを編集
-          </Button>
+          <h1 className="text-2xl font-bold text-foreground">{userProfile.name}</h1>
+          <p className="text-sm text-muted-foreground">{userProfile.email}</p>
+          {userProfile.profile && <p className="mt-2 text-foreground-secondary">{userProfile.profile}</p>}
+          <MyPageActions />
         </div>
       </div>
 
@@ -85,8 +40,6 @@ export function MyPageView() {
           </div>
         )}
       </section>
-      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
 }
-
