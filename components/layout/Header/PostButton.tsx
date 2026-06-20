@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const PostButton = ({ categoryId }: Props) => {
-  const href = categoryId ? routes.liquor.create(categoryId) : routes.liquor.createRoot();
+  const href = routes.liquor.create(categoryId ?? undefined);
 
   return (
     <Link

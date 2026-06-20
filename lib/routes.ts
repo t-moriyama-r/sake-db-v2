@@ -3,8 +3,7 @@ export const routes = {
   liquor: {
     detail: (id: string) => `/liquor/${id}`,
     edit: (id: string) => `/liquor/edit/${id}`,
-    create: (categoryId: string) => `/liquor/create/${categoryId}`,
-    createRoot: () => '/liquor/create',
+    create: (categoryId?: string) => categoryId ? `/liquor/create/${categoryId}` : '/liquor/create',
   },
   category: {
     detail: (id: string) => `/category/${id}`,
