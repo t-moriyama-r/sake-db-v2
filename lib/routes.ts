@@ -23,9 +23,9 @@ export const routes = {
   user: (id: string) => `/user/${id}`,
   admin: () => '/admin',
   auth: {
-    login: () => '/auth/login',
-    register: () => '/auth/register',
-    passwordReset: () => '/auth/password-reset',
-    passwordResetExe: () => '/auth/password-reset-exe',
+    login: () => '/login',
+    register: () => '/register',
+    passwordReset: () => '/password-reset',
+    passwordResetExe: () => '/password-reset-exe',
   },
 };
