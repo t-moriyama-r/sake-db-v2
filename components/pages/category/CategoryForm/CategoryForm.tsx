@@ -7,6 +7,7 @@ import { FormField } from '@/components/forms/FormField/FormField';
 import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
 import { client } from '@/lib/amplify-client';
+import { collectDescendantIds } from '@/lib/server/categories/fetch';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import { categorySchema, type CategoryInput } from '@/schemas/category';
 
@@ -50,6 +51,10 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
     }
   };
 
+  const excludeIds = category
+    ? new Set([category.id, ...collectDescendantIds(category.id, categories)])
+    : new Set<string>();
+
   const selectClass =
     'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground ' +
     'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring';
@@ -65,7 +70,7 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
         <select className={selectClass} {...register('parentId')}>
           <option value="">-- なし（ルートカテゴリ）--</option>
           {categories
-            .filter((c) => c.id !== category?.id)
+            .filter((c) => !excludeIds.has(c.id))
             .map((c) => (
               <option key={c.id} value={c.id}>{c.name}</option>
             ))}
