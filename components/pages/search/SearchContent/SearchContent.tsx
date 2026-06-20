@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
-import { routes } from '@/lib/routes';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
+import { routes } from '@/lib/routes';
+import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 
 export const SearchContent = () => {
   const searchParams = useSearchParams();
@@ -39,8 +39,8 @@ export const SearchContent = () => {
         }
         const liquors = await res.json() as SerializableLiquorRecord[];
         setResults(liquors);
-      } catch (err) {
-        console.error('[search] exception:', err);
+      } catch (err: unknown) {
+        console.error('[search] 例外:', err);
         setSearchError('検索中にエラーが発生しました');
         setResults([]);
       } finally {

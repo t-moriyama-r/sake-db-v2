@@ -48,8 +48,8 @@ export async function GET(request: NextRequest) {
       .map((r) => ({ ...r, imageBase64: null, youtube: null }));
 
     return NextResponse.json(liquors);
-  } catch (err) {
-    console.error('[search] error:', err);
+  } catch (err: unknown) {
+    console.error('[search] エラー:', err);
     return NextResponse.json({ error: '検索中にエラーが発生しました' }, { status: 500 });
   }
 }
