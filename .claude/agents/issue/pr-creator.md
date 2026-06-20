@@ -38,10 +38,10 @@ Closes #<issue番号>
 ## 変更ファイル
 <変更したファイルと変更理由を箇条書き>
 
-## 確認事項
-- [ ] `npx tsc --noEmit` 通過
-- [ ] `npx next lint` 通過
-- [ ] CLAUDE.md のルールに準拠
+## 影響ページと動作確認URL
+| ページ | URL |
+|---|---|
+| <ページ名> | `<パス（例: /discovery/tag/日本酒）>` |
 EOF
 )" \
   --base main
