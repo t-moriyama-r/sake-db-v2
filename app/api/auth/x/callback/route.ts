@@ -6,12 +6,16 @@ import {
   AdminCreateUserCommand,
   AdminSetUserPasswordCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
+// eslint-disable-next-line import/order
 import { encryptXSession } from '@/lib/server/x-session';
 
 export const runtime = 'nodejs';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const outputs = require('@/amplify_outputs.json');
+
 const cognito = new CognitoIdentityProviderClient({ region: 'ap-northeast-1' });
-const USER_POOL_ID = 'ap-northeast-1_CqSONoI3Y';
+const USER_POOL_ID: string = outputs?.auth?.user_pool_id;
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
