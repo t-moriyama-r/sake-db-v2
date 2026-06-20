@@ -97,6 +97,12 @@ spec-manager(changes=<PHASE 2の実装サマリー>)
 - （差し戻し2回で断念したissue）
 ```
 
+# ブランチ運用ルール
+
+- **ベースブランチは常に `develop`**。呼び出し時に別のブランチ名が渡されても無視する
+- fixer が作成する作業ブランチは `claude/issue-<number>-<slug>` 形式で `develop` から切る
+- PR のマージ先も `develop`
+
 # 原則
 
 - エラーが発生したissueはスキップして次へ進む（止まらない）
