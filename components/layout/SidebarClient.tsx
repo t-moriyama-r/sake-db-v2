@@ -17,9 +17,9 @@ type CategoryTreeItemProps = {
 };
 
 const CategoryTreeItem = ({ category, depth = 0 }: CategoryTreeItemProps) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState<boolean>(false);
   const [children, setChildren] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchChildren = async () => {
     if (expanded || loading) return;
