@@ -69,10 +69,11 @@ type ConfirmProps = {
   message: string;
   confirmLabel?: string;
   loading?: boolean;
+  errorMessage?: string;
 };
 
 export const ConfirmDialog = ({
-  open, onClose, onConfirm, title = '確認', message, confirmLabel = '実行', loading,
+  open, onClose, onConfirm, title = '確認', message, confirmLabel = '実行', loading, errorMessage,
 }: ConfirmProps) => {
   return (
     <Dialog
@@ -87,6 +88,9 @@ export const ConfirmDialog = ({
       }
     >
       <p className="text-foreground-secondary">{message}</p>
+      {errorMessage && (
+        <p className="mt-3 text-sm text-red-600">{errorMessage}</p>
+      )}
     </Dialog>
   );
 }
