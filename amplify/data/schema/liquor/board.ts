@@ -23,7 +23,7 @@ export const boardModels = {
       /** 評価なしの場合は null */
       rate: a.integer(),
     })
-    .secondaryIndexes((index) => [index('userId')])
+    .secondaryIndexes((index) => [index('userId'), index('liquorId')])
     .authorization((allow) => [
       allow.guest().to(['read']),
       allow.publicApiKey().to(['read', 'create']),

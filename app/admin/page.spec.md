@@ -1,17 +1,45 @@
-# 管理画面仕様
+# Admin Page 仕様
+
+## 概要
+
+管理画面（`/admin`）はカテゴリの管理を行うページ。
+**admin グループに所属するユーザーのみ**アクセス・操作が許可される。
+
+---
 
 ## アクセス制御
 
-- 認証: **必須**（管理者ロールが必要）
-- 非管理者・未ログイン時: `routes.home()` へクライアントサイドリダイレクト
-- ガード方式: `useAuth()` の `isAdmin` を監視してリダイレクト
+| ユーザー種別 | UI | API（Amplify スキーマ） |
+|---|---|---|
+| 未ログイン | ホームへ redirect | 読み取りのみ可（ゲスト権限） |
+| ログイン済み一般ユーザー | ホームへ redirect | 読み取り・作成・更新のみ可。**削除は不可** |
+| admin ユーザー | 管理画面を表示 | 全操作（CRUD）可 |
 
-## 操作と authMode
+- UI の redirect は `useAuth().isAdmin`（Cognito グループ `admin` への所属チェック）で判定する
+- 非管理者・未ログイン時は `routes.home()` へクライアントサイドで redirect する
+- API レベルの削除制限は `amplify/data/schema/category.ts` の `allow.authenticated().to(['read', 'create', 'update'])` により担保される
 
-カテゴリの削除には `authMode: 'userPool'` を明示する必要がある。
-`authMode` を省略すると権限不足でエラーになる（Amplify の defaultAuthorizationMode がゲストアクセス設定の場合）。
+---
 
-## エラーハンドリング
+## 機能一覧
 
-- カテゴリ削除で `errors` レスポンスが返った場合、`deleteError` にメッセージをセットしてダイアログ内に表示する
-- `errors` チェックを省略すると削除失敗がサイレントになる（エラーが UI に反映されない）
+### カテゴリ一覧表示
+
+- ルートカテゴリ（`parentId: null`）のみ一覧表示する
+- 各カテゴリに子カテゴリ件数を表示する
+
+### カテゴリ削除
+
+- `readonly: true` のカテゴリは削除ボタンを非表示にする
+- 削除ボタン押下 → 確認ダイアログを表示する
+- 確認後に削除を実行し、`authMode: 'userPool'` を明示して管理者権限で削除する
+- 削除成功時は一覧から除外する
+- Amplify の `errors` レスポンスが返った場合は例外として扱い、`deleteError` にメッセージを表示する
+- 削除に失敗した場合はダイアログ内にエラーメッセージを表示する
+
+### その他の操作（画面遷移）
+
+- 「カテゴリを作成」ボタン → `/category/create/root` へ遷移
+- 「編集」ボタン → `/category/edit/[id]` へ遷移
+- 「子を追加」ボタン → `/category/create/[id]` へ遷移
+- 「お酒を追加」ボタン → `/liquor/create/[id]` へ遷移

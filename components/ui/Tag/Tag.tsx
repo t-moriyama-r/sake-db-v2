@@ -32,7 +32,7 @@ const colorMap: Record<ColorScheme, Record<'default' | 'outline', string>> = {
 export function Tag({
   label,
   href,
-                      deletable = false,
+  deletable = false,
   onDeleteAction,
   onClickAction,
   colorScheme = 'primary',
@@ -40,12 +40,10 @@ export function Tag({
 }: Props) {
   const colorClass = colorMap[colorScheme][variant];
   const showDelete = deletable && onDeleteAction;
+  const baseClass = `inline-flex items-center gap-1 rounded-full px-3 py-0.5 text-sm font-medium transition-colors ${colorClass}`;
 
-  return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full px-3 py-0.5 text-sm font-medium transition-colors ${colorClass} ${onClickAction ? 'cursor-pointer' : ''}`}
-      onClick={onClickAction}
-    >
+  const content = (
+    <>
       {href ? <Link href={href}>#{label}</Link> : `#${label}`}
       {showDelete && (
         <button
@@ -57,6 +55,25 @@ export function Tag({
           ✕
         </button>
       )}
+    </>
+  );
+
+  if (onClickAction) {
+    return (
+      <button
+        type="button"
+        className={`${baseClass} cursor-pointer`}
+        onClick={onClickAction}
+        aria-label={`タグ ${label} で絞り込む`}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <span className={baseClass}>
+      {content}
     </span>
   );
 }

@@ -38,22 +38,28 @@ type HistoryItemProps = {
 
 function HistoryItem({ history: h, isCurrent, onSelectAction }: HistoryItemProps) {
   return (
-    <li
-      className={`flex flex-col gap-0.5 rounded-lg px-3 py-2 transition-colors cursor-pointer hover:bg-surface-hover ${isCurrent ? 'bg-surface-hover' : ''}`}
-      onClick={() => onSelectAction(h)}
-    >
-      <span className="flex items-center gap-2">
-        <span className="text-sm font-bold text-foreground">v{h.versionNo}</span>
-        {isCurrent && (
-          <span className="text-xs font-medium px-1.5 py-0.5 rounded border border-border text-foreground-secondary">
-            現在
-          </span>
-        )}
-      </span>
-      <span className="text-xs text-foreground-secondary">
-        {new Date(h.updatedAt).toLocaleString('ja-JP')}
-        {h.updateUserName && <span>（{h.updateUserName}）</span>}
-      </span>
+    <li>
+      <button
+        type="button"
+        disabled={isCurrent}
+        onClick={() => onSelectAction(h)}
+        className={`w-full text-left flex flex-col gap-0.5 rounded-lg px-3 py-2 hover:bg-surface-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${isCurrent ? 'bg-surface-hover' : ''}`}
+        aria-label={`バージョン ${h.versionNo} を選択`}
+        aria-current={isCurrent ? 'true' : undefined}
+      >
+        <span className="flex items-center gap-2">
+          <span className="text-sm font-bold text-foreground">v{h.versionNo}</span>
+          {isCurrent && (
+            <span className="text-xs font-medium px-1.5 py-0.5 rounded border border-border text-foreground-secondary">
+              現在
+            </span>
+          )}
+        </span>
+        <span className="text-xs text-foreground-secondary">
+          {new Date(h.updatedAt).toLocaleString('ja-JP')}
+          {h.updateUserName && <span>（{h.updateUserName}）</span>}
+        </span>
+      </button>
     </li>
   );
 }

@@ -64,7 +64,7 @@ export const SearchContent = () => {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="お酒の名前・説明で検索..."
+          placeholder="お酒の名前で検索..."
           className="flex-1 rounded-md border border-border-input bg-surface px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
         />
         <Button type="submit" loading={loading}>検索</Button>

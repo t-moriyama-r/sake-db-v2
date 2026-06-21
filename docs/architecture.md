@@ -94,6 +94,9 @@ Amplify Auth (Cognito) を `useAuth` フックで操作する。
 const { user, isLogin, isAdmin, login, logout, register } = useAuth();
 ```
 
+ユーザー属性（名前・メールアドレス・自己紹介・アイコン画像など）は **すべて Cognito Attributes で管理する**。
+DynamoDB（Amplify Data）に `UserProfile` モデルは存在しない。
+
 ## 主要画面一覧
 
 | URL | 画面 | 権限 |
