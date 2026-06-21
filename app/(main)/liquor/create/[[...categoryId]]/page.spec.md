@@ -5,20 +5,33 @@
 - 認証: **不要**（未ログインでも閲覧・操作可）
 - ページレベル・コンポーネントレベルともに認証ガードなし
 
-## 未ログインユーザーによる作成（apiKey 認証）
+## 未ログインユーザーによる作成（identityPool 認証）
 
 未ログインユーザーがお酒を作成できることは**意図した仕様**である。
 
 ### 仕組み
 
-`useLiquorSave.ts` の保存処理でログイン状態を判定し、authMode を切り替える。
+新規作成（`createLiquor`）は `identityPool` 固定で Amplify Data に書き込む。
+更新（`updateLiquor` / `createLiquorHistory`）はログイン状態で authMode を切り替える。
 
 ```typescript
+// lib/repository/liquor.ts
+export async function createLiquor(input: LiquorCreateInput): Promise<string | undefined> {
+  const { data: newLiquor } = await client.models.Liquor.create(
+    input,
+    { authMode: 'identityPool' },
+  );
+  return newLiquor?.id;
+}
+```
+
+```typescript
+// useLiquorSave.ts（更新・履歴作成のみ authMode を切り替える）
 const authMode = user ? 'userPool' : 'apiKey';
 ```
 
-- ログイン済み: Cognito UserPool 認証（`userPool`）で Amplify Data に書き込む
-- 未ログイン: API キー認証（`apiKey`）で Amplify Data に書き込む
+- 新規作成: Cognito Identity Pool 認証（`identityPool`）で書き込む（ログイン有無に関わらず固定）
+- 更新・履歴作成: ログイン済みは `userPool`、未ログインは `apiKey`
 
 ### Amplify スキーマ側の設定
 
@@ -30,7 +43,7 @@ allow.authenticated().to(['read', 'create', 'update']),  // 認証済み: 読み
 allow.publicApiKey(),                         // API キー: すべての操作
 ```
 
-`allow.publicApiKey()` により、未ログインクライアントが `apiKey` authMode を指定して作成操作を行うことが許可されている。
+`allow.guest()` により、`identityPool` authMode でのゲストアクセスによる作成操作が許可されている。
 
 ### 未ログイン時の動作
 
@@ -40,3 +53,4 @@ allow.publicApiKey(),                         // API キー: すべての操作
 ## 備考
 
 誰でもお酒を登録できる仕様。認証によるアクセス制限は設けていない。
+`createLiquor` の authMode を変更するとゲストアクセスが壊れるため、修正しないこと（PR #74 で差し戻し済み）。
