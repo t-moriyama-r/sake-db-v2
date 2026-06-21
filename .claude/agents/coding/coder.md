@@ -116,9 +116,13 @@ type Props = {
 
 ```tsx
 // ❌ Bad — サブコンポーネントが先頭にある
-function SubItem({ label }: { label: string }) {
+type ItemProps = { label: string };
+
+function SubItem({ label }: ItemProps) {
   return <li>{label}</li>;
 }
+
+type Props = { items: Array<{ id: string; label: string }> };
 
 export const MainComponent = ({ items }: Props) => {
   return (
@@ -133,6 +137,8 @@ export const MainComponent = ({ items }: Props) => {
 // ✅ Good — メインコンポーネントが先頭にある
 // ヘルパーは function 宣言を使うことでホイスティングが効き、
 // メインより後に定義しても前方参照できる
+type Props = { items: Array<{ id: string; label: string }> };
+
 export const MainComponent = ({ items }: Props) => {
   return (
     <ul>
@@ -143,7 +149,9 @@ export const MainComponent = ({ items }: Props) => {
   );
 };
 
-function SubItem({ label }: { label: string }) {
+type ItemProps = { label: string };
+
+function SubItem({ label }: ItemProps) {
   return <li>{label}</li>;
 }
 ```
