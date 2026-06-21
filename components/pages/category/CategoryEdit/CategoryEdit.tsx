@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CategoryForm } from '@/components/pages/category/CategoryForm/CategoryForm';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
+import { convertFileToBase64 } from '@/lib/client/fileUtils';
 import { routes } from '@/lib/routes';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import type { CategoryInput } from '@/schemas/category';
@@ -26,6 +27,10 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
 
   const handleSubmit = async (data: CategoryInput) => {
     if (!user) return;
+    let imageBase64: string | undefined = category?.imageBase64 ?? undefined;
+    if (data.image) {
+      imageBase64 = await convertFileToBase64(data.image);
+    }
     if (categoryId && category) {
       await client.models.CategoryHistory.create({
         categoryId,
@@ -44,6 +49,7 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
         name: data.name,
         parentId: data.parentId || undefined,
         description: data.description ?? undefined,
+        imageBase64,
         versionNo: (category.versionNo ?? 0) + 1,
         updateUserId: user.id,
         updateUserName: user.name,
@@ -54,6 +60,7 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
         name: data.name,
         parentId: data.parentId || undefined,
         description: data.description ?? undefined,
+        imageBase64,
         readonly: false,
         versionNo: 1,
         createUserId: user.id,
@@ -91,4 +98,5 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
     </div>
   );
 };
+
 

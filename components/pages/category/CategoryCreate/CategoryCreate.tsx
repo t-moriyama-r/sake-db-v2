@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CategoryForm } from '@/components/pages/category/CategoryForm/CategoryForm';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
+import { convertFileToBase64 } from '@/lib/client/fileUtils';
 import { routes } from '@/lib/routes';
 import type { CategoryInput } from '@/schemas/category';
 
@@ -23,10 +24,15 @@ export const CategoryCreate = ({ parentCategoryId }: Props) => {
   }, [isLoading, isLogin, router]);
 
   const handleSubmit = async (data: CategoryInput) => {
+    let imageBase64: string | undefined;
+    if (data.image) {
+      imageBase64 = await convertFileToBase64(data.image);
+    }
     await client.models.Category.create({
       name: data.name,
       parentId: data.parentId || parentCategoryId || undefined,
       description: data.description ?? undefined,
+      imageBase64,
       readonly: false,
       createUserId: user?.id,
       createUserName: user?.name,
@@ -50,4 +56,5 @@ export const CategoryCreate = ({ parentCategoryId }: Props) => {
     </div>
   );
 };
+
 
