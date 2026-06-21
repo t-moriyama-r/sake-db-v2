@@ -30,13 +30,13 @@ export function LiquorHistoryPanel({ histories = [], currentVersionNo, onSelectA
   );
 }
 
-type HistoryItemProps = {
+type ItemProps = {
   history: SerializableLiquorHistoryRecord;
   isCurrent: boolean;
   onSelectAction: (history: SerializableLiquorHistoryRecord) => void;
 };
 
-function HistoryItem({ history: h, isCurrent, onSelectAction }: HistoryItemProps) {
+function HistoryItem({ history: h, isCurrent, onSelectAction }: ItemProps) {
   return (
     <li>
       <button
