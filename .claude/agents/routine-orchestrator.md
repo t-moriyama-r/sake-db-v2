@@ -34,26 +34,46 @@ for pr in open_prs with 未対応レビューコメント:
 
 オープンPRなし、または未対応コメントなし → スキップ
 
+## メインループ（オープンPRが10件になるまで繰り返す）
+
+```
+open_prs_count ← gh pr list --state open | wc -l
+
+while open_prs_count < 10:
+  → PHASE 1 を実行
+  → PHASE 1.5 を実行
+  → PHASE 2 を実行
+  open_prs_count を再取得
+
+  # ループ継続条件の確認
+  if PHASE 2 で1件もPRを作成できなかった（全件スキップ）:
+    # これ以上進められないため、ループを抜ける
+    break
+```
+
+オープンPR が既に10件以上 → メインループをスキップして PHASE 3 へ
+
+---
+
 ## PHASE 1: issue選定
 
 ```
 issues ← issue-manager(task=select)
-count >= 3 → PHASE 2
-count <= 2 → PHASE 1.5
+count >= 1 → PHASE 1.5 へ
+count == 0 → PHASE 1.5 へ（investigator による課題発見のみ実施）
 ```
 
 ## PHASE 1.5: 課題発見
 
 ```
-pending_count ← gh issue list --label "AI調査結果承認済・修正待ち" のカウント
-              + gh issue list --label "AI調査結果確認待ち" のカウント
+ready_count ← gh issue list --label "AI調査結果承認済・修正待ち" のカウント
 
-if pending_count >= 10:
-  PHASE 1.5 をスキップ（investigator を呼ばない）
-  → PHASE 2（選定済み件数分のみ）
+if ready_count < 10:
+  investigator(task=scan)  # 明確な課題がなければissue作成不要（スキップOK）
 else:
-  investigator(task=scan)  # 明確な課題がなければissue作成不要
-  → PHASE 2（選定済み件数分のみ）
+  PHASE 1.5 をスキップ（investigator を呼ばない）
+
+→ PHASE 2（選定済み件数分のみ）
 ```
 
 ## PHASE 2: 実装ループ（issue 1件ずつ・全件必ず処理する）
