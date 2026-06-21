@@ -14,10 +14,10 @@ export function useLiquorDelete({ liquorId, categoryId }: Options) {
   const router = useRouter();
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [deleting, startTransition] = useTransition();
-  const [deleteError, setDeleteError] = useState<string>('');
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   function handleDelete(): void {
-    setDeleteError('');
+    setDeleteError(null);
     startTransition(async () => {
       try {
         const { errors } = await client.models.Liquor.delete({ id: liquorId });

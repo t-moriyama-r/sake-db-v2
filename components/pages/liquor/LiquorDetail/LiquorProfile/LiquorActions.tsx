@@ -45,7 +45,7 @@ export function LiquorActions({ liquorId, categoryId, liquorName, deletable, onE
         message={`「${liquorName}」を削除してもよろしいですか？この操作は取り消せません。`}
         confirmLabel="削除する"
         loading={deleting}
-        errorMessage={deleteError}
+        errorMessage={deleteError ?? undefined}
       />
     </>
   );
