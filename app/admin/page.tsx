@@ -29,7 +29,7 @@ export default function AdminPage() {
     }
   }, [isAdmin, isLoading, router]);
 
-  const loadCategories = async () => {
+  async function loadCategories() {
     const allCategories: SerializableCategoryRecord[] = [];
     let nextToken: string | null | undefined = undefined;
     do {
@@ -38,7 +38,7 @@ export default function AdminPage() {
       nextToken = result.nextToken;
     } while (nextToken);
     setCategories(allCategories);
-  };
+  }
 
   if (isLoading || loading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
 
