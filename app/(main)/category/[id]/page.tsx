@@ -3,6 +3,7 @@ import { CategoryDetail } from '@/components/pages/category/CategoryDetail/Categ
 import { getServerUser } from '@/lib/server/auth';
 import { fetchAllCategories, fetchCategory, buildCategoryBreadcrumbs } from '@/lib/server/categories/fetch';
 import { fetchLiquorsByCategories } from '@/lib/server/liquors/fetch';
+import { routes } from '@/lib/routes';
 
 export default async function CategoryDetailPage({
   params,
@@ -18,7 +19,7 @@ export default async function CategoryDetailPage({
     getServerUser(),
   ]);
 
-  if (!category) redirect('/');
+  if (!category) return redirect(routes.home());
 
   const subCategories = allCategories.filter((c) => c.parentId === id);
   const breadcrumbs = buildCategoryBreadcrumbs(id, allCategories);
