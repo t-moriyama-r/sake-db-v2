@@ -13,9 +13,10 @@ import type { CategoryInput } from '@/schemas/category';
 type Props = {
   categoryId?: string;
   category?: SerializableCategoryRecord;
+  categories: SerializableCategoryRecord[];
 };
 
-export const CategoryEdit = ({ categoryId, category }: Props) => {
+export const CategoryEdit = ({ categoryId, category, categories }: Props) => {
   const router = useRouter();
   const { user, isLogin, isLoading } = useAuth();
 
@@ -79,6 +80,7 @@ export const CategoryEdit = ({ categoryId, category }: Props) => {
       </h1>
       <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <CategoryForm
+          categories={categories}
           category={category}
           defaultValues={
             category
