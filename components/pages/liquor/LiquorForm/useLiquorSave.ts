@@ -75,7 +75,7 @@ export function useLiquorSave({ liquor }: UseLiquorSaveOptions) {
           createUserName: user?.name,
           updateUserId: user?.id,
           updateUserName: user?.name,
-        }, authMode);
+        });
 
         if (id) {
           await revalidateLiquorsCache();

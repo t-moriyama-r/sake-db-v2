@@ -29,11 +29,10 @@ export async function fetchLiquorHistories(liquorId: string, authMode?: AuthMode
 /** お酒を新規作成する。作成したお酒の id を返す。 */
 export async function createLiquor(
   input: LiquorCreateInput,
-  authMode?: AuthMode,
 ): Promise<string | undefined> {
   const { data: newLiquor } = await client.models.Liquor.create(
     input,
-    authMode ? { authMode } : undefined,
+    { authMode: 'identityPool' },
   );
   return newLiquor?.id;
 }
