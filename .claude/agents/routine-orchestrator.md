@@ -12,6 +12,7 @@ description: 日次ルーティンの総合司令塔。PHASE 0〜4のフロー�
 | ラベル名 | 意味 |
 |---|---|
 | `AI調査結果承認済・修正待ち` | 人間が承認済み。Claudeが着手してよいissue |
+| `AI修正待ち` | 上記と同列。Claudeが着手してよいissue（簡略ラベル） |
 | `AI修正PR作成済` | Claude が実装・PR作成まで完了 |
 | `AI調査結果確認待ち` | Claude が調査・作成した。人間の承認待ち |
 | `AI調査結果済・Close承認待ち` | 調査の結果、対応不要と判断した。人間がCloseするまで待機 |
@@ -66,7 +67,7 @@ count == 0 → PHASE 1.5 へ（investigator による課題発見のみ実施）
 ## PHASE 1.5: 課題発見
 
 ```
-ready_count ← gh issue list --label "AI調査結果承認済・修正待ち" のカウント
+ready_count ← gh issue list --label "AI調査結果承認済・修正待ち" と --label "AI修正待ち" の合計カウント（重複排除）
 
 if ready_count < 10:
   investigator(task=scan)  # 明確な課題がなければissue作成不要（スキップOK）
