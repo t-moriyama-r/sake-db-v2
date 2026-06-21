@@ -8,8 +8,6 @@ type Props = {
   size?: 'sm' | 'md' | 'lg';
 };
 
-const sizeClasses = { sm: 'text-lg', md: 'text-2xl', lg: 'text-3xl' };
-
 export const StarRating = ({ value, max = 5, onChange, readonly, size = 'md' }: Props) => {
   return (
     <div
@@ -30,15 +28,18 @@ export const StarRating = ({ value, max = 5, onChange, readonly, size = 'md' }: 
           <button
             key={star}
             type="button"
+            role="radio"
             onClick={() => onChange?.(star)}
             className={`${sizeClasses[size]} leading-none transition-transform cursor-pointer hover:scale-110`}
             aria-label={`${star}点`}
-            aria-pressed={star <= (value ?? 0)}
+            aria-checked={star <= (value ?? 0)}
           >
-            <span className={star <= value ? 'text-rating' : 'text-border-input'}>★</span>
+            <span aria-hidden="true" className={star <= value ? 'text-rating' : 'text-border-input'}>★</span>
           </button>
         )
       ))}
     </div>
   );
 }
+
+const sizeClasses = { sm: 'text-lg', md: 'text-2xl', lg: 'text-3xl' };
