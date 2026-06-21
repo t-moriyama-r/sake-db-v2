@@ -50,7 +50,7 @@ export const ImageUpload = ({
         >
           画像を選択
         </Button>
-        {(preview || currentImageUrl) && (
+        {(preview || currentImageUrl || currentImageBase64) && (
           <Button
             type="button"
             variant="ghost"
