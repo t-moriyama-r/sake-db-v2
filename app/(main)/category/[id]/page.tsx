@@ -18,7 +18,10 @@ export default async function CategoryDetailPage({
     getServerUser(),
   ]);
 
-  if (!category) redirect('/');
+  if (!category) {
+    redirect('/');
+    return;
+  }
 
   const subCategories = allCategories.filter((c) => c.parentId === id);
   const breadcrumbs = buildCategoryBreadcrumbs(id, allCategories);

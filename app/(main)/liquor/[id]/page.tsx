@@ -15,7 +15,7 @@ export default async function LiquorDetailPage({ params }: Props) {
     fetchAllCategories(),
   ]);
 
-  if (!liquor) notFound();
+  if (!liquor) return notFound();
 
   const categoryPath = buildCategoryBreadcrumbs(liquor.categoryId, allCategories);
 

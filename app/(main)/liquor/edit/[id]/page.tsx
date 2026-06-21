@@ -16,7 +16,7 @@ export default async function LiquorEditPage({
     fetchLiquorHistories(id),
   ]);
 
-  if (!liquor) notFound();
+  if (!liquor) return notFound();
 
   return <LiquorForm mode="EDIT" liquor={liquor} categories={categories} histories={histories} />;
 }
