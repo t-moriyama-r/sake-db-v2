@@ -58,7 +58,7 @@ export const fetchCategoryTree = withCache(
         .sort((a, b) => {
           if (a.name === 'その他') return 1;
           if (b.name === 'その他') return -1;
-          return 0;
+          return a.name.localeCompare(b.name, 'ja');
         });
 
     return build(all, null);
