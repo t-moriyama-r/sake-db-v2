@@ -11,12 +11,12 @@ type CategoryNode = { id: string; name: string };
 /** Client 側で子カテゴリを取得したときに使うフル型 */
 type Category = Schema['Category']['type'];
 
-type TreeItemProps = {
+type CategoryTreeItemProps = {
   category: CategoryNode;
   depth?: number;
 };
 
-const CategoryTreeItem = ({ category, depth = 0 }: TreeItemProps) => {
+const CategoryTreeItem = ({ category, depth = 0 }: CategoryTreeItemProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [children, setChildren] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
