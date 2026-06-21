@@ -68,7 +68,7 @@ async function loadSearchIndex(): Promise<SearchRecord[]> {
     try {
       return await loadFromS3();
     } catch {
-      console.warn('Search cache not found in S3, falling back to DynamoDB scan');
+      console.warn('S3 の検索キャッシュが見つかりません。DynamoDB スキャンにフォールバックします');
     }
   }
   return await scanDynamoDB();
