@@ -26,8 +26,10 @@ export const fetchBoardPosts = withCache(
 export const fetchUserBoardPosts = withCache(
   async (userId: string): Promise<SerializableBoardPostRecord[]> => {
     const client = getGuestClient();
-    const { data } = await client.models.BoardPost.listBoardPostByUserId({ userId }, { limit: 200 });
-    const sorted = [...(data ?? [])].sort(
+    const result = await fetchAll<BoardPostRecord>((nextToken, limit) =>
+      client.models.BoardPost.listBoardPostByUserId({ userId }, { limit, nextToken: nextToken ?? undefined }),
+    );
+    const sorted = [...result].sort(
       (a, b) =>
         new Date(b.updatedAt ?? 0).getTime() - new Date(a.updatedAt ?? 0).getTime(),
     );
