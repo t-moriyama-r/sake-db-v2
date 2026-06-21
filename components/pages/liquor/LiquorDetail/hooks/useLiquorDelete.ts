@@ -14,15 +14,22 @@ export function useLiquorDelete({ liquorId, categoryId }: Options) {
   const router = useRouter();
   const [deleteDialog, setDeleteDialog] = useState<boolean>(false);
   const [deleting, startTransition] = useTransition();
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   function handleDelete(): void {
+    setDeleteError(null);
     startTransition(async () => {
-      await client.models.Liquor.delete({ id: liquorId });
-      setDeleteDialog(false);
-      router.push(routes.category.detail(categoryId));
+      try {
+        const { errors } = await client.models.Liquor.delete({ id: liquorId });
+        if (errors?.length) throw new Error(errors[0].message);
+        setDeleteDialog(false);
+        router.push(routes.category.detail(categoryId));
+      } catch (e: unknown) {
+        setDeleteError(e instanceof Error ? e.message : '削除に失敗しました');
+      }
     });
   }
 
-  return { deleteDialog, setDeleteDialog, deleting, handleDelete };
+  return { deleteDialog, setDeleteDialog, deleting, handleDelete, deleteError };
 }
 

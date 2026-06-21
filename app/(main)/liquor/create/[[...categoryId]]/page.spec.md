@@ -15,7 +15,27 @@
 これは Amplify の identityPool（Cognito Identity Pool）によるゲスト（匿名）認証であり、
 未ログインユーザーでも作成操作を行うことができる。
 
+```typescript
+// lib/repository/liquor.ts
+export async function createLiquor(input: LiquorCreateInput): Promise<string | undefined> {
+  const { data: newLiquor } = await client.models.Liquor.create(
+    input,
+    { authMode: 'identityPool' },
+  );
+  return newLiquor?.id;
+}
+```
+
 `useLiquorSave.ts` は `createLiquor` に `authMode` を渡さない。`createLiquor` 内で固定されているため不要。
+更新（`updateLiquor` / `createLiquorHistory`）のみログイン状態で authMode を切り替える。
+
+```typescript
+// useLiquorSave.ts（更新・履歴作成のみ authMode を切り替える）
+const authMode = user ? 'userPool' : 'apiKey';
+```
+
+- 新規作成: Cognito Identity Pool 認証（`identityPool`）で書き込む（ログイン有無に関わらず固定）
+- 更新・履歴作成: ログイン済みは `userPool`、未ログインは `apiKey`
 
 ### Amplify スキーマ側の設定
 
@@ -37,4 +57,4 @@ allow.publicApiKey(),                         // API キー: すべての操作�
 ## 備考
 
 誰でもお酒を登録できる仕様。認証によるアクセス制限は設けていない。
-`createLiquor` の `authMode` 変更は仕様に反するため行ってはならない。
+未ログインユーザーでも作成できる仕様であるため、`createLiquor` の `authMode` は `identityPool` 固定でなければならない。変更するとゲストアクセスが壊れるため、修正しないこと（PR #74 で差し戻し済み）。

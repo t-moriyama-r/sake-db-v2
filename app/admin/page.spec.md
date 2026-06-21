@@ -16,6 +16,7 @@
 | admin ユーザー | 管理画面を表示 | 全操作（CRUD）可 |
 
 - UI の redirect は `useAuth().isAdmin`（Cognito グループ `admin` への所属チェック）で判定する
+- 非管理者・未ログイン時は `routes.home()` へクライアントサイドで redirect する
 - API レベルの削除制限は `amplify/data/schema/category.ts` の `allow.authenticated().to(['read', 'create', 'update'])` により担保される
 
 ---
@@ -31,7 +32,9 @@
 
 - `readonly: true` のカテゴリは削除ボタンを非表示にする
 - 削除ボタン押下 → 確認ダイアログを表示する
-- 確認後に削除を実行し、一覧から除外する
+- 確認後に削除を実行し、`authMode: 'userPool'` を明示して管理者権限で削除する
+- 削除成功時は一覧から除外する
+- Amplify の `errors` レスポンスが返った場合は例外として扱い、`deleteError` にメッセージを表示する
 - 削除に失敗した場合はダイアログ内にエラーメッセージを表示する
 
 ### その他の操作（画面遷移）

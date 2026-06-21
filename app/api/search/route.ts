@@ -45,7 +45,12 @@ export async function GET(request: NextRequest) {
     const liquors = results
       .map((r) => r.data)
       .filter((d): d is NonNullable<typeof d> => d !== null)
-      .map((r) => ({ ...r, imageBase64: null, youtube: null }));
+      .map((r) => ({
+        ...(JSON.parse(JSON.stringify(r)) as typeof r),
+        imageBase64: null,
+        youtube: null,
+        tags: [],
+      }));
 
     return NextResponse.json(liquors);
   } catch (err: unknown) {
