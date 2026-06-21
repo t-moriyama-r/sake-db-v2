@@ -25,11 +25,20 @@ export default function AdminPage() {
   useEffect(() => {
     if (!isLoading && !isAdmin) { router.replace(routes.home()); return; }
     if (isAdmin) {
-      client.models.Category.list()
-        .then(({ data }) => setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]))
-        .finally(() => setLoading(false));
+      loadCategories().finally(() => setLoading(false));
     }
   }, [isAdmin, isLoading, router]);
+
+  const loadCategories = async () => {
+    const allCategories: SerializableCategoryRecord[] = [];
+    let nextToken: string | null | undefined = undefined;
+    do {
+      const result = await client.models.Category.list({ limit: 1000, nextToken: nextToken ?? undefined });
+      allCategories.push(...(JSON.parse(JSON.stringify(result.data)) as SerializableCategoryRecord[]));
+      nextToken = result.nextToken;
+    } while (nextToken);
+    setCategories(allCategories);
+  };
 
   if (isLoading || loading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
 
