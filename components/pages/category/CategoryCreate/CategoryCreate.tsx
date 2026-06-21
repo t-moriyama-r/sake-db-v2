@@ -7,13 +7,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import { convertFileToBase64 } from '@/lib/client/fileUtils';
 import { routes } from '@/lib/routes';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import type { CategoryInput } from '@/schemas/category';
 
 type Props = {
   parentCategoryId: string;
+  categories: SerializableCategoryRecord[];
 };
 
-export const CategoryCreate = ({ parentCategoryId }: Props) => {
+export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
   const router = useRouter();
   const { user, isLogin, isLoading } = useAuth();
 
@@ -48,6 +50,7 @@ export const CategoryCreate = ({ parentCategoryId }: Props) => {
       <h1 className="mb-6 text-2xl font-bold text-foreground">カテゴリを作成</h1>
       <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <CategoryForm
+          categories={categories}
           defaultValues={{ parentId: parentCategoryId }}
           onSubmit={handleSubmit}
           submitLabel="作成する"

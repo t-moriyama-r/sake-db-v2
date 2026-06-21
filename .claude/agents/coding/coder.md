@@ -114,6 +114,48 @@ type Props = {
 
 サブコンポーネントや補助関数はその後に定義する。
 
+```tsx
+// ❌ Bad — サブコンポーネントが先頭にある
+type ItemProps = { label: string };
+
+function SubItem({ label }: ItemProps) {
+  return <li>{label}</li>;
+}
+
+type Props = { items: Array<{ id: string; label: string }> };
+
+export const MainComponent = ({ items }: Props) => {
+  return (
+    <ul>
+      {items.map((item) => (
+        <SubItem key={item.id} label={item.label} />
+      ))}
+    </ul>
+  );
+};
+
+// ✅ Good — メインコンポーネントが先頭にある
+// ヘルパーは function 宣言を使うことでホイスティングが効き、
+// メインより後に定義しても前方参照できる
+type Props = { items: Array<{ id: string; label: string }> };
+
+export const MainComponent = ({ items }: Props) => {
+  return (
+    <ul>
+      {items.map((item) => (
+        <SubItem key={item.id} label={item.label} />
+      ))}
+    </ul>
+  );
+};
+
+type ItemProps = { label: string };
+
+function SubItem({ label }: ItemProps) {
+  return <li>{label}</li>;
+}
+```
+
 ## export default 禁止
 
 `components/` 配下では `export default` を使わず、**named export** を使うこと。

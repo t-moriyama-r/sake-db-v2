@@ -30,3 +30,9 @@
 ### 投稿する（未ログインでも可）
 
 `authMode = user ? 'userPool' : 'apiKey'` で切り替え。未ログイン時はゲスト名を入力して投稿できる。
+
+### フレーバーマップ投票（未ログインでも投票可）
+
+FlavorVote の Amplify スキーマは `allow.guest().to(['read', 'create'])` を付与しており、
+未ログインユーザーがフレーバーマップに投票できる。これは意図した仕様であり、バグではない。
+（`allow.authenticated()` のみに制限しないこと）

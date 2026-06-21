@@ -2,7 +2,7 @@ import { type ClientSchema, a, defineData } from '@aws-amplify/backend';
 import { buildSearchCache } from '../functions/liquor/buildSearchCache/resource';
 import { bookmarkSchema } from './schema/bookmark';
 import { categorySchema } from './schema/category';
-import { liquorSchema } from './schema/liquor/index';
+import { liquorSchema } from './schema/liquor/liquorSchema';
 import { userSchema } from './schema/user';
 
 /**
