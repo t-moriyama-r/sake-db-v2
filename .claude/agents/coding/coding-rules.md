@@ -98,6 +98,22 @@ href: routes.discovery.tag(tag)
 
 新しいルートが必要な場合は `lib/routes.ts` に追加してから使う。
 
+## Amplify 全件取得ルール
+
+`client.models.XxxModel.list()` を呼ぶ際に `limit` 固定でページネーションを行わずに打ち切ることは禁止。
+必ず `lib/server/amplify-list.ts` の `fetchAll` ユーティリティを使い、全件を取得すること。
+
+```typescript
+// ❌ 禁止: limit 固定で打ち切り
+const { data } = await client.models.BoardPost.listBoardPostByUserId({ userId }, { limit: 200 });
+
+// ✅ 正しい: fetchAll で全件取得
+import { fetchAll } from '../amplify-list';
+const result = await fetchAll((nextToken, limit) =>
+  client.models.BoardPost.listBoardPostByUserId({ userId }, { limit, nextToken: nextToken ?? undefined }),
+);
+```
+
 ## サーバーサイド fetch 関数のシリアライズルール
 
 `lib/server/*/fetch.ts` の関数は **必ず `Serializable*` 型を返すこと**。
@@ -189,6 +205,33 @@ const USER_POOL_ID: string | undefined = outputs?.auth?.user_pool_id;
 <button aria-label="アカウントメニューを開く" aria-expanded={menuOpen}>
   ...
 </button>
+```
+
+### クリック操作可能な要素
+
+`onClick` を持つ要素には必ずインタラクティブ要素（`button` / `a`）を使う。`div` や `li` に `onClick` を直接付けることは禁止。
+
+```tsx
+// ❌ 禁止
+<li onClick={() => onSelect(item)}>...</li>
+
+// ✅ 正しい
+<li>
+  <button type="button" onClick={() => onSelect(item)}>...</button>
+</li>
+```
+
+### 読み取り専用コンポーネントのラベリング
+
+インタラクティブな操作を持たないが視覚的な情報を伝えるコンポーネント（星評価の表示など）は、コンテナに `role="img"` と `aria-label` を付け、個々の装飾要素には `aria-hidden="true"` を付ける。
+
+```tsx
+// ✅ 正しい: readonly の StarRating
+<div role="img" aria-label={`${value}点`}>
+  {stars.map((star) => (
+    <span key={star} aria-hidden="true">★</span>
+  ))}
+</div>
 ```
 
 ## ログメッセージ
