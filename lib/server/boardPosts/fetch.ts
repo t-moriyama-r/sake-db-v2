@@ -10,8 +10,8 @@ export type SerializableBoardPostRecord = Omit<BoardPostRecord, 'liquor'>;
 export const fetchBoardPosts = withCache(
   async (liquorId: string): Promise<SerializableBoardPostRecord[]> => {
     const client = getGuestClient();
-    const result = await fetchAll((t, lim) =>
-      client.models.BoardPost.list({ filter: { liquorId: { eq: liquorId } }, limit: lim, nextToken: t }),
+    const result = await fetchAll<BoardPostRecord>((nextToken, limit) =>
+      client.models.BoardPost.listBoardPostByLiquorId({ liquorId }, { limit, nextToken: nextToken ?? undefined }),
     );
     return JSON.parse(JSON.stringify(result)) as SerializableBoardPostRecord[];
   },
