@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function LiquorActions({ liquorId, categoryId, liquorName, deletable, onEditAction }: Props) {
-  const { deleteDialog, setDeleteDialog, deleting, handleDelete } = useLiquorDelete({ liquorId, categoryId });
+  const { deleteDialog, setDeleteDialog, deleting, handleDelete, deleteError } = useLiquorDelete({ liquorId, categoryId });
 
   return (
     <>
@@ -45,6 +45,7 @@ export function LiquorActions({ liquorId, categoryId, liquorName, deletable, onE
         message={`「${liquorName}」を削除してもよろしいですか？この操作は取り消せません。`}
         confirmLabel="削除する"
         loading={deleting}
+        errorMessage={deleteError}
       />
     </>
   );
