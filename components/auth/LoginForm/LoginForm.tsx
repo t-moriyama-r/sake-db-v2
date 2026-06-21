@@ -13,7 +13,11 @@ import { toJapaneseAuthError } from '@/lib/auth/errors';
 import { routes } from '@/lib/routes';
 import { loginSchema, type LoginInput } from '@/schemas/auth';
 
-export const LoginForm = () => {
+type Props = {
+  onNavigate?: () => void;
+};
+
+export const LoginForm = ({ onNavigate }: Props) => {
   const router = useRouter();
   const { login } = useAuth();
   const [serverError, setServerError] = useState<string>('');
@@ -72,12 +76,12 @@ export const LoginForm = () => {
       <XLoginButton />
 
       <div className="flex flex-col items-center gap-1 text-sm">
-        <Link href={routes.auth.passwordReset()} className="text-link hover:underline">
+        <Link href={routes.auth.passwordReset()} onClick={onNavigate} className="text-link hover:underline">
           パスワードを忘れた方
         </Link>
         <p className="text-muted-foreground">
           アカウントをお持ちでない方は{' '}
-          <Link href={routes.auth.register()} className="text-link hover:underline">
+          <Link href={routes.auth.register()} onClick={onNavigate} className="text-link hover:underline">
             新規登録
           </Link>
         </p>
