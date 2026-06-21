@@ -12,20 +12,32 @@ const sizeClasses = { sm: 'text-lg', md: 'text-2xl', lg: 'text-3xl' };
 
 export const StarRating = ({ value, max = 5, onChange, readonly, size = 'md' }: Props) => {
   return (
-    <div className="flex items-center gap-0.5" role={readonly ? undefined : 'radiogroup'}>
+    <div
+      role={readonly ? 'img' : 'radiogroup'}
+      aria-label={readonly ? `${value}点` : '評価'}
+      className="flex items-center gap-0.5"
+    >
       {Array.from({ length: max }, (_, i) => i + 1).map((star) => (
-        <button
-          key={star}
-          type="button"
-          onClick={() => !readonly && onChange?.(star)}
-          className={`${sizeClasses[size]} leading-none transition-transform ${
-            readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110'
-          }`}
-          aria-label={readonly ? undefined : `${star}点`}
-          tabIndex={readonly ? -1 : 0}
-        >
-          <span className={star <= value ? 'text-rating' : 'text-border-input'}>★</span>
-        </button>
+        readonly ? (
+          <span
+            key={star}
+            className={`${sizeClasses[size]} leading-none ${star <= (value ?? 0) ? 'text-rating' : 'text-border-input'}`}
+            aria-hidden="true"
+          >
+            ★
+          </span>
+        ) : (
+          <button
+            key={star}
+            type="button"
+            onClick={() => onChange?.(star)}
+            className={`${sizeClasses[size]} leading-none transition-transform cursor-pointer hover:scale-110`}
+            aria-label={`${star}点`}
+            aria-pressed={star <= (value ?? 0)}
+          >
+            <span className={star <= value ? 'text-rating' : 'text-border-input'}>★</span>
+          </button>
+        )
       ))}
     </div>
   );
