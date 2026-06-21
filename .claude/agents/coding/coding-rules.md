@@ -211,7 +211,7 @@ components/layout/Header/Header.tsx
 
 コンポーネントの props 型名は **`Props`** に統一する。
 
-同一ファイル内に複数コンポーネントが存在する場合、メインコンポーネントの props は `Props`、サブコンポーネントの props はコンポーネント名プレフィックスを外した短い名前（`ContentProps`・`ItemProps` など）を使う。Union 型を構成するための内部型は `Props` に統一せず意味のある名前を維持する。
+同一ファイル内に複数コンポーネントが存在する場合、メインコンポーネントの props は `Props`、サブコンポーネントの props は **コンポーネント名と同名の `XxxProps`** を使う（例: `HistoryItem` → `HistoryItemProps`）。Union 型を構成するための内部型は `Props` に統一せず意味のある名前を維持する。
 
 ## 仕様ファイルルール（`.spec.md`）
 
