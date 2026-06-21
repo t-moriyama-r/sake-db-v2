@@ -20,6 +20,7 @@ type Props = {
 export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = '保存' }: Props) => {
   const [categories, setCategories] = useState<SerializableCategoryRecord[]>([]);
   const [serverError, setServerError] = useState<string>('');
+  const [loadError, setLoadError] = useState<string>('');
 
   const {
     register,
@@ -36,9 +37,14 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
   });
 
   useEffect(() => {
-    client.models.Category.list().then(({ data }) =>
-      setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[])
-    );
+    client.models.Category.list()
+      .then(({ data }) =>
+        setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[])
+      )
+      .catch((e: unknown) => {
+        setLoadError('カテゴリの取得に失敗しました');
+        console.error('カテゴリの取得に失敗しました:', e instanceof Error ? e.message : String(e));
+      });
   }, []);
 
   const handleFormSubmit = async (data: CategoryInput) => {
@@ -71,6 +77,9 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
           <option value="">-- なし（ルートカテゴリ）--</option>
           {selectableCategories}
         </select>
+        {loadError && (
+          <p className="text-error text-sm">{loadError}</p>
+        )}
       </div>
 
       <FormField
