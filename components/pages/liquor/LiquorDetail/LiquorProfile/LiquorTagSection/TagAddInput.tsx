@@ -22,7 +22,7 @@ export function TagAddInput({ open, onClose, onAddAction }: Props) {
         setValue('');
         setError(null);
         onClose();
-      } catch (e) {
+      } catch (e: unknown) {
         setError(e instanceof Error ? e.message : '追加に失敗しました');
       }
     });

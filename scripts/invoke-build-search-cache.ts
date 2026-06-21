@@ -46,7 +46,7 @@ async function getFunctionName(): Promise<string> {
 
 async function main() {
   const functionName = await getFunctionName();
-  console.log(`Invoking: ${functionName}`);
+  console.log(`Lambda を起動中: ${functionName}`);
 
   const response = await lambda.send(new InvokeCommand({ FunctionName: functionName, LogType: 'Tail' }));
 
@@ -54,13 +54,13 @@ async function main() {
     process.stdout.write(Buffer.from(response.LogResult, 'base64').toString());
   }
   if (response.FunctionError) {
-    console.error(`FunctionError: ${response.FunctionError}`);
+    console.error(`Lambda の実行に失敗しました: ${response.FunctionError}`);
     const payload = response.Payload ? JSON.parse(Buffer.from(response.Payload).toString()) : null;
     if (payload) console.error(JSON.stringify(payload, null, 2));
     process.exit(1);
   }
 
-  console.log('Done.');
+  console.log('完了しました。');
 }
 
 main().catch((e: unknown) => {

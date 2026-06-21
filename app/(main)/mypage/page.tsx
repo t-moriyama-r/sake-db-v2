@@ -10,9 +10,7 @@ export default async function MyPage() {
     fetchBookmarksSSR(),
   ]);
 
-  if (!userProfile) {
-    redirect(routes.auth.login());
-  }
+  if (!userProfile) return redirect(routes.auth.login());
 
   return <MyPageView userProfile={userProfile} bookmarks={bookmarks} />;
 }

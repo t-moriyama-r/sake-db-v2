@@ -4,6 +4,7 @@ import { CategoryEdit } from '@/components/pages/category/CategoryEdit/CategoryE
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { getServerUser } from '@/lib/server/auth';
 import { fetchCategory } from '@/lib/server/categories/fetch';
+import { routes } from '@/lib/routes';
 
 export default async function CategoryEditPage({
   params,
@@ -14,10 +15,10 @@ export default async function CategoryEditPage({
   const categoryId = id?.[0];
 
   const user = await getServerUser();
-  if (!user) redirect('/');
+  if (!user) return redirect(routes.home());
 
   const category = categoryId ? await fetchCategory(categoryId) : undefined;
-  if (categoryId && !category) redirect('/admin');
+  if (categoryId && !category) return redirect(routes.admin());
 
   return (
     <Suspense fallback={<div className="flex justify-center py-32"><Spinner size="lg" /></div>}>

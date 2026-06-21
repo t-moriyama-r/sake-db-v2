@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { CategoryDetail } from '@/components/pages/category/CategoryDetail/CategoryDetail';
 import { getServerUser } from '@/lib/server/auth';
 import { fetchAllCategories, fetchCategory, buildCategoryBreadcrumbs } from '@/lib/server/categories/fetch';
@@ -18,9 +18,11 @@ export default async function CategoryDetailPage({
     getServerUser(),
   ]);
 
-  if (!category) redirect('/');
+  if (!category) return notFound();
 
-  const subCategories = allCategories.filter((c) => c.parentId === id);
+  const subCategories = allCategories
+    .filter((c) => c.parentId === id)
+    .map((c) => ({ id: c.id, name: c.name ?? '' }));
   const breadcrumbs = buildCategoryBreadcrumbs(id, allCategories);
   const isLoggedIn = user !== null;
 
