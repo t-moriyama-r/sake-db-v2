@@ -3,6 +3,7 @@ import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
 import { getServerAccessToken } from '@/lib/server/auth';
+import { fetchAll } from '@/lib/server/amplify-list';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 /* eslint-enable import/order */
 
@@ -21,14 +22,16 @@ export async function fetchBookmarksSSR(): Promise<SerializableLiquorRecord[]> {
 
   const client = generateClient<Schema>({ authMode: 'userPool' });
 
-  const { data: bms, errors } = await client.models.BookMark.list({
-    authToken: accessToken,
-  });
-
-  if (errors?.length || !bms) return [];
+  const allBms = await fetchAll<Schema['BookMark']['type']>((nextToken, limit) =>
+    client.models.BookMark.list({
+      authToken: accessToken,
+      limit,
+      nextToken: nextToken ?? undefined,
+    }),
+  );
 
   const liquorResults = await Promise.all(
-    bms.map((bm) => client.models.Liquor.get({ id: bm.liquorId }, { authMode: 'identityPool' })),
+    allBms.map((bm) => client.models.Liquor.get({ id: bm.liquorId }, { authMode: 'identityPool' })),
   );
 
   const liquors = liquorResults.map((r) => r.data).filter(Boolean);
