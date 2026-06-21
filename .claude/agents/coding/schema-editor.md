@@ -34,7 +34,6 @@ amplify/data/schema/
   bookmark.ts
   category.ts
   recommend.ts
-  user.ts
 ```
 
 ## ファイルの分け方の基準
