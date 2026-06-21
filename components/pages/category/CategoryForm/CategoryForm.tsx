@@ -78,7 +78,7 @@ export const CategoryForm = ({ defaultValues, category, onSubmit, submitLabel = 
           {selectableCategories}
         </select>
         {loadError && (
-          <p className="text-error text-sm">{loadError}</p>
+          <p className="text-xs text-destructive">{loadError}</p>
         )}
       </div>
 
