@@ -11,12 +11,12 @@ type CategoryNode = { id: string; name: string };
 /** Client 側で子カテゴリを取得したときに使うフル型 */
 type Category = Schema['Category']['type'];
 
-type CategoryTreeItemProps = {
+type TreeItemProps = {
   category: CategoryNode;
   depth?: number;
 };
 
-const CategoryTreeItem = ({ category, depth = 0 }: CategoryTreeItemProps) => {
+const CategoryTreeItem = ({ category, depth = 0 }: TreeItemProps) => {
   const [expanded, setExpanded] = useState<boolean>(false);
   const [children, setChildren] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -65,11 +65,11 @@ const CategoryTreeItem = ({ category, depth = 0 }: CategoryTreeItemProps) => {
   );
 };
 
-type SidebarClientProps = {
+type Props = {
   rootCategories: CategoryNode[];
 };
 
-export const SidebarClient = ({ rootCategories }: SidebarClientProps) => (
+export const SidebarClient = ({ rootCategories }: Props) => (
   <aside className="hidden w-56 shrink-0 lg:block">
     <div className="rounded-lg border bg-white p-4">
       <h2 className="mb-3 text-sm font-semibold text-gray-900">カテゴリ</h2>
