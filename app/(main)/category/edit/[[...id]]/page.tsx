@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { CategoryEdit } from '@/components/pages/category/CategoryEdit/CategoryEdit';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { getServerUser } from '@/lib/server/auth';
-import { fetchCategory } from '@/lib/server/categories/fetch';
+import { fetchAllCategories, fetchCategory } from '@/lib/server/categories/fetch';
 import { routes } from '@/lib/routes';
 
 export default async function CategoryEditPage({
@@ -17,7 +17,10 @@ export default async function CategoryEditPage({
   const user = await getServerUser();
   if (!user) return redirect(routes.home());
 
-  const category = categoryId ? await fetchCategory(categoryId) : undefined;
+  const [category, categories] = await Promise.all([
+    categoryId ? fetchCategory(categoryId) : Promise.resolve(undefined),
+    fetchAllCategories(),
+  ]);
   if (categoryId && !category) return redirect(routes.admin());
 
   return (
@@ -25,6 +28,7 @@ export default async function CategoryEditPage({
       <CategoryEdit
         categoryId={categoryId}
         category={category ?? undefined}
+        categories={categories}
       />
     </Suspense>
   );
