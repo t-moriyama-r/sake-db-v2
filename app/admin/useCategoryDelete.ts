@@ -33,7 +33,11 @@ export function useCategoryDelete({ setCategories }: Args): {
     setDeleting(true);
     setDeleteError('');
     try {
-      await client.models.Category.delete({ id: deleteId });
+      const { errors } = await client.models.Category.delete(
+        { id: deleteId },
+        { authMode: 'userPool' },
+      );
+      if (errors?.length) throw new Error(errors[0].message);
       setCategories((prev) => prev.filter((c) => c.id !== deleteId));
       setDeleteId(null);
     } catch (e: unknown) {
