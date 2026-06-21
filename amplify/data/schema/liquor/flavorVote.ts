@@ -17,8 +17,7 @@ export const flavorVoteModels = {
       y: a.float().required(),
     })
     .authorization((allow) => [
-      allow.guest().to(['read']),
-      allow.authenticated().to(['read', 'create']),
+      allow.guest().to(['read', 'create']),
       allow.owner().to(['read', 'create', 'update', 'delete']),
       allow.groups(['admin']),
     ]),
