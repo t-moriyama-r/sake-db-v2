@@ -3,7 +3,6 @@ import { buildSearchCache } from '../functions/liquor/buildSearchCache/resource'
 import { bookmarkSchema } from './schema/bookmark';
 import { categorySchema } from './schema/category';
 import { liquorSchema } from './schema/liquor/liquorSchema';
-import { userSchema } from './schema/user';
 
 /**
  * sake-db GraphQL スキーマを Amplify Gen 2 に移植したデータスキーマ。
@@ -14,16 +13,12 @@ import { userSchema } from './schema/user';
  *   @adminAuth    → allow.groups(['admin'])
  *   (なし/公開)   → allow.guest() + allow.authenticated()
  *
- * ユーザー属性の管理:
- *   名前・プロフィール・画像は UserProfile モデル (DynamoDB) で管理。
- *   メール・パスワードは Amplify Auth (Cognito) で管理。
- *   フロントエンドから直接 client.models.UserProfile を操作すること。
+ * ユーザー属性（名前・プロフィール・画像・メール等）はすべて Amplify Auth (Cognito) で管理。
  */
 const schema = a.schema({
   ...bookmarkSchema,
   ...categorySchema,
   ...liquorSchema,
-  ...userSchema,
 });
 
 export type Schema = ClientSchema<typeof schema>;
