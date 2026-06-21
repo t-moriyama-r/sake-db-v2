@@ -103,14 +103,18 @@ export const fetchLiquorsByTag = withCache(
   { tags: [CACHE_TAGS.liquors, CACHE_TAGS.tags], revalidate: 300 },
 );
 
-/** 指定したお酒の編集履歴を取得する。versionNo の降順で返す。 */
+/** 指定したお酒の編集履歴を全件取得する。versionNo の降順で返す。 */
 export const fetchLiquorHistories = withCache(
   async (liquorId: string): Promise<SerializableLiquorHistoryRecord[]> => {
     const client = getGuestClient();
-    const { data } = await client.models.LiquorHistory.list({
-      filter: { liquorId: { eq: liquorId } },
-    });
-    const sorted = (data ?? [])
+    const data = await fetchAll((nextToken, limit) =>
+      client.models.LiquorHistory.list({
+        filter: { liquorId: { eq: liquorId } },
+        limit,
+        nextToken: nextToken ?? undefined,
+      }),
+    );
+    const sorted = data
       .filter((h): h is NonNullable<typeof h> => h !== null)
       .sort((a, b) => (b.versionNo ?? 0) - (a.versionNo ?? 0));
     return JSON.parse(JSON.stringify(sorted)) as SerializableLiquorHistoryRecord[];
