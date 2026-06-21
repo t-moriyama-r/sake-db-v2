@@ -9,6 +9,7 @@ import {
   confirmSignIn,
   getCurrentUser,
   fetchUserAttributes,
+  fetchAuthSession,
   updateUserAttributes,
   updatePassword,
   resetPassword,
@@ -34,13 +35,16 @@ export function useAuth() {
     try {
       const authUser: AuthUser = await getCurrentUser();
       const attrs = await fetchUserAttributes();
+      const session = await fetchAuthSession();
+      const payload = session.tokens?.accessToken?.payload;
+      const groups = (payload?.['cognito:groups'] as string[] | undefined) ?? [];
       setUser({
         id: authUser.userId,
         name: attrs.name ?? '',
         email: attrs.email ?? '',
         profile: attrs.profile,
         imageBase64: attrs['custom:imageBase64'],
-        roles: attrs['custom:roles']?.split(',').filter(Boolean),
+        roles: groups,
       });
     } catch {
       setUser(null);
