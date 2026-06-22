@@ -40,13 +40,13 @@ bucket.grantWrite(buildCacheFn);
 (buildCacheFn as CdkFunction).addEnvironment('STORAGE_BUCKET_NAME', bucket.bucketName);
 
 // buildSearchCache に AppSync IAM アクセス権限を付与する
-// エンドポイント・model_introspection は amplify_outputs.json をバンドルして解決するため環境変数不要
 const { graphqlApi } = backend.data.resources;
 buildCacheFn.addToRolePolicy(new PolicyStatement({
   effect: Effect.ALLOW,
   actions: ['appsync:GraphQL'],
   resources: [`${graphqlApi.arn}/*`],
 }));
+(buildCacheFn as CdkFunction).addEnvironment('AMPLIFY_DATA_GRAPHQL_ENDPOINT', graphqlApi.graphqlUrl);
 
 // EventBridge: 1 時間ごとにキャッシュを再構築
 const scheduleStack = backend.createStack('SearchCacheScheduleStack');
