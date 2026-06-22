@@ -7,7 +7,9 @@ import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
 import { useToast } from '@/hooks/useToast';
+import type { Schema } from '@/amplify/data/resource';
 import { client } from '@/lib/amplify-client';
+import { fetchAll } from '@/lib/client/amplify-list';
 import { routes } from '@/lib/routes';
 import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 
@@ -30,9 +32,13 @@ export function UserProfileView() {
     const load = async () => {
       setLoading(true);
       try {
-        const { data: userPosts } = await client.models.BoardPost.list({
-          filter: { userId: { eq: id } },
-        });
+        const userPosts = await fetchAll<Schema['BoardPost']['type']>((nextToken, limit) =>
+          client.models.BoardPost.list({
+            filter: { userId: { eq: id } },
+            limit,
+            nextToken: nextToken ?? undefined,
+          }),
+        );
 
         if (userPosts.length > 0) {
           setUserName(userPosts[0].userName ?? '');
