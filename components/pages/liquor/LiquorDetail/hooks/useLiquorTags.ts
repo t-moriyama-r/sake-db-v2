@@ -18,10 +18,11 @@ export function useLiquorTags({ liquorId, initialTags }: Options) {
     const trimmed = text.trim();
     if (!trimmed) throw new Error('タグを入力してください');
     if (tags.some((t) => t.text === trimmed)) throw new Error('同じタグがすでに存在します');
-    const { errors: createErrors } = await client.models.Tag.create({ liquorId, text: trimmed }, { authMode: 'identityPool' });
+    const { data: newTag, errors: createErrors } = await client.models.Tag.create({ liquorId, text: trimmed }, { authMode: 'identityPool' });
     if (createErrors?.length) throw new Error(createErrors[0].message);
-    const { data: tagList } = await client.models.Tag.list({ filter: { liquorId: { eq: liquorId } }, authMode: 'identityPool' });
-    setTags(tagList.map(({ id, text }) => ({ id, text })));
+    if (newTag) {
+      setTags((prev) => [...prev, { id: newTag.id, text: newTag.text }]);
+    }
     await revalidateTagsCache();
   }
 

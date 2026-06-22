@@ -9,6 +9,7 @@ import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
+import { fetchAll } from '@/lib/client/amplify-list';
 import { routes } from '@/lib/routes';
 import { useCategoryDelete } from '@/app/admin/useCategoryDelete';
 
@@ -30,14 +31,10 @@ export default function AdminPage() {
   }, [isAdmin, isLoading, router]);
 
   async function loadCategories() {
-    const allCategories: SerializableCategoryRecord[] = [];
-    let nextToken: string | null | undefined = undefined;
-    do {
-      const result = await client.models.Category.list({ limit: 1000, nextToken: nextToken ?? undefined });
-      allCategories.push(...(JSON.parse(JSON.stringify(result.data)) as SerializableCategoryRecord[]));
-      nextToken = result.nextToken;
-    } while (nextToken);
-    setCategories(allCategories);
+    const data = await fetchAll((nextToken, limit) =>
+      client.models.Category.list({ limit, nextToken: nextToken ?? undefined }),
+    );
+    setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
   }
 
   if (isLoading || loading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
