@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type React from 'react';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import { client } from '@/lib/amplify-client';
+import { revalidateCategoriesCache } from '@/lib/server/categories/revalidate';
 
 type Args = {
   setCategories: React.Dispatch<React.SetStateAction<SerializableCategoryRecord[]>>;
@@ -39,6 +40,7 @@ export function useCategoryDelete({ setCategories }: Args): {
       );
       if (errors?.length) throw new Error(errors[0].message);
       setCategories((prev) => prev.filter((c) => c.id !== deleteId));
+      await revalidateCategoriesCache();
       setDeleteId(null);
     } catch (e: unknown) {
       setDeleteError(e instanceof Error ? e.message : '削除に失敗しました');
