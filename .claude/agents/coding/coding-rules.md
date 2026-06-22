@@ -67,6 +67,27 @@ export const handler = async () => {  // メインロジック（先頭）
 async function helperFn() { ... }     // ヘルパー（後方）
 ```
 
+## Lambda 関数での Amplify データクライアントルール
+
+Lambda 関数内では `amplify_outputs.json` が利用できないため（バックエンドビルド時に未生成）、**`amplify_outputs.json` の静的インポートは禁止**。
+
+必ず `amplify/functions/_logic/data-client.ts` の `getDataClient()` を使うこと。
+
+```typescript
+// ❌ 禁止: amplify_outputs.json の静的インポート
+import outputs from '../../../amplify_outputs.json';
+
+// ✅ 正しい: 共通クライアントを使う
+import { getDataClient } from '../_logic/data-client';
+const client = getDataClient();
+```
+
+新しい Lambda 関数を追加する際は、`backend.ts` で AppSync エンドポイントを環境変数として渡すこと：
+
+```typescript
+(fn as CdkFunction).addEnvironment('AMPLIFY_DATA_GRAPHQL_ENDPOINT', graphqlApi.graphqlUrl);
+```
+
 ## Amplify スキーマ編集ルール
 
 `amplify/data/schema/` を編集する際は **`schema-editor` サブエージェントを使うこと**（`/edit-schema` コマンド経由）。

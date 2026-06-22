@@ -97,6 +97,27 @@ export const handler = async () => {  // メインロジック（先頭）
 async function helperFn() { ... }     // ヘルパー（後方、function 宣言）
 ```
 
+## Lambda 関数での Amplify データクライアント
+
+Lambda 関数内では `amplify_outputs.json` が利用できないため、**環境変数から AppSync エンドポイントを取得する**。
+
+`amplify/_logic/data-client.ts` の `getDataClient()` を使い、直接 `generateClient<Schema>()` を呼ばない。
+
+```typescript
+// ❌ 禁止: amplify_outputs.json の静的インポート（ビルド時に存在しない）
+import outputs from '../../../amplify_outputs.json';
+
+// ✅ 正しい: 環境変数を使い Amplify.configure してから generateClient
+import { getDataClient } from '../_logic/data-client';
+const client = getDataClient();
+```
+
+`backend.ts` で Lambda 関数に `AMPLIFY_DATA_GRAPHQL_ENDPOINT` 環境変数を渡す設定を追加すること：
+
+```typescript
+(fn as CdkFunction).addEnvironment('AMPLIFY_DATA_GRAPHQL_ENDPOINT', graphqlApi.graphqlUrl);
+```
+
 ## Amplify スキーマ編集ルール
 
 `amplify/data/schema/` を編集する際は **`schema-editor` エージェントを使うこと**（`/edit-schema` コマンド経由）。
