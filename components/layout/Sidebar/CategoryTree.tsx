@@ -19,12 +19,12 @@ export const CategoryTree = ({ categoryTree, activeCategoryId }: Props) => {
   );
 };
 
-type ContentProps = {
+type CategoryTreeContentProps = {
   categoryTree: CategoryTreeNode[];
   activeCategoryId?: string | null;
 };
 
-export function CategoryTreeContent({ categoryTree, activeCategoryId: propActiveCategoryId }: ContentProps) {
+export function CategoryTreeContent({ categoryTree, activeCategoryId: propActiveCategoryId }: CategoryTreeContentProps) {
   const activeCategoryId = useCurrentCategoryId(propActiveCategoryId);
 
   const pathIds = activeCategoryId ? (findPath(activeCategoryId, categoryTree) ?? []) : [];
@@ -56,7 +56,7 @@ export function CategoryTreeContent({ categoryTree, activeCategoryId: propActive
   );
 }
 
-type ItemProps = {
+type CategoryTreeItemProps = {
   node: CategoryTreeNode;
   depth?: number;
   activeCategoryId: string | null;
@@ -72,7 +72,7 @@ function CategoryTreeItem({
   ancestorIds,
   directParentId,
   pathIdSet,
-}: ItemProps) {
+}: CategoryTreeItemProps) {
   const isAncestor = ancestorIds.has(node.id);
   const isActive = node.id === activeCategoryId;
   // URLから計算した展開状態（stateなし）
