@@ -23,7 +23,7 @@ export function LiquorActions({ liquorId, categoryId, liquorName, deletable, onE
           className="text-muted-foreground hover:text-foreground transition-colors"
           aria-label="編集"
         >
-          <FontAwesomeIcon icon={faPen} className="h-4 w-4" />
+          <FontAwesomeIcon icon={faPen} className="h-4 w-4" aria-hidden="true" />
         </button>
         {deletable && (
           <button
@@ -32,7 +32,7 @@ export function LiquorActions({ liquorId, categoryId, liquorName, deletable, onE
             className="text-muted-foreground hover:text-destructive transition-colors"
             aria-label="削除"
           >
-            <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
+            <FontAwesomeIcon icon={faTrash} className="h-4 w-4" aria-hidden="true" />
           </button>
         )}
       </div>

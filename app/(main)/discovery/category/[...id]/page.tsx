@@ -52,7 +52,7 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
                 className="inline-flex items-center justify-center rounded-md p-1.5 text-sm transition-colors text-foreground-secondary hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                 aria-label="カテゴリを編集"
               >
-                <FontAwesomeIcon icon={faPen} className="h-4 w-4" />
+                <FontAwesomeIcon icon={faPen} className="h-4 w-4" aria-hidden="true" />
               </Link>
             )}
           </div>
