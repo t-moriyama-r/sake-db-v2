@@ -29,15 +29,18 @@ export async function fetchAll<T>(
   listFn: LegacyListFn<T> | AmplifyListFn<T>,
   limit = 500,
 ): Promise<T[]> {
-  // listFn.length === 0 → Amplify 形式（引数なし or オプションオブジェクト1つ）
-  // listFn.length > 0  → 既存形式（nextToken, limit の2引数）
-  const isAmplifyForm = listFn.length === 0;
+  // 既存形式のアロー関数は (nextToken, limit) と明示的に2引数を宣言するため .length === 2
+  // Amplify の .list メソッドは (args) => ... の1引数形式のため .length === 1
+  // .length === 2 なら既存形式、それ以外（<= 1）なら Amplify 形式として扱う
+  const normalizedFn: LegacyListFn<T> =
+    listFn.length === 2
+      ? (listFn as LegacyListFn<T>)
+      : (nextToken, lim) => (listFn as AmplifyListFn<T>)({ nextToken, limit: lim });
+
   const all: T[] = [];
   let nextToken: string | null | undefined;
   do {
-    const result = isAmplifyForm
-      ? await (listFn as AmplifyListFn<T>)({ nextToken, limit })
-      : await (listFn as LegacyListFn<T>)(nextToken, limit);
+    const result = await normalizedFn(nextToken, limit);
     if (result.errors?.length) {
       console.warn('取得中にエラーが発生しました:', result.errors);
       break;
