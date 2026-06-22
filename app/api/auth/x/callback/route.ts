@@ -12,7 +12,10 @@ import { encryptXSession } from '@/lib/server/x-session';
 
 export const runtime = 'nodejs';
 
-const cognito = new CognitoIdentityProviderClient({ region: 'ap-northeast-1' });
+const REGION: string | undefined = outputs?.auth?.aws_region;
+if (!REGION) throw new Error('リージョンが amplify_outputs.json に見つかりません');
+
+const cognito = new CognitoIdentityProviderClient({ region: REGION });
 const USER_POOL_ID: string | undefined = outputs?.auth?.user_pool_id;
 
 export async function GET(request: NextRequest) {
