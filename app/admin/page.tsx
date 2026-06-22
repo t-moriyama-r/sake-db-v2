@@ -31,9 +31,7 @@ export default function AdminPage() {
   }, [isAdmin, isLoading, router]);
 
   async function loadCategories() {
-    const data = await fetchAll((nextToken, limit) =>
-      client.models.Category.list({ limit, nextToken: nextToken ?? undefined }),
-    );
+    const data = await fetchAll(client.models.Category.list);
     setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
   }
 
