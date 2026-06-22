@@ -8,6 +8,7 @@ import { client } from '@/lib/amplify-client';
 import { convertFileToBase64 } from '@/lib/client/fileUtils';
 import { routes } from '@/lib/routes';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
+import { revalidateCategoriesCache } from '@/lib/server/categories/revalidate';
 import type { CategoryInput } from '@/schemas/category';
 
 type Props = {
@@ -55,6 +56,7 @@ export const CategoryEdit = ({ categoryId, category, categories }: Props) => {
         updateUserId: user.id,
         updateUserName: user.name,
       });
+      await revalidateCategoriesCache();
       router.push(routes.category.detail(categoryId));
     } else {
       await client.models.Category.create({
@@ -69,6 +71,7 @@ export const CategoryEdit = ({ categoryId, category, categories }: Props) => {
         updateUserId: user.id,
         updateUserName: user.name,
       });
+      await revalidateCategoriesCache();
       router.push(routes.admin());
     }
   };
