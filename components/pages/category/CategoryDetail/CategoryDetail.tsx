@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { routes } from '@/lib/routes';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb/Breadcrumb';
+import { routes } from '@/lib/routes';
 import type { CategoryBreadcrumbItem } from '@/lib/server/categories/fetch';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 

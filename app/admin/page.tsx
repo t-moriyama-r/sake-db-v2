@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
+import { useCategoryDelete } from '@/app/admin/useCategoryDelete';
 import { Button } from '@/components/ui/Button/Button';
 import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
@@ -11,7 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import { fetchAll } from '@/lib/client/amplify-list';
 import { routes } from '@/lib/routes';
-import { useCategoryDelete } from '@/app/admin/useCategoryDelete';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 
 export default function AdminPage() {
   const router = useRouter();

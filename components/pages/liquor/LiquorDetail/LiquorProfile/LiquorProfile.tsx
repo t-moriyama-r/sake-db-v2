@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import type { TagItem } from '@/components/pages/liquor/LiquorDetail/hooks/useLiquorTags';
-import { routes } from '@/lib/routes';
 import { extractYoutubeEmbedId } from '@/lib/liquor/youtube';
+import { routes } from '@/lib/routes';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { LiquorActions } from './LiquorActions';
 import { LiquorImage } from './LiquorImage';

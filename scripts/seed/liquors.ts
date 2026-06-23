@@ -8,8 +8,8 @@
  *       旧 ID（自動生成）のカテゴリが残っている場合は削除して再シードすること。
  */
 
-import type { DataClient, RunOptions, SeedResult, Seeder } from './runner';
 import { CATEGORIES } from './categories';
+import type { DataClient, RunOptions, SeedResult, Seeder } from './runner';
 
 type CategoryKey = keyof typeof CATEGORIES;
 

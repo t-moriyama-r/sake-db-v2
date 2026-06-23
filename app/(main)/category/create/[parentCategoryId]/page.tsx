@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { CategoryCreate } from '@/components/pages/category/CategoryCreate/CategoryCreate';
+import { routes } from '@/lib/routes';
 import { getServerUser } from '@/lib/server/auth';
 import { fetchAllCategories } from '@/lib/server/categories/fetch';
-import { routes } from '@/lib/routes';
 
 export default async function CategoryCreatePage({
   params,

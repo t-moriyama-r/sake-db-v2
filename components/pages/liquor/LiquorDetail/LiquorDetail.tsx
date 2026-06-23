@@ -5,8 +5,8 @@ import { useAuth } from '@/hooks/useAuth';
 import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 import type { CategoryBreadcrumbItem } from '@/lib/server/categories/fetch';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
-import type { TagItem } from './hooks/useLiquorTags';
 import { BoardSection } from './BoardSection/BoardSection';
+import type { TagItem } from './hooks/useLiquorTags';
 import { LiquorBreadcrumb } from './LiquorBreadcrumb';
 import { LiquorProfile } from './LiquorProfile/LiquorProfile';
 
