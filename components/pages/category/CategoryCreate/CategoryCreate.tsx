@@ -26,13 +26,23 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
   }, [isLoading, isLogin, router]);
 
   const handleSubmit = async (data: CategoryInput) => {
+    const isRoot = parentCategoryId === 'root';
+
+    // rootからの作成時は親カテゴリの選択が必須
+    if (isRoot && !data.parentId) {
+      throw new Error('親カテゴリを選択してください');
+    }
+
     let imageBase64: string | undefined;
     if (data.image) {
       imageBase64 = await convertFileToBase64(data.image);
     }
+
+    const parentId = data.parentId || (!isRoot ? parentCategoryId : undefined) || undefined;
+
     await client.models.Category.create({
       name: data.name,
-      parentId: data.parentId || parentCategoryId || undefined,
+      parentId,
       description: data.description ?? undefined,
       imageBase64,
       readonly: false,
@@ -42,7 +52,9 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       updateUserName: user?.name,
       versionNo: 1,
     });
-    router.push(parentCategoryId ? routes.category.detail(parentCategoryId) : routes.admin());
+
+    const redirectParentId = data.parentId || (!isRoot ? parentCategoryId : undefined);
+    router.push(redirectParentId ? routes.category.detail(redirectParentId) : routes.admin());
   };
 
   return (
