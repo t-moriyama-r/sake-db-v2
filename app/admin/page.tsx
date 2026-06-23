@@ -9,7 +9,7 @@ import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
-import { fetchAll } from '@/lib/client/amplify-list';
+import { fetchAll } from '@/lib/amplify-list';
 import { routes } from '@/lib/routes';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 
@@ -31,9 +31,7 @@ export default function AdminPage() {
   }, [isAdmin, isLoading, router]);
 
   async function loadCategories() {
-    const data = await fetchAll((nextToken, limit) =>
-      client.models.Category.list({ limit, nextToken: nextToken ?? undefined }),
-    );
+    const data = await fetchAll(client.models.Category.list);
     setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
   }
 

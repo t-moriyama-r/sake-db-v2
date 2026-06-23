@@ -9,7 +9,7 @@ import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
 import { useToast } from '@/hooks/useToast';
 import { client } from '@/lib/amplify-client';
-import { fetchAll } from '@/lib/client/amplify-list';
+import { fetchAll } from '@/lib/amplify-list';
 import { routes } from '@/lib/routes';
 import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 

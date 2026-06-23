@@ -1,5 +1,5 @@
 import type { Schema } from '@/amplify/data/resource';
-import { fetchAll } from '../amplify-list';
+import { fetchAll } from '@/lib/amplify-list';
 import { withCache, CACHE_TAGS } from '../cache';
 import { getGuestClient } from '../client';
 
@@ -57,7 +57,7 @@ export const fetchLiquorsByCategories = withCache(
 export const fetchAllLiquorsRandomly = withCache(
   async (): Promise<SerializableLiquorRecord[]> => {
     const client = getGuestClient();
-    const all = await fetchAll((t, lim) => client.models.Liquor.list({ limit: lim, nextToken: t }));
+    const all = await fetchAll(client.models.Liquor.list);
 
     // Fisher-Yates シャッフル
     for (let i = all.length - 1; i > 0; i--) {

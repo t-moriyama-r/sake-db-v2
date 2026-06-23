@@ -3,7 +3,7 @@ import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
 import { getServerAccessToken } from '@/lib/server/auth';
-import { fetchAll } from '@/lib/server/amplify-list';
+import { fetchAll } from '@/lib/amplify-list';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 /* eslint-enable import/order */
 

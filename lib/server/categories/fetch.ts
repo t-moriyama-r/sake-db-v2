@@ -1,5 +1,5 @@
 import type { Schema } from '@/amplify/data/resource';
-import { fetchAll } from '../amplify-list';
+import { fetchAll } from '@/lib/amplify-list';
 import { withCache, CACHE_TAGS } from '../cache';
 import { getGuestClient } from '../client';
 
@@ -9,7 +9,7 @@ export type SerializableCategoryRecord = Omit<CategoryRecord, 'parent' | 'childr
 export const fetchAllCategories = withCache(
   async (): Promise<SerializableCategoryRecord[]> => {
     const client = getGuestClient();
-    const all = await fetchAll((t, lim) => client.models.Category.list({ limit: lim, nextToken: t }));
+    const all = await fetchAll(client.models.Category.list);
     return JSON.parse(JSON.stringify(all)) as SerializableCategoryRecord[];
   },
   ['all-categories'],

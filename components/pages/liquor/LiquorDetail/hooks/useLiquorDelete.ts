@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import type { Schema } from '@/amplify/data/resource';
 import { client } from '@/lib/amplify-client';
 import { routes } from '@/lib/routes';
-import { fetchAll } from '@/lib/server/amplify-list';
+import { fetchAll } from '@/lib/amplify-list';
 
 type Options = {
   liquorId: string;
