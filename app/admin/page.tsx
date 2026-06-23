@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
+import { useCategoryDelete } from '@/app/admin/useCategoryDelete';
 import { Button } from '@/components/ui/Button/Button';
 import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
@@ -11,7 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
 import { fetchAll } from '@/lib/client/amplify-list';
 import { routes } from '@/lib/routes';
-import { useCategoryDelete } from '@/app/admin/useCategoryDelete';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -23,19 +23,19 @@ export default function AdminPage() {
   const { deleteId, deleting, deleteError, startDelete, cancelDelete, handleDelete } =
     useCategoryDelete({ setCategories });
 
+  const loadCategories = useCallback(async () => {
+    const data = await fetchAll((nextToken, limit) =>
+      client.models.Category.list({ limit, nextToken: nextToken ?? undefined }),
+    );
+    setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
+  }, []);
+
   useEffect(() => {
     if (!isLoading && !isAdmin) { router.replace(routes.home()); return; }
     if (isAdmin) {
       loadCategories().finally(() => setLoading(false));
     }
-  }, [isAdmin, isLoading, router]);
-
-  async function loadCategories() {
-    const data = await fetchAll((nextToken, limit) =>
-      client.models.Category.list({ limit, nextToken: nextToken ?? undefined }),
-    );
-    setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
-  }
+  }, [isAdmin, isLoading, loadCategories, router]);
 
   if (isLoading || loading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
 
