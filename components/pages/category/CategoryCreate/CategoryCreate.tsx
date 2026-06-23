@@ -28,8 +28,11 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
   const handleSubmit = async (data: CategoryInput) => {
     const isRoot = parentCategoryId === 'root';
 
+    // フォームから渡された parentId のうち 'root' プレースホルダーは未選択扱いにする
+    const selectedParentId = data.parentId && data.parentId !== 'root' ? data.parentId : undefined;
+
     // rootからの作成時は親カテゴリの選択が必須
-    if (isRoot && !data.parentId) {
+    if (isRoot && !selectedParentId) {
       throw new Error('親カテゴリを選択してください');
     }
 
@@ -38,7 +41,7 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       imageBase64 = await convertFileToBase64(data.image);
     }
 
-    const parentId = data.parentId || (!isRoot ? parentCategoryId : undefined) || undefined;
+    const parentId = selectedParentId ?? (!isRoot ? parentCategoryId : undefined);
 
     await client.models.Category.create({
       name: data.name,
@@ -53,7 +56,7 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       versionNo: 1,
     });
 
-    const redirectParentId = data.parentId || (!isRoot ? parentCategoryId : undefined);
+    const redirectParentId = selectedParentId ?? (!isRoot ? parentCategoryId : undefined);
     router.push(redirectParentId ? routes.category.detail(redirectParentId) : routes.admin());
   };
 
@@ -71,5 +74,3 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
     </div>
   );
 };
-
-
