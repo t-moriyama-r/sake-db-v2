@@ -59,7 +59,7 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
   );
 }
 
-type ConfirmProps = {
+type ConfirmDialogProps = {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -72,7 +72,7 @@ type ConfirmProps = {
 
 export const ConfirmDialog = ({
   open, onClose, onConfirm, title = '確認', message, confirmLabel = '実行', loading, errorMessage,
-}: ConfirmProps) => {
+}: ConfirmDialogProps) => {
   return (
     <Dialog
       open={open}
