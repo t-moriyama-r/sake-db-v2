@@ -1,5 +1,5 @@
 import type { Schema } from '@/amplify/data/resource';
-import { fetchAll } from '../amplify-list';
+import { fetchAll } from '@/lib/amplify-list';
 import { withCache, CACHE_TAGS } from '../cache';
 import { getGuestClient } from '../client';
 

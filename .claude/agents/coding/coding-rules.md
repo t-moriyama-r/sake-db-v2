@@ -101,14 +101,21 @@ href: routes.discovery.tag(tag)
 ## Amplify 全件取得ルール
 
 `client.models.XxxModel.list()` を呼ぶ際に `limit` 固定でページネーションを行わずに打ち切ることは禁止。
-必ず `lib/server/amplify-list.ts` の `fetchAll` ユーティリティを使い、全件を取得すること。
+必ず `lib/amplify-list.ts` の `fetchAll` ユーティリティを使い、全件を取得すること。
+
+サーバー・クライアントのどちらからでも `@/lib/amplify-list` を直接インポートする。
+`lib/server/amplify-list.ts` / `lib/client/amplify-list.ts` は存在しない。
 
 ```typescript
 // ❌ 禁止: limit 固定で打ち切り
 const { data } = await client.models.BoardPost.listBoardPostByUserId({ userId }, { limit: 200 });
 
-// ✅ 正しい: fetchAll で全件取得
-import { fetchAll } from '../amplify-list';
+// ✅ 正しい: fetchAll で全件取得（Amplify 形式）
+import { fetchAll } from '@/lib/amplify-list';
+const result = await fetchAll(client.models.BoardPost.list);
+
+// ✅ 正しい: fetchAll で全件取得（フィルター付き既存形式）
+import { fetchAll } from '@/lib/amplify-list';
 const result = await fetchAll((nextToken, limit) =>
   client.models.BoardPost.listBoardPostByUserId({ userId }, { limit, nextToken: nextToken ?? undefined }),
 );
