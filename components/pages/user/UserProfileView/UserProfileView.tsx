@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import type { Schema } from '@/amplify/data/resource';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
 import { useToast } from '@/hooks/useToast';
-import type { Schema } from '@/amplify/data/resource';
 import { client } from '@/lib/amplify-client';
 import { fetchAll } from '@/lib/client/amplify-list';
 import { routes } from '@/lib/routes';

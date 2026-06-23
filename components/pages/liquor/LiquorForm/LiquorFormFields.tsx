@@ -6,9 +6,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
-import { liquorSchema, type LiquorInput } from '@/schemas/liquor';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
+import { liquorSchema, type LiquorInput } from '@/schemas/liquor';
 import { CategoryCascadeSelect } from './CategoryCascadeSelect';
 
 type Props = {
