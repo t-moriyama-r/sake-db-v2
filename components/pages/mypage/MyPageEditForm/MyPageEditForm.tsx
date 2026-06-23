@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/forms/FormField/FormField';
+import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,6 +18,7 @@ export function MyPageEditForm() {
   const { user, isLogin, isLoading, updateUserAttributes, updatePassword, reload } = useAuth();
   const [serverError, setServerError] = useState<string>('');
   const [success, setSuccess] = useState<boolean>(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const {
     register,
@@ -37,11 +39,13 @@ export function MyPageEditForm() {
     setServerError('');
     setSuccess(false);
     try {
+      const imageBase64 = imageFile ? await toBase64(imageFile) : undefined;
       await updateUserAttributes({
         userAttributes: {
           name: data.name,
           email: data.email,
           ...(data.profile !== undefined ? { profile: data.profile } : {}),
+          ...(imageBase64 !== undefined ? { 'custom:imageBase64': imageBase64 } : {}),
         },
       });
       if (data.password && data.currentPassword) {
@@ -71,6 +75,11 @@ export function MyPageEditForm() {
           <FormField label="名前" type="text" required error={errors.name?.message} {...register('name')} />
           <FormField label="メールアドレス" type="email" required error={errors.email?.message} {...register('email')} />
           <FormField as="textarea" label="プロフィール" rows={3} error={errors.profile?.message} {...register('profile')} />
+          <ImageUpload
+            label="アイコン画像"
+            currentImageBase64={user?.imageBase64}
+            onChange={(file) => setImageFile(file)}
+          />
           <FormField
             label="現在のパスワード（パスワードを変更する場合のみ）"
             type="password"
@@ -95,3 +104,11 @@ export function MyPageEditForm() {
   );
 }
 
+function toBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
