@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Dialog } from '@/components/ui/Dialog/Dialog';
 import { Button } from '@/components/ui/Button/Button';
+import { Dialog } from '@/components/ui/Dialog/Dialog';
 
 type Props = {
   open: boolean;

@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { faPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { routes } from '@/lib/routes';
 import { LiquorCard } from '@/components/pages/liquor/LiquorCard/LiquorCard';
 import { Breadcrumb } from '@/components/ui/Breadcrumb/Breadcrumb';
+import { routes } from '@/lib/routes';
 import { getServerUser } from '@/lib/server/auth';
 import {
   fetchAllCategories,

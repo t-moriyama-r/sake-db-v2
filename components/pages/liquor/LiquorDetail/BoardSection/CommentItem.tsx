@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { routes } from '@/lib/routes';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
+import { routes } from '@/lib/routes';
 import type { SerializableBoardPostRecord } from '@/lib/server/boardPosts/fetch';
 
 type Props = {

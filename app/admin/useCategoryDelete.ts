@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type React from 'react';
-import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import { client } from '@/lib/amplify-client';
+import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
 import { revalidateCategoriesCache } from '@/lib/server/categories/revalidate';
 
 type Args = {
