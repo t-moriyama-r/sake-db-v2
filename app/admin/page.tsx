@@ -9,7 +9,7 @@ import { ConfirmDialog } from '@/components/ui/Dialog/Dialog';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { client } from '@/lib/amplify-client';
-import { fetchAll } from '@/lib/client/amplify-list';
+import { fetchAll } from '@/lib/amplify-list';
 import { routes } from '@/lib/routes';
 import { useCategoryDelete } from '@/app/admin/useCategoryDelete';
 
