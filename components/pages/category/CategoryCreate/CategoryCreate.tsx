@@ -26,26 +26,14 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
   }, [isLoading, isLogin, router]);
 
   const handleSubmit = async (data: CategoryInput) => {
-    const isRoot = parentCategoryId === 'root';
-
-    // フォームから渡された parentId のうち 'root' プレースホルダーは未選択扱いにする
-    const selectedParentId = data.parentId && data.parentId !== 'root' ? data.parentId : undefined;
-
-    // rootからの作成時は親カテゴリの選択が必須
-    if (isRoot && !selectedParentId) {
-      throw new Error('親カテゴリを選択してください');
-    }
-
     let imageBase64: string | undefined;
     if (data.image) {
       imageBase64 = await convertFileToBase64(data.image);
     }
 
-    const parentId = selectedParentId ?? (!isRoot ? parentCategoryId : undefined);
-
     await client.models.Category.create({
       name: data.name,
-      parentId,
+      parentId: data.parentId,
       description: data.description ?? undefined,
       imageBase64,
       readonly: false,
@@ -56,8 +44,7 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       versionNo: 1,
     });
 
-    const redirectParentId = selectedParentId ?? (!isRoot ? parentCategoryId : undefined);
-    router.push(redirectParentId ? routes.category.detail(redirectParentId) : routes.admin());
+    router.push(routes.category.detail(data.parentId));
   };
 
   return (
@@ -66,7 +53,7 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <CategoryForm
           categories={categories}
-          defaultValues={{ parentId: parentCategoryId }}
+          defaultValues={{ parentId: parentCategoryId === 'root' ? '' : parentCategoryId }}
           onSubmit={handleSubmit}
           submitLabel="作成する"
         />

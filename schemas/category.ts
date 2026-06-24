@@ -3,7 +3,7 @@ import { z } from 'zod';
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 export const categorySchema = z.object({
-  parentId: z.string().optional().nullable(),
+  parentId: z.string().min(1, '親カテゴリを選択してください'),
   name: z.string().min(1, 'カテゴリ名は必須です').max(100, 'カテゴリ名は100文字以内で入力してください'),
   description: z.string().max(5000, '説明は5000文字以内で入力してください').optional(),
   image: z
