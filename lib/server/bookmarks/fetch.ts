@@ -36,7 +36,7 @@ export async function fetchBookmarksSSR(): Promise<SerializableLiquorRecord[]> {
 
   const liquors = liquorResults
     .map((r) => r.data)
-    .filter(Boolean)
+    .filter((d): d is NonNullable<typeof d> => d != null)
     .map((liquor) => ({ ...liquor, tags: [] as { id: string; text: string }[] }));
   return JSON.parse(JSON.stringify(liquors)) as SerializableLiquorRecord[];
 }
