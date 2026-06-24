@@ -34,6 +34,9 @@ export async function fetchBookmarksSSR(): Promise<SerializableLiquorRecord[]> {
     allBms.map((bm) => client.models.Liquor.get({ id: bm.liquorId }, { authMode: 'identityPool' })),
   );
 
-  const liquors = liquorResults.map((r) => r.data).filter(Boolean);
+  const liquors = liquorResults
+    .map((r) => r.data)
+    .filter(Boolean)
+    .map((liquor) => ({ ...liquor, tags: [] as { id: string; text: string }[] }));
   return JSON.parse(JSON.stringify(liquors)) as SerializableLiquorRecord[];
 }
