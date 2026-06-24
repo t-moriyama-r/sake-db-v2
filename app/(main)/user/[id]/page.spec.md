@@ -12,7 +12,12 @@
 - 評価（`rate`）ごとにお酒名をグループ化してタグ形式で表示
 - ユーザー名は取得した投稿の `userName` フィールドから取る（投稿が 0 件の場合は「ユーザー」と表示）
 
+## データ取得
+
+- `BoardPost.listBoardPostByUserId` GSI クエリで userId に一致する投稿を全件取得する（フルスキャンではない）
+- `fetchAll` ユーティリティでページネーション全件を取得する
+
 ## エラーハンドリング
 
-- `BoardPost.list` が失敗した場合、`console.error` でログを出力し、`useToast` によるエラートーストをユーザーに表示する
+- `listBoardPostByUserId` が失敗した場合、`console.error` でログを出力し、`useToast` によるエラートーストをユーザーに表示する
 - エラー発生時もページはクラッシュせず、投稿一覧は空のまま表示される
