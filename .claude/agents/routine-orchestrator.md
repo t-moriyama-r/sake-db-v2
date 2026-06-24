@@ -101,12 +101,12 @@ else:
    result が NG かつ retries >= 2 の場合（手順4）:
      reviewer が実装の複雑さ・ブロッカーを評価する
      「粒度が大きすぎて分割可能」と判断した場合:
-       investigator に子issueの作成を依頼
-       元issueに「分割した子issue番号・理由」をコメントして残す
+       investigator(task=split, issue=<issue>) を呼び、子issueを作成させる
+       元issueのラベルを「AI調査結果確認待ち」に変更（子issueが承認されるまで待機）
      それ以外:
        元issueに「何を試みたか・何がブロッカーか」をコメントして残す
+       元issueのラベルを「AI調査結果承認済・修正待ち」に戻す
      ブランチを削除: git push origin --delete <branch>
-     元issueのラベルを「AI調査結果承認済・修正待ち」に戻す
      サマリーの「スキップ」欄に理由とともに記録
      → このissueはスキップ。次のissueへ進む ★
 ```
