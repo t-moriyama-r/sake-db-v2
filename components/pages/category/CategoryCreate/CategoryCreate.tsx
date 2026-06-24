@@ -30,9 +30,10 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
     if (data.image) {
       imageBase64 = await convertFileToBase64(data.image);
     }
+
     await client.models.Category.create({
       name: data.name,
-      parentId: data.parentId || parentCategoryId || undefined,
+      parentId: data.parentId,
       description: data.description ?? undefined,
       imageBase64,
       readonly: false,
@@ -42,7 +43,8 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       updateUserName: user?.name,
       versionNo: 1,
     });
-    router.push(parentCategoryId ? routes.category.detail(parentCategoryId) : routes.admin());
+
+    router.push(routes.category.detail(data.parentId));
   };
 
   return (
@@ -51,7 +53,7 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <CategoryForm
           categories={categories}
-          defaultValues={{ parentId: parentCategoryId }}
+          defaultValues={{ parentId: parentCategoryId === 'root' ? '' : parentCategoryId }}
           onSubmit={handleSubmit}
           submitLabel="作成する"
         />
@@ -59,5 +61,3 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
     </div>
   );
 };
-
-

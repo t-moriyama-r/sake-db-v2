@@ -59,11 +59,12 @@ export const CategoryForm = ({ categories, defaultValues, category, onSubmit, su
       )}
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-foreground-secondary">親カテゴリ</label>
+        <label className="text-sm font-medium text-foreground-secondary">親カテゴリ <span className="text-destructive">*</span></label>
         <select className={selectClass} {...register('parentId')}>
-          <option value="">-- なし（ルートカテゴリ）--</option>
+          <option value="">-- 親カテゴリを選択してください --</option>
           {selectableCategories}
         </select>
+        {errors.parentId && <p className="text-xs text-destructive">{errors.parentId.message}</p>}
       </div>
 
       <FormField
