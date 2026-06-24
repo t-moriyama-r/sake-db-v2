@@ -93,11 +93,11 @@ export const fetchLiquorsByTag = withCache(
       ),
     );
 
-    const result = nested
+    const result: LiquorRecord[] = nested
       .flat()
       .map((r) => r.data)
       .filter((d): d is NonNullable<typeof d> => d != null);
-    return JSON.parse(JSON.stringify(result)) as SerializableLiquorRecord[];
+    return JSON.parse(JSON.stringify(result.map((r) => ({ ...r, tags: [] })))) as SerializableLiquorRecord[];
   },
   ['liquors-by-tag'],
   { tags: [CACHE_TAGS.liquors, CACHE_TAGS.tags], revalidate: 300 },
