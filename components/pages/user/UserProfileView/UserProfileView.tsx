@@ -33,11 +33,10 @@ export function UserProfileView() {
       setLoading(true);
       try {
         const userPosts = await fetchAll<Schema['BoardPost']['type']>((nextToken, limit) =>
-          client.models.BoardPost.list({
-            filter: { userId: { eq: id } },
-            limit,
-            nextToken: nextToken ?? undefined,
-          }),
+          client.models.BoardPost.listBoardPostByUserId(
+            { userId: id },
+            { limit, nextToken: nextToken ?? undefined },
+          ),
         );
 
         if (userPosts.length > 0) {
