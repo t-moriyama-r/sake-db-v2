@@ -6,8 +6,6 @@ import type { Schema } from '@/amplify/data/resource';
 import { CACHE_S3_KEY, type SearchRecord } from '@/amplify/functions/liquor/buildSearchCache/handler';
 import { getGuestClient } from '@/lib/server/client';
 
-type LiquorRecord = Schema['Liquor']['type'];
-
 const s3 = new S3Client({});
 
 const CACHE_TTL = process.env.CACHE_ENABLED === 'true' ? 3600 : 60;
@@ -17,6 +15,8 @@ const getSearchIndex = unstable_cache(
   ['search-index'],
   { revalidate: CACHE_TTL },
 );
+
+type LiquorRecord = Schema['Liquor']['type'];
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -37,14 +37,14 @@ export async function GET(request: NextRequest) {
         return keywords.every((kw) => name.includes(kw));
       })
       .slice(0, limit)
-      .map((r: SearchRecord) => r.id);
+      .map((r) => r.id);
 
     if (matchedIds.length === 0) {
       return NextResponse.json([]);
     }
 
     const client = getGuestClient();
-    const results = await Promise.all(matchedIds.map((id: string) => client.models.Liquor.get({ id })));
+    const results = await Promise.all(matchedIds.map((id) => client.models.Liquor.get({ id })));
     const liquors = results
       .map((r: { data: LiquorRecord | null }) => r.data)
       .filter((d: LiquorRecord | null): d is LiquorRecord => d !== null)
