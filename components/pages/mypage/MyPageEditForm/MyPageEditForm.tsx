@@ -19,6 +19,7 @@ export function MyPageEditForm() {
   const [serverError, setServerError] = useState<string>('');
   const [success, setSuccess] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageDeleted, setImageDeleted] = useState<boolean>(false);
 
   const {
     register,
@@ -34,6 +35,11 @@ export function MyPageEditForm() {
     }
   }, [user, isLogin, isLoading, reset, router]);
 
+  const handleImageChange = (file: File | null) => {
+    setImageFile(file);
+    setImageDeleted(file === null);
+  };
+
   const onSubmit = async (data: UserEditInput) => {
     if (!user) return;
     setServerError('');
@@ -44,7 +50,11 @@ export function MyPageEditForm() {
           name: data.name,
           email: data.email,
           ...(data.profile !== undefined ? { profile: data.profile } : {}),
-          ...(imageFile ? { 'custom:imageBase64': await toBase64(imageFile) } : {}),
+          ...(imageFile
+            ? { 'custom:imageBase64': await toBase64(imageFile) }
+            : imageDeleted
+              ? { 'custom:imageBase64': '' }
+              : {}),
         },
       });
       if (data.password && data.currentPassword) {
@@ -74,7 +84,7 @@ export function MyPageEditForm() {
           <ImageUpload
             label="アイコン画像"
             currentImageBase64={user?.imageBase64}
-            onChange={setImageFile}
+            onChange={handleImageChange}
           />
 
           <FormField label="名前" type="text" required error={errors.name?.message} {...register('name')} />
