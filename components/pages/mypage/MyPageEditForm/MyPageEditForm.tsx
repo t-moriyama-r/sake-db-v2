@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/forms/FormField/FormField';
+import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,6 +18,7 @@ export function MyPageEditForm() {
   const { user, isLogin, isLoading, updateUserAttributes, updatePassword, reload } = useAuth();
   const [serverError, setServerError] = useState<string>('');
   const [success, setSuccess] = useState<boolean>(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const {
     register,
@@ -42,6 +44,7 @@ export function MyPageEditForm() {
           name: data.name,
           email: data.email,
           ...(data.profile !== undefined ? { profile: data.profile } : {}),
+          ...(imageFile ? { 'custom:imageBase64': await toBase64(imageFile) } : {}),
         },
       });
       if (data.password && data.currentPassword) {
@@ -67,6 +70,12 @@ export function MyPageEditForm() {
           {success && (
             <div className="rounded-md bg-success-subtle px-4 py-3 text-sm text-success-subtle-foreground">更新しました</div>
           )}
+
+          <ImageUpload
+            label="アイコン画像"
+            currentImageBase64={user?.imageBase64}
+            onChange={setImageFile}
+          />
 
           <FormField label="名前" type="text" required error={errors.name?.message} {...register('name')} />
           <FormField label="メールアドレス" type="email" required error={errors.email?.message} {...register('email')} />
@@ -95,3 +104,11 @@ export function MyPageEditForm() {
   );
 }
 
+function toBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
