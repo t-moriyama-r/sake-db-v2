@@ -1,5 +1,6 @@
 import type { Schema } from '@/amplify/data/resource';
 import { fetchAll } from '@/lib/amplify-list';
+import { isNonNullable } from '@/lib/utils';
 import { withCache, CACHE_TAGS } from '../cache';
 import { getGuestClient } from '../client';
 
@@ -96,7 +97,7 @@ export const fetchLiquorsByTag = withCache(
     const result = nested
       .flat()
       .map((r) => r.data)
-      .filter((d): d is NonNullable<typeof d> => d != null);
+      .filter(isNonNullable);
     return JSON.parse(JSON.stringify(result)) as SerializableLiquorRecord[];
   },
   ['liquors-by-tag'],
@@ -115,7 +116,7 @@ export const fetchLiquorHistories = withCache(
       }),
     );
     const sorted = data
-      .filter((h): h is NonNullable<typeof h> => h !== null)
+      .filter(isNonNullable)
       .sort((a, b) => (b.versionNo ?? 0) - (a.versionNo ?? 0));
     return JSON.parse(JSON.stringify(sorted)) as SerializableLiquorHistoryRecord[];
   },
