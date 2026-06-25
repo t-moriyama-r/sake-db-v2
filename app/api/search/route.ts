@@ -2,6 +2,7 @@ import { gunzipSync } from 'node:zlib';
 import { unstable_cache } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+import type { Schema } from '@/amplify/data/resource';
 import { CACHE_S3_KEY, type SearchRecord } from '@/amplify/functions/liquor/buildSearchCache/handler';
 import { getGuestClient } from '@/lib/server/client';
 
@@ -14,6 +15,8 @@ const getSearchIndex = unstable_cache(
   ['search-index'],
   { revalidate: CACHE_TTL },
 );
+
+type LiquorRecord = Schema['Liquor']['type'];
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -29,7 +32,7 @@ export async function GET(request: NextRequest) {
     const keywords = normalize(keyword).trim().split(/\s+/).filter(Boolean);
 
     const matchedIds = index
-      .filter((r) => {
+      .filter((r: SearchRecord) => {
         const name = normalize(r.name);
         return keywords.every((kw) => name.includes(kw));
       })
@@ -43,9 +46,9 @@ export async function GET(request: NextRequest) {
     const client = getGuestClient();
     const results = await Promise.all(matchedIds.map((id) => client.models.Liquor.get({ id })));
     const liquors = results
-      .map((r) => r.data)
-      .filter((d): d is NonNullable<typeof d> => d !== null)
-      .map((r) => ({
+      .map((r: { data: LiquorRecord | null }) => r.data)
+      .filter((d: LiquorRecord | null): d is LiquorRecord => d !== null)
+      .map((r: LiquorRecord) => ({
         ...(JSON.parse(JSON.stringify(r)) as typeof r),
         imageBase64: null,
         youtube: null,
@@ -124,7 +127,7 @@ function normalize(str: string): string {
 }
 
 function toHiragana(str: string): string {
-  return str.replace(/[\u30a1-\u30f6]/g, (ch) =>
+  return str.replace(/[ァ-ヶ]/g, (ch) =>
     String.fromCharCode(ch.charCodeAt(0) - 0x60),
   );
 }
