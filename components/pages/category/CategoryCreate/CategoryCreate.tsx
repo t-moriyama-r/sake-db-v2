@@ -8,6 +8,7 @@ import { client } from '@/lib/amplify-client';
 import { convertFileToBase64 } from '@/lib/client/fileUtils';
 import { routes } from '@/lib/routes';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
+import { revalidateCategoriesCache } from '@/lib/server/categories/revalidate';
 import type { CategoryInput } from '@/schemas/category';
 
 type Props = {
@@ -44,6 +45,7 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       versionNo: 1,
     });
 
+    await revalidateCategoriesCache();
     router.push(routes.category.detail(data.parentId));
   };
 
