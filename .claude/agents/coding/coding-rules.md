@@ -150,6 +150,37 @@ const serializableLiquor = JSON.parse(JSON.stringify(liquor)) as SerializableLiq
 Client Component 内で Amplify クライアントを直接呼び出してデータを取得する場合も、
 状態に保存する前に `JSON.parse(JSON.stringify(data))` を適用して lazy loader を除去すること。
 
+### `Serializable*` 型に含まれる lazy フィールドの補完
+
+`Omit` で除外しないが lazy loader によって `undefined` になるフィールド（例: `tags`）は、
+シリアライズ前に明示的に補完してから `JSON.parse(JSON.stringify(...))` を呼ぶこと。
+
+```typescript
+// ❌ 禁止: tags が undefined になる
+return JSON.parse(JSON.stringify(records)) as SerializableLiquorRecord[];
+
+// ✅ 正しい: シリアライズ前に tags を補完する
+return records
+  .map((r) => ({ ...r, tags: [] as { id: string; text: string }[] }))
+  .map((r) => JSON.parse(JSON.stringify(r)) as SerializableLiquorRecord);
+```
+
+## null / undefined フィルタリングルール
+
+配列から `null` / `undefined` を除外する場合は `lib/utils.ts` の `isNonNullable` を使う。
+インラインの型ガード関数や `.filter(Boolean)` は禁止。
+
+```typescript
+import { isNonNullable } from '@/lib/utils';
+
+// ❌ 禁止
+const items = results.filter((d): d is NonNullable<typeof d> => d != null);
+const items = results.filter(Boolean);
+
+// ✅ 正しい
+const items = results.filter(isNonNullable);
+```
+
 ## Amplify 設定値の取得ルール
 
 Cognito User Pool ID などの Amplify 設定値は **ハードコード禁止**。`amplify_outputs.json` から動的に読み込むこと。
