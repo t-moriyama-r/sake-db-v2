@@ -70,6 +70,7 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
             </Link>
           )}
           <button
+            type="button"
             className="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-muted"
             onClick={() => { logoutAction(); setMenuOpen(false); }}
           >
