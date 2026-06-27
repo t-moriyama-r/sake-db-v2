@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { FormField } from '@/components/forms/FormField/FormField';
@@ -21,10 +20,6 @@ type Props = {
 };
 
 export function LiquorFormFields({ categories, defaultValues, initialImageBase64, liquor, onSubmitAction, saveError }: Props) {
-  const [displayImageBase64, setDisplayImageBase64] = useState<string | null | undefined>(
-    initialImageBase64,
-  );
-
   const {
     register,
     handleSubmit,
@@ -86,7 +81,7 @@ export function LiquorFormFields({ categories, defaultValues, initialImageBase64
           <ImageUpload
             label="画像"
             currentImageUrl={liquor?.imageUrl}
-            currentImageBase64={displayImageBase64}
+            currentImageBase64={initialImageBase64}
             onChange={(f) => field.onChange(f)}
             error={errors.image?.message as string}
           />
