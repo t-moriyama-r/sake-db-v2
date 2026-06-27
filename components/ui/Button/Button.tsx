@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { ButtonHTMLAttributes, RefAttributes } from 'react';
 
 type Variant = 'primary' | 'secondary' | 'danger' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
@@ -16,14 +16,13 @@ const sizeClasses: Record<Size, string> = {
   lg: 'px-6 py-3 text-lg',
 };
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & RefAttributes<HTMLButtonElement> & {
   variant?: Variant;
   size?: Size;
   loading?: boolean;
 };
 
-export const Button = forwardRef<HTMLButtonElement, Props>(
-  ({ variant = 'primary', size = 'md', loading, disabled, children, className = '', type = 'button', ...props }, ref) => {
+export const Button = ({ variant = 'primary', size = 'md', loading, disabled, children, className = '', type = 'button', ref, ...props }: Props) => {
   return (
     <button
       ref={ref}
@@ -38,4 +37,4 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
       {children}
     </button>
   );
-});
+};
