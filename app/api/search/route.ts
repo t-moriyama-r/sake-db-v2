@@ -83,9 +83,11 @@ async function loadSearchIndex(): Promise<SearchRecord[]> {
 }
 
 async function loadFromS3(): Promise<SearchRecord[]> {
+  const bucket = process.env.STORAGE_BUCKET_NAME;
+  if (!bucket) throw new Error('STORAGE_BUCKET_NAME 環境変数が設定されていません');
   const res = await s3.send(
     new GetObjectCommand({
-      Bucket: process.env.STORAGE_BUCKET_NAME!,
+      Bucket: bucket,
       Key: CACHE_S3_KEY,
     }),
   );
