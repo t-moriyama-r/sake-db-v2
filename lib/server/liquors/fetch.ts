@@ -53,8 +53,8 @@ export const fetchLiquorsByCategories = withCache(
         ? { categoryId: { eq: categoryIds[0] } }
         : { or: categoryIds.map((id) => ({ categoryId: { eq: id } })) };
 
-    const result = await fetchAll((t, lim) => client.models.Liquor.list({ filter, limit: lim, nextToken: t }));
-    return JSON.parse(JSON.stringify(result)) as SerializableLiquorRecord[];
+    const result = await fetchAll((options) => client.models.Liquor.list({ filter, ...options }));
+    return result.map((r) => serializeLiquorRecord(r));
   },
   ['liquors-by-categories'],
   { tags: [CACHE_TAGS.liquors], revalidate: 900 },
@@ -76,7 +76,7 @@ export const fetchAllLiquorsRandomly = withCache(
       [all[i], all[j]] = [all[j]!, all[i]!];
     }
 
-    return JSON.parse(JSON.stringify(all)) as SerializableLiquorRecord[];
+    return all.map((r) => serializeLiquorRecord(r));
   },
   ['all-liquors-random'],
   { tags: [CACHE_TAGS.liquors], revalidate: 60 },
