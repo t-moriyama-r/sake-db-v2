@@ -30,16 +30,16 @@ export async function deleteLiquorWithRelated(liquorId: string): Promise<{ error
       client.models.BoardPost.listBoardPostByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
     ),
     fetchAll<Schema['Tag']['type']>((t, lim) =>
-      client.models.Tag.list({ ...authOptions, filter: { liquorId: { eq: liquorId } }, limit: lim, nextToken: t ?? undefined }),
+      client.models.Tag.listTagByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
     ),
     fetchAll<Schema['FlavorVote']['type']>((t, lim) =>
-      client.models.FlavorVote.list({ ...authOptions, filter: { liquorId: { eq: liquorId } }, limit: lim, nextToken: t ?? undefined }),
+      client.models.FlavorVote.listFlavorVoteByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
     ),
     fetchAll<Schema['BookMark']['type']>((t, lim) =>
-      client.models.BookMark.list({ ...authOptions, filter: { liquorId: { eq: liquorId } }, limit: lim, nextToken: t ?? undefined }),
+      client.models.BookMark.listBookMarkByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
     ),
     fetchAll<Schema['LiquorHistory']['type']>((t, lim) =>
-      client.models.LiquorHistory.list({ ...authOptions, filter: { liquorId: { eq: liquorId } }, limit: lim, nextToken: t ?? undefined }),
+      client.models.LiquorHistory.listLiquorHistoryByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
     ),
   ]);
 

@@ -22,6 +22,7 @@ export const liquorHistoryModels = {
       updateUserId: a.id(),
       updateUserName: a.string(),
     })
+    .secondaryIndexes((index) => [index('liquorId')])
     .authorization((allow) => [
       allow.guest().to(['read']),
       allow.authenticated().to(['read', 'create']),
