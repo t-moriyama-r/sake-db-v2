@@ -263,6 +263,21 @@ components/layout/Header/Header.tsx
 
 同一ファイル内に複数コンポーネントが存在する場合、メインコンポーネントの props は `Props`、サブコンポーネントの props は **コンポーネント名と同名の `XxxProps`** を使う（例: `HistoryItem` → `HistoryItemProps`）。Union 型を構成するための内部型は `Props` に統一せず意味のある名前を維持する。
 
+## Button コンポーネントの type ルール
+
+`Button` コンポーネント（`components/ui/Button/Button.tsx`）は `type` prop のデフォルト値として `"button"` を持つ。
+フォーム送信ボタンとして使う場合のみ `type="submit"` を明示する。
+
+```tsx
+// ✅ 正しい: フォーム送信以外はデフォルトのまま
+<Button onClick={handleCancel}>キャンセル</Button>
+
+// ✅ 正しい: フォーム送信ボタンは type を明示
+<Button type="submit" loading={isSubmitting}>送信</Button>
+```
+
+ネイティブ `<button>` 要素を直接使う場合は引き続き `type="button"` を明示すること（ARIAルールの例を参照）。
+
 ## 仕様ファイルルール（`.spec.md`）
 
 意図した挙動（特に非自明なもの）は `.spec.md` に記録する。
