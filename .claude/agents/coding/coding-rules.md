@@ -263,6 +263,42 @@ components/layout/Header/Header.tsx
 
 同一ファイル内に複数コンポーネントが存在する場合、メインコンポーネントの props は `Props`、サブコンポーネントの props は **コンポーネント名と同名の `XxxProps`** を使う（例: `HistoryItem` → `HistoryItemProps`）。Union 型を構成するための内部型は `Props` に統一せず意味のある名前を維持する。
 
+## React 19 ref-as-prop ルール
+
+このプロジェクトは React 19 を使用する。`forwardRef` は **禁止**。ref は通常の prop として直接受け取る。
+
+```typescript
+// ❌ 禁止: React 18 以前の forwardRef パターン
+import { forwardRef } from 'react';
+export const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => {
+  return <button ref={ref} {...props} />;
+});
+
+// ✅ 正しい: React 19 の ref-as-prop パターン
+import { ButtonHTMLAttributes, RefAttributes } from 'react';
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & RefAttributes<HTMLButtonElement> & { ... };
+export const Button = ({ ref, ...props }: Props) => {
+  return <button ref={ref} {...props} />;
+};
+```
+
+ref を受け取る必要がある場合は `RefAttributes<T>` を Props に intersection して `ref` を props から分解代入する。
+
+## Button コンポーネントの type ルール
+
+`Button` コンポーネント（`components/ui/Button/Button.tsx`）は `type` prop のデフォルト値として `"button"` を持つ。
+フォーム送信ボタンとして使う場合のみ `type="submit"` を明示する。
+
+```tsx
+// ✅ 正しい: フォーム送信以外はデフォルトのまま
+<Button onClick={handleCancel}>キャンセル</Button>
+
+// ✅ 正しい: フォーム送信ボタンは type を明示
+<Button type="submit" loading={isSubmitting}>送信</Button>
+```
+
+ネイティブ `<button>` 要素を直接使う場合は引き続き `type="button"` を明示すること（ARIAルールの例を参照）。
+
 ## 仕様ファイルルール（`.spec.md`）
 
 意図した挙動（特に非自明なもの）は `.spec.md` に記録する。
