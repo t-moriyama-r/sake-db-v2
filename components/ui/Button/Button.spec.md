@@ -18,6 +18,17 @@ HTML の `<button>` 要素はブラウザ仕様上、`type` 未指定の場合 `
 <Button type="submit">送信</Button>
 ```
 
+## ref の受け取り方
+
+React 19 の ref-as-prop パターンを採用しており、`forwardRef` は使用しない。
+`ref` は通常の prop として `RefAttributes<HTMLButtonElement>` 経由で受け取る。
+
+```tsx
+// ref を渡す呼び出し側
+const buttonRef = useRef<HTMLButtonElement>(null);
+<Button ref={buttonRef}>ボタン</Button>
+```
+
 ## Props
 
 | Prop | 型 | デフォルト | 説明 |
@@ -26,6 +37,7 @@ HTML の `<button>` 要素はブラウザ仕様上、`type` 未指定の場合 `
 | `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | サイズ |
 | `loading` | `boolean` | - | ローディングスピナーを表示し、ボタンを無効化する |
 | `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | HTML button の type 属性 |
+| `ref` | `React.Ref<HTMLButtonElement>` | - | DOM 参照（React 19 ref-as-prop） |
 
 `Props` は `ButtonHTMLAttributes<HTMLButtonElement>` を継承するため、HTML `<button>` の全属性を受け取れる。
 
