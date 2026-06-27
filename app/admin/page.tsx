@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCategoryDelete } from '@/app/admin/useCategoryDelete';
@@ -23,17 +23,17 @@ export default function AdminPage() {
   const { deleteId, deleting, deleteError, startDelete, cancelDelete, handleDelete } =
     useCategoryDelete({ setCategories });
 
+  const loadCategories = useCallback(async () => {
+    const data = await fetchAll(client.models.Category.list);
+    setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
+  }, []);
+
   useEffect(() => {
     if (!isLoading && !isAdmin) { router.replace(routes.home()); return; }
     if (isAdmin) {
       loadCategories().finally(() => setLoading(false));
     }
-  }, [isAdmin, isLoading, router]);
-
-  async function loadCategories() {
-    const data = await fetchAll(client.models.Category.list);
-    setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
-  }
+  }, [isAdmin, isLoading, loadCategories, router]);
 
   if (isLoading || loading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
 

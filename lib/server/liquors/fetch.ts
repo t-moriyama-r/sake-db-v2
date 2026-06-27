@@ -15,6 +15,15 @@ export type SerializableLiquorRecord = Omit<
 export type LiquorHistoryRecord = Schema['LiquorHistory']['type'];
 export type SerializableLiquorHistoryRecord = Omit<LiquorHistoryRecord, 'liquor'>;
 
+/** LiquorRecord を tags 付きで SerializableLiquorRecord にシリアライズする。 */
+function serializeLiquorRecord(
+  record: LiquorRecord,
+  tags: SerializableLiquorRecord['tags'] = [],
+): SerializableLiquorRecord {
+  const base = JSON.parse(JSON.stringify(record)) as Omit<SerializableLiquorRecord, 'tags'>;
+  return { ...base, tags };
+}
+
 /** 単一のお酒を取得する。タグはリレーションから一緒に取得する。 */
 export const fetchLiquor = withCache(
   async (id: string): Promise<SerializableLiquorRecord | null> => {
@@ -22,8 +31,10 @@ export const fetchLiquor = withCache(
     const { data } = await client.models.Liquor.get({ id });
     if (!data) return null;
     const { data: tagsData } = await data.tags();
-    const base = JSON.parse(JSON.stringify(data)) as Omit<SerializableLiquorRecord, 'tags'>;
-    return { ...base, tags: tagsData.map(({ id: tagId, text }) => ({ id: tagId, text })) };
+    return serializeLiquorRecord(
+      data,
+      tagsData.map(({ id: tagId, text }) => ({ id: tagId, text })),
+    );
   },
   ['liquor'],
   { tags: [CACHE_TAGS.liquors, CACHE_TAGS.tags], revalidate: 900 },
@@ -43,8 +54,8 @@ export const fetchLiquorsByCategories = withCache(
         ? { categoryId: { eq: categoryIds[0] } }
         : { or: categoryIds.map((id) => ({ categoryId: { eq: id } })) };
 
-    const result = await fetchAll((t, lim) => client.models.Liquor.list({ filter, limit: lim, nextToken: t }));
-    return JSON.parse(JSON.stringify(result)) as SerializableLiquorRecord[];
+    const result = await fetchAll((options) => client.models.Liquor.list({ filter, ...options }));
+    return result.map((r) => serializeLiquorRecord(r));
   },
   ['liquors-by-categories'],
   { tags: [CACHE_TAGS.liquors], revalidate: 900 },
@@ -66,7 +77,7 @@ export const fetchAllLiquorsRandomly = withCache(
       [all[i], all[j]] = [all[j]!, all[i]!];
     }
 
-    return JSON.parse(JSON.stringify(all)) as SerializableLiquorRecord[];
+    return all.map((r) => serializeLiquorRecord(r));
   },
   ['all-liquors-random'],
   { tags: [CACHE_TAGS.liquors], revalidate: 60 },
@@ -98,7 +109,7 @@ export const fetchLiquorsByTag = withCache(
       .flat()
       .map((r) => r.data)
       .filter(isNonNullable);
-    return JSON.parse(JSON.stringify(result)) as SerializableLiquorRecord[];
+    return result.map((r) => serializeLiquorRecord(r));
   },
   ['liquors-by-tag'],
   { tags: [CACHE_TAGS.liquors, CACHE_TAGS.tags], revalidate: 300 },

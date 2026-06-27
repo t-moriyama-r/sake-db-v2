@@ -3,6 +3,7 @@ import { Duration } from 'aws-cdk-lib';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { GraphqlApi } from 'aws-cdk-lib/aws-appsync';
 import { Function as CdkFunction } from 'aws-cdk-lib/aws-lambda';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
@@ -46,7 +47,7 @@ buildCacheFn.addToRolePolicy(new PolicyStatement({
   actions: ['appsync:GraphQL'],
   resources: [`${graphqlApi.arn}/*`],
 }));
-(buildCacheFn as CdkFunction).addEnvironment('AMPLIFY_DATA_GRAPHQL_ENDPOINT', graphqlApi.graphqlUrl);
+(buildCacheFn as CdkFunction).addEnvironment('AMPLIFY_DATA_GRAPHQL_ENDPOINT', (graphqlApi as GraphqlApi).graphqlUrl);
 
 // EventBridge: 1 時間ごとにキャッシュを再構築
 const scheduleStack = backend.createStack('SearchCacheScheduleStack');

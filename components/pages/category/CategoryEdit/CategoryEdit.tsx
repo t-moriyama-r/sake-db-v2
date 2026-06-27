@@ -34,7 +34,7 @@ export const CategoryEdit = ({ categoryId, category, categories }: Props) => {
       imageBase64 = await convertFileToBase64(data.image);
     }
     if (categoryId && category) {
-      await client.models.CategoryHistory.create({
+      const { errors: historyErrors } = await client.models.CategoryHistory.create({
         categoryId,
         name: category.name,
         parentId: category.parentId ?? undefined,
@@ -45,8 +45,9 @@ export const CategoryEdit = ({ categoryId, category, categories }: Props) => {
         updateUserId: category.updateUserId ?? undefined,
         updateUserName: category.updateUserName ?? undefined,
       });
+      if (historyErrors?.length) throw new Error(historyErrors[0].message);
 
-      await client.models.Category.update({
+      const { errors: updateErrors } = await client.models.Category.update({
         id: categoryId,
         name: data.name,
         parentId: data.parentId || undefined,
@@ -56,10 +57,11 @@ export const CategoryEdit = ({ categoryId, category, categories }: Props) => {
         updateUserId: user.id,
         updateUserName: user.name,
       });
+      if (updateErrors?.length) throw new Error(updateErrors[0].message);
       await revalidateCategoriesCache();
       router.push(routes.category.detail(categoryId));
     } else {
-      await client.models.Category.create({
+      const { errors: createErrors } = await client.models.Category.create({
         name: data.name,
         parentId: data.parentId || undefined,
         description: data.description ?? undefined,
@@ -71,6 +73,7 @@ export const CategoryEdit = ({ categoryId, category, categories }: Props) => {
         updateUserId: user.id,
         updateUserName: user.name,
       });
+      if (createErrors?.length) throw new Error(createErrors[0].message);
       await revalidateCategoriesCache();
       router.push(routes.admin());
     }

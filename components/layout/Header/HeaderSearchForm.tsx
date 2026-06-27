@@ -13,7 +13,7 @@ export const HeaderSearchForm = () => {
     e.preventDefault();
     const q = keyword.trim();
     if (!q) return;
-    router.push(`${routes.discovery.search()}?q=${encodeURIComponent(q)}`);
+    router.push(routes.discovery.searchWithQuery(q));
     inputRef.current?.blur();
   };
 

@@ -37,6 +37,11 @@ export function CommentItem({ post}: Props) {
               </span>
             )}
             {post.rate && <StarRating value={post.rate} readonly size="sm" />}
+            {post.updatedAt && (
+              <time dateTime={post.updatedAt} className="text-xs text-muted-foreground">
+                {new Date(post.updatedAt).toLocaleDateString('ja-JP')}
+              </time>
+            )}
           </div>
           <p className="mt-1 text-sm text-foreground-secondary whitespace-pre-wrap">{post.text}</p>
         </div>
