@@ -31,7 +31,7 @@ export function useLiquorDelete({ liquorId, categoryId }: Options) {
         // 関連レコードを並列取得
         const [boardPosts, tags, flavorVotes, bookmarks, histories] = await Promise.all([
           fetchAll<BoardPostRecord>((t, lim) =>
-            client.models.BoardPost.list({ filter: { liquorId: { eq: liquorId } }, limit: lim, nextToken: t ?? undefined }),
+            client.models.BoardPost.listBoardPostByLiquorId({ liquorId }, { limit: lim, nextToken: t ?? undefined }),
           ),
           fetchAll<TagRecord>((t, lim) =>
             client.models.Tag.list({ filter: { liquorId: { eq: liquorId } }, limit: lim, nextToken: t ?? undefined }),
