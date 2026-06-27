@@ -53,7 +53,7 @@ export const fetchLiquorsByCategories = withCache(
         ? { categoryId: { eq: categoryIds[0] } }
         : { or: categoryIds.map((id) => ({ categoryId: { eq: id } })) };
 
-    const result = await fetchAll((t, lim) => client.models.Liquor.list({ filter, limit: lim, nextToken: t }));
+    const result = await fetchAll((options) => client.models.Liquor.list({ filter, ...options }));
     return result.map((r) => serializeLiquorRecord(r));
   },
   ['liquors-by-categories'],
