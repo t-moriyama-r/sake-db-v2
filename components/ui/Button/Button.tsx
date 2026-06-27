@@ -22,7 +22,17 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & RefAttributes<HTMLButtonE
   loading?: boolean;
 };
 
-export const Button = ({ variant = 'primary', size = 'md', loading, disabled, children, className = '', type = 'button', ref, ...props }: Props) => {
+export const Button = ({
+  variant = 'primary',
+  size = 'md',
+  loading,
+  disabled,
+  children,
+  className = '',
+  type = 'button',
+  ref,
+  ...props
+}: Props) => {
   return (
     <button
       ref={ref}
