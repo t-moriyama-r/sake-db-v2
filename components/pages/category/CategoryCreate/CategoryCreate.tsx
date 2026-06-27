@@ -32,7 +32,7 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       imageBase64 = await convertFileToBase64(data.image);
     }
 
-    await client.models.Category.create({
+    const { errors } = await client.models.Category.create({
       name: data.name,
       parentId: data.parentId,
       description: data.description ?? undefined,
@@ -44,6 +44,7 @@ export const CategoryCreate = ({ parentCategoryId, categories }: Props) => {
       updateUserName: user?.name,
       versionNo: 1,
     });
+    if (errors?.length) throw new Error(errors[0].message);
 
     await revalidateCategoriesCache();
     router.push(routes.category.detail(data.parentId));
