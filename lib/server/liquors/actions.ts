@@ -44,13 +44,16 @@ export async function deleteLiquorWithRelated(liquorId: string): Promise<{ error
   ]);
 
   // 関連レコードを並列削除
-  await Promise.all([
+  const deleteResults = await Promise.all([
     ...boardPosts.map((r) => client.models.BoardPost.delete({ id: r.id }, authOptions)),
     ...tags.map((r) => client.models.Tag.delete({ id: r.id }, authOptions)),
     ...flavorVotes.map((r) => client.models.FlavorVote.delete({ id: r.id }, authOptions)),
     ...bookmarks.map((r) => client.models.BookMark.delete({ id: r.id }, authOptions)),
     ...histories.map((r) => client.models.LiquorHistory.delete({ id: r.id }, authOptions)),
   ]);
+  for (const { errors } of deleteResults) {
+    if (errors?.length) return { error: `関連レコードの削除に失敗しました: ${errors[0].message}` };
+  }
 
   // お酒本体を削除
   const { errors } = await client.models.Liquor.delete({ id: liquorId }, authOptions);
