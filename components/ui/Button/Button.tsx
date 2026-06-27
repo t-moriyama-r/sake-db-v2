@@ -23,10 +23,11 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export const Button = forwardRef<HTMLButtonElement, Props>(
-  ({ variant = 'primary', size = 'md', loading, disabled, children, className = '', ...props }, ref) => {
+  ({ variant = 'primary', size = 'md', loading, disabled, children, className = '', type = 'button', ...props }, ref) => {
   return (
     <button
       ref={ref}
+      type={type}
       disabled={disabled || loading}
       className={`inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
       {...props}
