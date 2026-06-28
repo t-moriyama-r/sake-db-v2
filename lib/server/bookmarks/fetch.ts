@@ -5,6 +5,7 @@ import type { Schema } from '@/amplify/data/resource';
 import { getServerAccessToken } from '@/lib/server/auth';
 import { fetchAll } from '@/lib/amplify-list';
 import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
+import { isNonNullable } from '@/lib/utils';
 /* eslint-enable import/order */
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -34,6 +35,9 @@ export async function fetchBookmarksSSR(): Promise<SerializableLiquorRecord[]> {
     allBms.map((bm) => client.models.Liquor.get({ id: bm.liquorId }, { authMode: 'identityPool' })),
   );
 
-  const liquors = liquorResults.map((r) => r.data).filter(Boolean);
+  const liquors = liquorResults
+    .map((r) => r.data)
+    .filter(isNonNullable)
+    .map((liquor) => ({ ...liquor, tags: [] as { id: string; text: string }[] }));
   return JSON.parse(JSON.stringify(liquors)) as SerializableLiquorRecord[];
 }

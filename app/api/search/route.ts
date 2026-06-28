@@ -5,6 +5,7 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import type { Schema } from '@/amplify/data/resource';
 import { CACHE_S3_KEY, type SearchRecord } from '@/amplify/functions/liquor/buildSearchCache/handler';
 import { getGuestClient } from '@/lib/server/client';
+import { isNonNullable } from '@/lib/utils';
 
 const s3 = new S3Client({});
 
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
     const results = await Promise.all(matchedIds.map((id) => client.models.Liquor.get({ id })));
     const liquors = results
       .map((r: { data: LiquorRecord | null }) => r.data)
-      .filter((d: LiquorRecord | null): d is LiquorRecord => d !== null)
+      .filter(isNonNullable)
       .map((r: LiquorRecord) => ({
         ...(JSON.parse(JSON.stringify(r)) as typeof r),
         imageBase64: null,
