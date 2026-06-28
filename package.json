@@ -11,6 +11,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "prepare": "simple-git-hooks",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "seed": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts",
     "seed:dry-run": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts --dry-run",
     "invoke:search-cache": "cross-env AWS_PROFILE=sake-db npx tsx scripts/invoke-build-search-cache.ts",
@@ -47,8 +50,17 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
     "eslint-plugin-import": "^2.32.0",
+    "lint-staged": "^16",
+    "prettier": "^3",
+    "simple-git-hooks": "^2",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,mts,json,css,md}": "prettier --write"
   }
 }

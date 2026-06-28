@@ -15,10 +15,20 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
   ]),
   {
+    languageOptions: {
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     plugins: {
       import: importPlugin,
     },
     rules: {
+      // 型チェック強化（@typescript-eslint）
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
       "import/order": [
         "error",
         {

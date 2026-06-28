@@ -1,3 +1,16 @@
 {
-  "language": "japanese"
+  "language": "japanese",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"git commit\"; then cd /home/user/sake-db-v2 && git diff --cached --name-only --diff-filter=ACMR | grep -E \"\\.(ts|tsx|js|jsx|mjs|mts|json|css|md)$\" | xargs -r npx prettier --write && git diff --cached --name-only --diff-filter=ACMR | grep -E \"\\.(ts|tsx|js|jsx|mjs|mts|json|css|md)$\" | xargs -r git add; fi'"
+          }
+        ]
+      }
+    ]
+  }
 }
