@@ -61,6 +61,7 @@
     "pre-commit": "npx lint-staged"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,mjs,mts,json,css,md}": "prettier --write"
+    "*.{ts,tsx,js,jsx,mjs,mts,json,css,md}": "prettier --write",
+    "*.{ts,tsx}": "eslint --max-warnings=0"
   }
 }
