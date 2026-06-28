@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
+import { InputHTMLAttributes, TextareaHTMLAttributes, RefAttributes, Ref } from 'react';
 
 type BaseProps = {
   label: string;
@@ -7,11 +7,11 @@ type BaseProps = {
   hint?: string;
 };
 
-type InputProps = BaseProps & InputHTMLAttributes<HTMLInputElement> & {
+type InputProps = BaseProps & InputHTMLAttributes<HTMLInputElement> & RefAttributes<HTMLInputElement> & {
   as?: 'input';
 };
 
-type TextareaProps = BaseProps & TextareaHTMLAttributes<HTMLTextAreaElement> & {
+type TextareaProps = BaseProps & TextareaHTMLAttributes<HTMLTextAreaElement> & RefAttributes<HTMLTextAreaElement> & {
   as: 'textarea';
 };
 
@@ -23,10 +23,7 @@ const inputClass =
   'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring ' +
   'disabled:bg-muted disabled:text-muted-foreground';
 
-export const FormField = forwardRef<
-  HTMLInputElement | HTMLTextAreaElement,
-  Props
->(({ label, error, required, hint, as, ...props }, ref) => {
+export const FormField = ({ label, error, required, hint, as, ref, ...props }: Props) => {
   const id = (props as { id?: string }).id ?? label;
   return (
     <div className="flex flex-col gap-1">
@@ -37,14 +34,14 @@ export const FormField = forwardRef<
       {as === 'textarea' ? (
         <textarea
           id={id}
-          ref={ref as React.Ref<HTMLTextAreaElement>}
+          ref={ref as Ref<HTMLTextAreaElement>}
           className={`${inputClass} min-h-[100px] resize-y ${error ? 'border-destructive focus:ring-destructive' : ''}`}
           {...(props as TextareaHTMLAttributes<HTMLTextAreaElement>)}
         />
       ) : (
         <input
           id={id}
-          ref={ref as React.Ref<HTMLInputElement>}
+          ref={ref as Ref<HTMLInputElement>}
           className={`${inputClass} ${error ? 'border-destructive focus:ring-destructive' : ''}`}
           {...(props as InputHTMLAttributes<HTMLInputElement>)}
         />
@@ -53,4 +50,4 @@ export const FormField = forwardRef<
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
-});
+};
