@@ -14,7 +14,10 @@
     "seed": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts",
     "seed:dry-run": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts --dry-run",
     "invoke:search-cache": "cross-env AWS_PROFILE=sake-db npx tsx scripts/invoke-build-search-cache.ts",
-    "cache:clear": "npx rimraf .next/cache"
+    "cache:clear": "npx rimraf .next/cache",
+    "prepare": "simple-git-hooks",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.1030.0",
@@ -38,6 +41,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.58.2",
     "@typescript-eslint/parser": "^8.58.2",
     "aws-cdk-lib": "^2.234.1",
     "concurrently": "^9.2.1",
@@ -47,8 +51,18 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
     "eslint-plugin-import": "^2.32.0",
+    "lint-staged": "^16",
+    "prettier": "^3",
+    "simple-git-hooks": "^2",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,mjs,mts,json,css,md}": "prettier --write",
+    "*.{ts,tsx}": "eslint --max-warnings=0"
   }
 }
