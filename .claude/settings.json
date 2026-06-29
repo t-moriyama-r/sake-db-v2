@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'if echo \"\" | grep -q \"git commit\"; then git diff --cached --name-only --diff-filter=ACMR | grep -E \"\\.(ts|tsx|js|jsx|mjs|mts|json|css|md)$\" | xargs -r npx prettier --write && git diff --cached --name-only --diff-filter=ACMR | grep -E \"\\.(ts|tsx|js|jsx|mjs|mts|json|css|md)$\" | xargs -r git add; fi'"
+            "command": "bash -c 'COMMAND=$(echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import json,sys; print(json.load(sys.stdin).get(\\\"command\\\", \\\"\\\"))\" 2>/dev/null); if printf \"%s\" \"$COMMAND\" | grep -q \"git push\"; then cd /home/runner/work/sake-db-v2/sake-db-v2 && npm run prepush:check; fi'"
           }
         ]
       }
