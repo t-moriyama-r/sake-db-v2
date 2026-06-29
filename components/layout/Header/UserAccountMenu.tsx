@@ -30,6 +30,7 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
   return (
     <div className="relative" ref={menuRef}>
       <button
+        type="button"
         className="flex items-center gap-1.5 rounded px-2 py-1 hover:bg-muted transition-colors cursor-pointer"
         onClick={() => setMenuOpen((v) => !v)}
         aria-label="アカウントメニューを開く"
