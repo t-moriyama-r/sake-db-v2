@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/Button/Button';
 import { Dialog } from '@/components/ui/Dialog/Dialog';
 
 type Props = {
+<<<<<<< Updated upstream
   children: ReactNode;
+=======
+  children: React.ReactNode;
+>>>>>>> Stashed changes
 };
 
 export function ErrorDialogProvider({ children }: Props) {
