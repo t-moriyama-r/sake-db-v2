@@ -47,7 +47,7 @@ export const handler = async (): Promise<void> => {
     }),
   );
 
-  console.log(
-    `Search index built: ${records.length} records, ${(compressed.length / 1024).toFixed(1)} KB`,
+  console.info(
+    `検索インデックスを構築しました: ${records.length} 件, ${(compressed.length / 1024).toFixed(1)} KB`,
   );
 };
