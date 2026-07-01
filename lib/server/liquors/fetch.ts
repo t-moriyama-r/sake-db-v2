@@ -120,11 +120,10 @@ export const fetchLiquorHistories = withCache(
   async (liquorId: string): Promise<SerializableLiquorHistoryRecord[]> => {
     const client = getGuestClient();
     const data = await fetchAll((nextToken, limit) =>
-      client.models.LiquorHistory.list({
-        filter: { liquorId: { eq: liquorId } },
-        limit,
-        nextToken: nextToken ?? undefined,
-      }),
+      client.models.LiquorHistory.listLiquorHistoryByLiquorId(
+        { liquorId },
+        { limit, nextToken: nextToken ?? undefined },
+      ),
     );
     const sorted = data
       .filter(isNonNullable)
