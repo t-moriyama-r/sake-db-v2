@@ -11,7 +11,10 @@ export const fetchTags = withCache(
   async (liquorId: string): Promise<SerializableTagRecord[]> => {
     const client = getGuestClient();
     const result = await fetchAll((t, lim) =>
-      client.models.Tag.list({ filter: { liquorId: { eq: liquorId } }, limit: lim, nextToken: t }),
+      client.models.Tag.listTagByLiquorId(
+        { liquorId },
+        { limit: lim, nextToken: t ?? undefined },
+      ),
     );
     return JSON.parse(JSON.stringify(result)) as SerializableTagRecord[];
   },
