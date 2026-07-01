@@ -57,11 +57,15 @@ export async function GET(request: NextRequest) {
 type XUser = { id: string; name: string };
 
 async function exchangeCodeForUser(code: string, codeVerifier: string, requestUrl: string): Promise<XUser | null> {
+  const clientId = process.env.X_CLIENT_ID;
+  const clientSecret = process.env.X_CLIENT_SECRET;
+  if (!clientId || !clientSecret) {
+    console.error('X_CLIENT_ID または X_CLIENT_SECRET 環境変数が設定されていません');
+    return null;
+  }
   try {
     const appUrl = new URL(requestUrl).origin;
-    const credentials = Buffer.from(
-      `${process.env.X_CLIENT_ID}:${process.env.X_CLIENT_SECRET}`,
-    ).toString('base64');
+    const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
 
     const tokenRes = await fetch('https://api.twitter.com/2/oauth2/token', {
       method: 'POST',
@@ -87,7 +91,8 @@ async function exchangeCodeForUser(code: string, codeVerifier: string, requestUr
     const { data } = await userRes.json() as { data: { id: string; name: string } };
 
     return { id: data.id, name: data.name };
-  } catch {
+  } catch (e: unknown) {
+    console.error('X OAuthトークン取得に失敗しました:', e instanceof Error ? e.message : String(e));
     return null;
   }
 }

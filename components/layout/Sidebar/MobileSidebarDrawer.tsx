@@ -16,10 +16,11 @@ export function MobileSidebarDrawer({ categoryTree, activeCategoryId }: Props) {
     <div className="lg:hidden">
       {/* 背景オーバーレイ */}
       {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40"
+        <button
+          type="button"
           onClick={close}
-          aria-hidden="true"
+          aria-label="閉じる"
+          className="fixed inset-0 z-40 bg-black/40 cursor-default"
         />
       )}
 
