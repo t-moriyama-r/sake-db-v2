@@ -4,7 +4,10 @@ import { withCache, CACHE_TAGS } from '../cache';
 import { getGuestClient } from '../client';
 
 export type CategoryRecord = Schema['Category']['type'];
-export type SerializableCategoryRecord = Omit<CategoryRecord, 'parent' | 'children' | 'liquors' | 'categoryHistories'>;
+export type SerializableCategoryRecord = Omit<
+  CategoryRecord,
+  'parent' | 'children' | 'liquors' | 'categoryHistories'
+>;
 
 export const fetchAllCategories = withCache(
   async (): Promise<SerializableCategoryRecord[]> => {
@@ -46,7 +49,10 @@ export const fetchCategoryTree = withCache(
   async (): Promise<CategoryTreeNode[]> => {
     const all = await fetchAllCategories();
 
-    const build = (items: SerializableCategoryRecord[], parentId: string | null): CategoryTreeNode[] =>
+    const build = (
+      items: SerializableCategoryRecord[],
+      parentId: string | null,
+    ): CategoryTreeNode[] =>
       items
         .filter((c) => (c.parentId ?? null) === parentId)
         .map(({ id, name, parentId: pid }) => ({
@@ -72,7 +78,7 @@ export const fetchCategory = withCache(
   async (id: string): Promise<SerializableCategoryRecord | null> => {
     const client = getGuestClient();
     const { data } = await client.models.Category.get({ id });
-    return data ? JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord : null;
+    return data ? (JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord) : null;
   },
   ['category'],
   { tags: [CACHE_TAGS.categories], revalidate: 3600 },
