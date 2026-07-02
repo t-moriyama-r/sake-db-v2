@@ -94,7 +94,8 @@ export function collectDescendantIds(
   const result: string[] = [];
   const queue: string[] = [rootId];
   while (queue.length > 0) {
-    const current = queue.shift()!;
+    const current = queue.shift();
+    if (!current) break;
     result.push(current);
     queue.push(...(childrenMap.get(current) ?? []));
   }
