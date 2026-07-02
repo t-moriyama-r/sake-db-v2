@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import type { Schema } from '@/amplify/data/resource';
 import { CACHE_S3_KEY, type SearchRecord } from '@/amplify/functions/liquor/buildSearchCache/handler';
+import { fetchAll } from '@/lib/amplify-list';
 import { getGuestClient } from '@/lib/server/client';
 import { isNonNullable } from '@/lib/utils';
 
@@ -105,24 +106,14 @@ async function loadFromS3(): Promise<SearchRecord[]> {
 
 async function scanDynamoDB(): Promise<SearchRecord[]> {
   const client = getGuestClient();
-  const records: SearchRecord[] = [];
-  let nextToken: string | undefined;
-
-  do {
-    const result = await client.models.Liquor.list({
-      limit: 1000,
-      nextToken,
+  const data = await fetchAll((nextToken, limit) =>
+    client.models.Liquor.list({
+      limit,
+      nextToken: nextToken ?? undefined,
       selectionSet: ['id', 'name'] as const,
-    });
-
-    for (const r of result.data) {
-      records.push({ id: r.id, name: r.name });
-    }
-
-    nextToken = result.nextToken ?? undefined;
-  } while (nextToken);
-
-  return records;
+    }),
+  );
+  return data.map((r) => ({ id: r.id, name: r.name }));
 }
 
 function normalize(str: string): string {
