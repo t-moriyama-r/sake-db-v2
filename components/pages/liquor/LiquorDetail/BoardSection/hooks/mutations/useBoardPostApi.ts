@@ -39,7 +39,9 @@ export function useBoardPostApi() {
     return JSON.parse(JSON.stringify(data)) as SerializableBoardPostRecord;
   }
 
-  async function updateBoardPost(input: UpdateBoardPostInput): Promise<SerializableBoardPostRecord> {
+  async function updateBoardPost(
+    input: UpdateBoardPostInput,
+  ): Promise<SerializableBoardPostRecord> {
     const { data, errors } = await client.models.BoardPost.update(input, { authMode: 'userPool' });
     if (errors?.length) throw new Error(errors[0].message);
     if (!data) throw new Error('投稿の更新に失敗しました');
@@ -59,16 +61,23 @@ export function useBoardPostApi() {
     const rated = posts.filter((p) => p.rate != null);
     const boardRateCount = rated.length > 0 ? rated.length : null;
     const boardAvgRate =
-      rated.length > 0
-        ? rated.reduce((acc, p) => acc + (p.rate ?? 0), 0) / rated.length
-        : null;
-    const rate5Users = posts.filter((p) => p.userId && p.rate === 5).map((p) => p.userId!);
-    const rate4Users = posts.filter((p) => p.userId && p.rate === 4).map((p) => p.userId!);
-    const rate3Users = posts.filter((p) => p.userId && p.rate === 3).map((p) => p.userId!);
-    const rate2Users = posts.filter((p) => p.userId && p.rate === 2).map((p) => p.userId!);
-    const rate1Users = posts.filter((p) => p.userId && p.rate === 1).map((p) => p.userId!);
+      rated.length > 0 ? rated.reduce((acc, p) => acc + (p.rate ?? 0), 0) / rated.length : null;
+    const rate5Users = posts.flatMap((p) => (p.userId && p.rate === 5 ? [p.userId] : []));
+    const rate4Users = posts.flatMap((p) => (p.userId && p.rate === 4 ? [p.userId] : []));
+    const rate3Users = posts.flatMap((p) => (p.userId && p.rate === 3 ? [p.userId] : []));
+    const rate2Users = posts.flatMap((p) => (p.userId && p.rate === 2 ? [p.userId] : []));
+    const rate1Users = posts.flatMap((p) => (p.userId && p.rate === 1 ? [p.userId] : []));
     const { data, errors } = await client.models.Liquor.update(
-      { id: liquorId, boardAvgRate, boardRateCount, rate5Users, rate4Users, rate3Users, rate2Users, rate1Users },
+      {
+        id: liquorId,
+        boardAvgRate,
+        boardRateCount,
+        rate5Users,
+        rate4Users,
+        rate3Users,
+        rate2Users,
+        rate1Users,
+      },
       { authMode },
     );
     if (errors?.length) throw new Error(errors[0].message);
