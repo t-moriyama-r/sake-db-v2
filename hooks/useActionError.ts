@@ -10,7 +10,10 @@ export function useActionError() {
     try {
       await fn();
     } catch (err: unknown) {
-      console.error('アクション実行に失敗しました:', err instanceof Error ? err.message : String(err));
+      console.error(
+        'アクション実行に失敗しました:',
+        err instanceof Error ? err.message : String(err),
+      );
       setActionError(fallback);
     }
   };
