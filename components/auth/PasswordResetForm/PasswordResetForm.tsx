@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { Button } from '@/components/ui/Button/Button';
 import { useAuth } from '@/hooks/useAuth';
+import { toJapaneseAuthError } from '@/lib/auth/errors';
 import { passwordResetSchema, type PasswordResetInput } from '@/schemas/auth';
 
 export function PasswordResetForm() {
@@ -25,7 +26,7 @@ export function PasswordResetForm() {
       await resetPassword({ username: data.email });
       setSent(true);
     } catch (err: unknown) {
-      setServerError(err instanceof Error ? err.message : 'エラーが発生しました');
+      setServerError(toJapaneseAuthError(err));
     }
   };
 
