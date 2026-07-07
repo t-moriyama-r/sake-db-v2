@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/Button/Button';
 
 type Props = {
@@ -39,7 +40,14 @@ export const ImageUpload = ({
     <div className="flex flex-col gap-2">
       <span className="text-sm font-medium text-foreground-secondary">{label}</span>
       {displayImage && (
-        <img src={displayImage} alt="プレビュー" className="h-32 w-32 rounded-md object-cover border border-border" />
+        <Image
+          src={displayImage}
+          alt="プレビュー"
+          width={128}
+          height={128}
+          className="h-32 w-32 rounded-md object-cover border border-border"
+          unoptimized
+        />
       )}
       <div className="flex items-center gap-2">
         <Button
