@@ -15,12 +15,18 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
   ]),
   {
+    // 型チェック（parserOptions.project）は TypeScript ファイルのみに限定する。
+    // 全ファイル対象にすると、tsconfig.json の include に含まれない
+    // eslint.config.mjs / postcss.config.mjs 自身が Parsing error になる。
+    files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
       parserOptions: {
         project: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
+  },
+  {
     plugins: {
       import: importPlugin,
     },
