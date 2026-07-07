@@ -20,7 +20,8 @@ export function LiquorImage({ imageBase64, imageUrl, name }: Props) {
     );
   }
   return (
-    <div className="flex h-48 w-48 items-center justify-center rounded-lg bg-muted text-6xl">🍶</div>
+    <div className="flex h-48 w-48 items-center justify-center rounded-lg bg-muted text-6xl">
+      🍶
+    </div>
   );
 }
-

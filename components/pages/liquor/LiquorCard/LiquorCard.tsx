@@ -25,11 +25,15 @@ export const LiquorCard = ({ liquor }: Props) => {
             unoptimized
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl text-muted-foreground">🍶</div>
+          <div className="flex h-full items-center justify-center text-4xl text-muted-foreground">
+            🍶
+          </div>
         )}
       </div>
       <p className="text-xs text-muted-foreground">{liquor.categoryName}</p>
-      <h3 className="mt-1 font-semibold text-foreground group-hover:text-primary line-clamp-2">{liquor.name}</h3>
+      <h3 className="mt-1 font-semibold text-foreground group-hover:text-primary line-clamp-2">
+        {liquor.name}
+      </h3>
       {liquor.description && (
         <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{liquor.description}</p>
       )}
@@ -44,4 +48,4 @@ export const LiquorCard = ({ liquor }: Props) => {
       </div>
     </Link>
   );
-}
+};

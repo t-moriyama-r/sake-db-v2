@@ -63,7 +63,11 @@ export const ImageUpload = ({
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => { onChange(null); setPreview(null); if (inputRef.current) inputRef.current.value = ''; }}
+            onClick={() => {
+              onChange(null);
+              setPreview(null);
+              if (inputRef.current) inputRef.current.value = '';
+            }}
           >
             削除
           </Button>
@@ -79,4 +83,4 @@ export const ImageUpload = ({
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
-}
+};
