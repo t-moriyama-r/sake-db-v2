@@ -47,7 +47,10 @@ export async function GET(request: NextRequest) {
 
   const response = NextResponse.redirect(new URL(routes.auth.xComplete(), request.url));
   response.cookies.set('x_session', token, {
-    httpOnly: true, sameSite: 'lax', maxAge: 300, path: '/',
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 300,
+    path: '/',
   });
   response.cookies.delete('x_oauth_state');
   response.cookies.delete('x_oauth_code_verifier');
@@ -57,7 +60,11 @@ export async function GET(request: NextRequest) {
 
 type XUser = { id: string; name: string };
 
-async function exchangeCodeForUser(code: string, codeVerifier: string, requestUrl: string): Promise<XUser | null> {
+async function exchangeCodeForUser(
+  code: string,
+  codeVerifier: string,
+  requestUrl: string,
+): Promise<XUser | null> {
   const clientId = process.env.X_CLIENT_ID;
   const clientSecret = process.env.X_CLIENT_SECRET;
   if (!clientId || !clientSecret) {
@@ -82,14 +89,14 @@ async function exchangeCodeForUser(code: string, codeVerifier: string, requestUr
       }),
     });
     if (!tokenRes.ok) return null;
-    const { access_token } = await tokenRes.json() as { access_token: string };
+    const { access_token } = (await tokenRes.json()) as { access_token: string };
 
     const userRes = await fetch(
       'https://api.twitter.com/2/users/me?user.fields=profile_image_url',
       { headers: { Authorization: `Bearer ${access_token}` } },
     );
     if (!userRes.ok) return null;
-    const { data } = await userRes.json() as { data: { id: string; name: string } };
+    const { data } = (await userRes.json()) as { data: { id: string; name: string } };
 
     return { id: data.id, name: data.name };
   } catch (e: unknown) {
@@ -106,22 +113,26 @@ async function ensureCognitoUser(username: string, displayName: string): Promise
   try {
     await cognito.send(new AdminGetUserCommand({ UserPoolId: USER_POOL_ID, Username: username }));
   } catch {
-    await cognito.send(new AdminCreateUserCommand({
-      UserPoolId: USER_POOL_ID,
-      Username: username,
-      MessageAction: 'SUPPRESS',
-      UserAttributes: [
-        { Name: 'name', Value: displayName },
-        { Name: 'email', Value: `${username}@x-auth.internal` },
-        { Name: 'email_verified', Value: 'true' },
-      ],
-    }));
+    await cognito.send(
+      new AdminCreateUserCommand({
+        UserPoolId: USER_POOL_ID,
+        Username: username,
+        MessageAction: 'SUPPRESS',
+        UserAttributes: [
+          { Name: 'name', Value: displayName },
+          { Name: 'email', Value: `${username}@x-auth.internal` },
+          { Name: 'email_verified', Value: 'true' },
+        ],
+      }),
+    );
     // CONFIRMED 状態にしてCustom Auth Flowで認証できるようにする
-    await cognito.send(new AdminSetUserPasswordCommand({
-      UserPoolId: USER_POOL_ID,
-      Username: username,
-      Password: crypto.randomBytes(16).toString('base64') + 'Aa1!',
-      Permanent: true,
-    }));
+    await cognito.send(
+      new AdminSetUserPasswordCommand({
+        UserPoolId: USER_POOL_ID,
+        Username: username,
+        Password: crypto.randomBytes(16).toString('base64') + 'Aa1!',
+        Permanent: true,
+      }),
+    );
   }
 }

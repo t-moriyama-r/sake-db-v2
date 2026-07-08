@@ -27,19 +27,34 @@ export async function deleteLiquorWithRelated(liquorId: string): Promise<{ error
   // 関連レコードを並列取得
   const [boardPosts, tags, flavorVotes, bookmarks, histories] = await Promise.all([
     fetchAll<Schema['BoardPost']['type']>((t, lim) =>
-      client.models.BoardPost.listBoardPostByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
+      client.models.BoardPost.listBoardPostByLiquorId(
+        { liquorId },
+        { ...authOptions, limit: lim, nextToken: t ?? undefined },
+      ),
     ),
     fetchAll<Schema['Tag']['type']>((t, lim) =>
-      client.models.Tag.listTagByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
+      client.models.Tag.listTagByLiquorId(
+        { liquorId },
+        { ...authOptions, limit: lim, nextToken: t ?? undefined },
+      ),
     ),
     fetchAll<Schema['FlavorVote']['type']>((t, lim) =>
-      client.models.FlavorVote.listFlavorVoteByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
+      client.models.FlavorVote.listFlavorVoteByLiquorId(
+        { liquorId },
+        { ...authOptions, limit: lim, nextToken: t ?? undefined },
+      ),
     ),
     fetchAll<Schema['BookMark']['type']>((t, lim) =>
-      client.models.BookMark.listBookMarkByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
+      client.models.BookMark.listBookMarkByLiquorId(
+        { liquorId },
+        { ...authOptions, limit: lim, nextToken: t ?? undefined },
+      ),
     ),
     fetchAll<Schema['LiquorHistory']['type']>((t, lim) =>
-      client.models.LiquorHistory.listLiquorHistoryByLiquorId({ liquorId }, { ...authOptions, limit: lim, nextToken: t ?? undefined }),
+      client.models.LiquorHistory.listLiquorHistoryByLiquorId(
+        { liquorId },
+        { ...authOptions, limit: lim, nextToken: t ?? undefined },
+      ),
     ),
   ]);
 
