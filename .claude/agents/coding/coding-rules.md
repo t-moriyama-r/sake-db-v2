@@ -336,8 +336,8 @@ if (user) {
   const name = user.name;
 }
 
-// ✅ 正しい: optional chaining と デフォルト値
-const first = items?.at(0)?.value ?? undefined;
+// ✅ 正しい: optional chaining とデフォルト値
+const first = items?.at(0)?.value ?? 'default';
 
 // ✅ 正しい: 明示的な undefined / null チェック
 if (items === undefined) {
