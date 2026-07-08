@@ -313,3 +313,38 @@ Client Component 内で Amplify クライアントを直接呼び出す場合も
 
 バグ調査・issue作成・コードレビューを行う前に、対象ページの `page.spec.md` を必ず確認する（意図した挙動を誤ってissue化することを防ぐため）。
 
+## 非nullアサーション（`!`）の使用ルール
+
+非nullアサーション（`!`）の使用は **原則禁止**。型ガード、optional chaining（`?.`）、明示的な `undefined` / `null` チェックなど安全な代替手段を使う。
+
+```typescript
+// ❌ 禁止
+const name = user!.name;
+const first = items!.at(0)!.value;
+
+// ✅ 正しい: 型ガードで絞り込む
+if (user) {
+  const name = user.name;
+}
+
+// ✅ 正しい: optional chaining とデフォルト値
+const first = items?.at(0)?.value ?? 'default';
+
+// ✅ 正しい: 明示的な undefined / null チェック
+if (items === undefined) {
+  throw new Error('items が存在しません');
+}
+const first = items.at(0)?.value;
+```
+
+非nullアサーションの使用がどうしても合理的だと判断される場合は、その意図を **必ずコメントで残すこと**。コメントなしでの `!` 使用は禁止。
+
+```typescript
+// ❌ 禁止: コメントなしの非nullアサーション
+const element = document.getElementById('root')!;
+
+// ✅ 正しい: 意図をコメントで明示
+// index.html に静的に定義されているため必ず存在する
+const element = document.getElementById('root')!;
+```
+
