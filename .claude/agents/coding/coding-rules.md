@@ -79,8 +79,10 @@ async function helperFn() { ... }     // ヘルパー（後方）
 ## Next.js について
 
 <!-- BEGIN:nextjs-agent-rules -->
+
 このプロジェクトで使用している Next.js は、学習データと異なる破壊的変更を含む可能性があります。
 コードを書く前に `node_modules/next/dist/docs/` 内の該当ガイドを必ず確認し、非推奨の警告に従ってください。
+
 <!-- END:nextjs-agent-rules -->
 
 ## ルートパス生成ルール
@@ -89,11 +91,11 @@ URL（`href`）は **直書き禁止**。必ず `lib/routes.ts` の `routes` オ
 
 ```typescript
 // ❌ 禁止
-href: `/discovery/tag/${encodeURIComponent(tag)}`
+href: `/discovery/tag/${encodeURIComponent(tag)}`;
 
 // ✅ 正しい
 import { routes } from '@/lib/routes';
-href: routes.discovery.tag(tag)
+href: routes.discovery.tag(tag);
 ```
 
 新しいルートが必要な場合は `lib/routes.ts` に追加してから使う。
@@ -117,7 +119,10 @@ const result = await fetchAll(client.models.BoardPost.list);
 // ✅ 正しい: fetchAll で全件取得（フィルター付き既存形式）
 import { fetchAll } from '@/lib/amplify-list';
 const result = await fetchAll((nextToken, limit) =>
-  client.models.BoardPost.listBoardPostByUserId({ userId }, { limit, nextToken: nextToken ?? undefined }),
+  client.models.BoardPost.listBoardPostByUserId(
+    { userId },
+    { limit, nextToken: nextToken ?? undefined },
+  ),
 );
 ```
 
@@ -236,7 +241,9 @@ const USER_POOL_ID: string | undefined = outputs?.auth?.user_pool_id;
 // ✅ 正しい: readonly の StarRating
 <div role="img" aria-label={`${value}点`}>
   {stars.map((star) => (
-    <span key={star} aria-hidden="true">★</span>
+    <span key={star} aria-hidden="true">
+      ★
+    </span>
   ))}
 </div>
 ```
