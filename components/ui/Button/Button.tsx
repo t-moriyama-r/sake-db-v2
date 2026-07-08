@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, RefAttributes } from 'react';
+import type { ButtonHTMLAttributes, RefAttributes } from 'react';
 
 type Variant = 'primary' | 'secondary' | 'danger' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';

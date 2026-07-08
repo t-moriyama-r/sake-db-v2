@@ -1,6 +1,7 @@
 import { gunzipSync } from 'node:zlib';
 import { unstable_cache } from 'next/cache';
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import type { Schema } from '@/amplify/data/resource';
 import { CACHE_S3_KEY, type SearchRecord } from '@/amplify/functions/liquor/buildSearchCache/handler';

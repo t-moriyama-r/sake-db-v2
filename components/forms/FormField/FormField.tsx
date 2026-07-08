@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, TextareaHTMLAttributes, RefAttributes, Ref } from 'react';
+import type { InputHTMLAttributes, TextareaHTMLAttributes, RefAttributes, Ref } from 'react';
 
 type BaseProps = {
   label: string;
