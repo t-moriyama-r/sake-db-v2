@@ -8,6 +8,7 @@
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
+import outputs from '../../amplify_outputs.json';
 
 // ================================================================
 // 公開型
@@ -74,10 +75,7 @@ export interface SeederConfig<T, TRecord extends { id: string }> {
   getLabel?: (item: T) => string;
 
   /** refresh 時に既存レコード 1 件を削除する関数（省略時は refresh 不可） */
-  delete?: (
-    client: DataClient,
-    id: string,
-  ) => Promise<{ errors?: { message: string }[] | null }>;
+  delete?: (client: DataClient, id: string) => Promise<{ errors?: { message: string }[] | null }>;
 }
 
 // ================================================================
@@ -195,9 +193,7 @@ export async function runAll(seeders: Seeder[], options: RunOptions): Promise<vo
   }
 
   console.log('=== 全シード完了 ===');
-  console.log(
-    `合計: 作成 ${totals.created} / スキップ ${totals.skipped} / 失敗 ${totals.failed}`,
-  );
+  console.log(`合計: 作成 ${totals.created} / スキップ ${totals.skipped} / 失敗 ${totals.failed}`);
 }
 
 // ================================================================
@@ -208,8 +204,6 @@ let _client: DataClient | undefined;
 
 function getClient(): DataClient {
   if (_client) return _client;
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const outputs = require('../../amplify_outputs.json');
   Amplify.configure(outputs);
   _client = generateClient<Schema>({ authMode: 'apiKey' });
   return _client;

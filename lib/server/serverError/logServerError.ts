@@ -1,10 +1,8 @@
-/* eslint-disable import/order */
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
+import outputs from '@/amplify_outputs.json';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const outputs = require('@/amplify_outputs.json');
 Amplify.configure(outputs, { ssr: true });
 
 type Severity = Schema['ServerErrorSeverity']['type'];
