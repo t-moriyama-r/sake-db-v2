@@ -1,9 +1,13 @@
 import { gunzipSync } from 'node:zlib';
 import { unstable_cache } from 'next/cache';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import type { Schema } from '@/amplify/data/resource';
-import { CACHE_S3_KEY, type SearchRecord } from '@/amplify/functions/liquor/buildSearchCache/handler';
+import {
+  CACHE_S3_KEY,
+  type SearchRecord,
+} from '@/amplify/functions/liquor/buildSearchCache/handler';
+import { fetchAll } from '@/lib/amplify-list';
 import { getGuestClient } from '@/lib/server/client';
 import { isNonNullable } from '@/lib/utils';
 
@@ -11,11 +15,7 @@ const s3 = new S3Client({});
 
 const CACHE_TTL = process.env.CACHE_ENABLED === 'true' ? 3600 : 60;
 
-const getSearchIndex = unstable_cache(
-  loadSearchIndex,
-  ['search-index'],
-  { revalidate: CACHE_TTL },
-);
+const getSearchIndex = unstable_cache(loadSearchIndex, ['search-index'], { revalidate: CACHE_TTL });
 
 type LiquorRecord = Schema['Liquor']['type'];
 
@@ -98,31 +98,19 @@ async function loadFromS3(): Promise<SearchRecord[]> {
     chunks.push(chunk);
   }
 
-  return JSON.parse(
-    gunzipSync(Buffer.concat(chunks)).toString('utf-8'),
-  ) as SearchRecord[];
+  return JSON.parse(gunzipSync(Buffer.concat(chunks)).toString('utf-8')) as SearchRecord[];
 }
 
 async function scanDynamoDB(): Promise<SearchRecord[]> {
   const client = getGuestClient();
-  const records: SearchRecord[] = [];
-  let nextToken: string | undefined;
-
-  do {
-    const result = await client.models.Liquor.list({
-      limit: 1000,
-      nextToken,
+  const data = await fetchAll((nextToken, limit) =>
+    client.models.Liquor.list({
+      limit,
+      nextToken: nextToken ?? undefined,
       selectionSet: ['id', 'name'] as const,
-    });
-
-    for (const r of result.data) {
-      records.push({ id: r.id, name: r.name });
-    }
-
-    nextToken = result.nextToken ?? undefined;
-  } while (nextToken);
-
-  return records;
+    }),
+  );
+  return data.map((r) => ({ id: r.id, name: r.name }));
 }
 
 function normalize(str: string): string {
@@ -130,13 +118,9 @@ function normalize(str: string): string {
 }
 
 function toHiragana(str: string): string {
-  return str.replace(/[ァ-ヶ]/g, (ch) =>
-    String.fromCharCode(ch.charCodeAt(0) - 0x60),
-  );
+  return str.replace(/[ァ-ヶ]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 }
 
 function normalizeFullWidth(str: string): string {
-  return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (ch) =>
-    String.fromCharCode(ch.charCodeAt(0) - 0xfee0),
-  );
+  return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xfee0));
 }

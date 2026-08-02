@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, RefAttributes } from 'react';
+import type { ButtonHTMLAttributes, RefAttributes } from 'react';
 
 type Variant = 'primary' | 'secondary' | 'danger' | 'ghost';
 type Size = 'sm' | 'md' | 'lg';
@@ -6,7 +6,8 @@ type Size = 'sm' | 'md' | 'lg';
 const variantClasses: Record<Variant, string> = {
   primary: 'bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-50',
   secondary: 'bg-muted text-foreground-secondary hover:bg-muted/70 disabled:opacity-50',
-  danger: 'bg-destructive text-destructive-foreground hover:bg-destructive-hover disabled:opacity-50',
+  danger:
+    'bg-destructive text-destructive-foreground hover:bg-destructive-hover disabled:opacity-50',
   ghost: 'bg-transparent text-foreground-secondary hover:bg-muted disabled:opacity-50',
 };
 

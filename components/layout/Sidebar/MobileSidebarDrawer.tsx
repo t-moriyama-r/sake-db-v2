@@ -39,7 +39,18 @@ export function MobileSidebarDrawer({ categoryTree, activeCategoryId }: Props) {
             className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-foreground"
             aria-label="カテゴリメニューを閉じる"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
               <line x1="18" y1="6" x2="6" y2="18" />
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
@@ -48,10 +59,7 @@ export function MobileSidebarDrawer({ categoryTree, activeCategoryId }: Props) {
 
         {/* ツリーコンテンツ */}
         <div className="p-3">
-          <CategoryTreeContent
-            categoryTree={categoryTree}
-            activeCategoryId={activeCategoryId}
-          />
+          <CategoryTreeContent categoryTree={categoryTree} activeCategoryId={activeCategoryId} />
         </div>
       </div>
     </div>

@@ -31,4 +31,3 @@ export function useLiquorDelete({ liquorId, categoryId }: Options) {
 
   return { deleteDialog, setDeleteDialog, deleting, handleDelete, deleteError };
 }
-

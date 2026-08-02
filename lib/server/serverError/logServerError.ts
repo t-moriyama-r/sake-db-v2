@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
@@ -34,6 +35,9 @@ export async function logServerError(input: LogServerErrorInput): Promise<void> 
       context: input.context !== undefined ? JSON.stringify(input.context) : undefined,
     });
   } catch (e: unknown) {
-    console.error('サーバーエラーのログ記録に失敗しました:', e instanceof Error ? e.message : String(e));
+    console.error(
+      'サーバーエラーのログ記録に失敗しました:',
+      e instanceof Error ? e.message : String(e),
+    );
   }
 }

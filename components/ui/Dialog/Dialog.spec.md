@@ -47,10 +47,10 @@
 
 `Dialog` をラップした確認ダイアログ。
 
-| prop | デフォルト |
-|---|---|
-| `title` | `'確認'` |
-| `confirmLabel` | `'実行'` |
+| prop           | デフォルト |
+| -------------- | ---------- |
+| `title`        | `'確認'`   |
+| `confirmLabel` | `'実行'`   |
 
 - キャンセルボタン: `variant="secondary"` / `loading` 中は disabled
 - 実行ボタン: `variant="danger"` / `loading` prop を渡す

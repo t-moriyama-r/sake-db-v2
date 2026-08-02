@@ -8,7 +8,9 @@ export async function GET() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
   if (!clientId || !appUrl) {
-    console.error('X OAuth に必要な環境変数（X_CLIENT_ID / NEXT_PUBLIC_APP_URL）が設定されていません');
+    console.error(
+      'X OAuth に必要な環境変数（X_CLIENT_ID / NEXT_PUBLIC_APP_URL）が設定されていません',
+    );
     return NextResponse.json({ error: 'X OAuth の設定が不正です' }, { status: 500 });
   }
 
@@ -26,14 +28,18 @@ export async function GET() {
     code_challenge_method: 'S256',
   });
 
-  const response = NextResponse.redirect(
-    `https://twitter.com/i/oauth2/authorize?${params}`,
-  );
+  const response = NextResponse.redirect(`https://twitter.com/i/oauth2/authorize?${params}`);
   response.cookies.set('x_oauth_state', state, {
-    httpOnly: true, sameSite: 'lax', maxAge: 600, path: '/',
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 600,
+    path: '/',
   });
   response.cookies.set('x_oauth_code_verifier', codeVerifier, {
-    httpOnly: true, sameSite: 'lax', maxAge: 600, path: '/',
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 600,
+    path: '/',
   });
 
   return response;

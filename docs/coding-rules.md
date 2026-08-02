@@ -5,6 +5,7 @@
 `components/` 配下にコンポーネントを作成する際は、必ず以下のルールに従う：
 
 1. コンポーネント名と同名のディレクトリを作成し、その中に同名の `.tsx` ファイルを置く
+
    ```
    components/ui/Button/Button.tsx  ✅
    components/ui/Button/index.tsx   ❌（index ファイル禁止）
@@ -53,7 +54,8 @@ export function MyComponent() {
   return <div>{formatValue(42)}</div>;
 }
 
-function formatValue(n: number) {  // ← function 宣言でホイスティング可能
+function formatValue(n: number) {
+  // ← function 宣言でホイスティング可能
   return `${n}件`;
 }
 ```
@@ -78,6 +80,7 @@ const [items, setItems] = useState<Item[]>(initialItems);
 コンポーネントの props 型名は **`Props`** に統一する。
 
 同一ファイル内に複数コンポーネントが存在する場合：
+
 - メインコンポーネントの props → `Props`
 - サブコンポーネントの props → **コンポーネント名と同名の `XxxProps`**（例: `HistoryItem` → `HistoryItemProps`）
 - Union 型を構成するための内部型は意味のある名前を維持する
@@ -113,7 +116,10 @@ const result = await fetchAll(client.models.BoardPost.list);
 // ✅ 正しい: fetchAll でフィルター付き全件取得
 import { fetchAll } from '@/lib/amplify-list';
 const result = await fetchAll((nextToken, limit) =>
-  client.models.BoardPost.listBoardPostByUserId({ userId }, { limit, nextToken: nextToken ?? undefined }),
+  client.models.BoardPost.listBoardPostByUserId(
+    { userId },
+    { limit, nextToken: nextToken ?? undefined },
+  ),
 );
 ```
 
@@ -211,7 +217,9 @@ const USER_POOL_ID: string | undefined = outputs?.auth?.user_pool_id;
 ```tsx
 <div role="img" aria-label={`${value}点`}>
   {stars.map((star) => (
-    <span key={star} aria-hidden="true">★</span>
+    <span key={star} aria-hidden="true">
+      ★
+    </span>
   ))}
 </div>
 ```
@@ -261,7 +269,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { liquorSchema, type LiquorInput } from '@/schemas/liquor';
 
-const { register, handleSubmit, formState: { errors } } = useForm<LiquorInput>({
+const {
+  register,
+  handleSubmit,
+  formState: { errors },
+} = useForm<LiquorInput>({
   resolver: zodResolver(liquorSchema),
 });
 ```
@@ -274,11 +286,11 @@ URL（`href`）は **直書き禁止**。必ず `lib/routes.ts` の `routes` オ
 
 ```typescript
 // ❌ 禁止
-href: `/discovery/tag/${encodeURIComponent(tag)}`
+href: `/discovery/tag/${encodeURIComponent(tag)}`;
 
 // ✅ 正しい
 import { routes } from '@/lib/routes';
-href: routes.discovery.tag(tag)
+href: routes.discovery.tag(tag);
 ```
 
 新しいルートが必要な場合は `lib/routes.ts` に追加してから使う。
@@ -312,4 +324,3 @@ Client Component 内で Amplify クライアントを直接呼び出す場合も
 - **複数ページにまたがるコンポーネントの仕様**: コンポーネントと同ディレクトリに `ComponentName.spec.md` を置く
 
 バグ調査・issue作成・コードレビューを行う前に、対象ページの `page.spec.md` を必ず確認する（意図した挙動を誤ってissue化することを防ぐため）。
-

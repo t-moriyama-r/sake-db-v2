@@ -37,7 +37,13 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
         aria-expanded={menuOpen}
       >
         {user?.imageBase64 ? (
-          <Image src={user.imageBase64} width={32} height={32} className="h-8 w-8 rounded-full object-cover" alt={user.name ?? ''} />
+          <Image
+            src={user.imageBase64}
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-full object-cover"
+            alt={user.name ?? ''}
+          />
         ) : (
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-avatar-bg text-sm font-medium text-avatar-fg">
             {user?.name?.[0] ?? '?'}
@@ -49,7 +55,12 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={`h-3 w-3 text-muted-foreground transition-transform ${menuOpen ? 'rotate-180' : ''}`}
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           aria-hidden="true"
         >
           <polyline points="6 9 12 15 18 9" />
@@ -58,22 +69,39 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
 
       {menuOpen && (
         <div className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-border bg-surface py-1 shadow-lg">
-          <div className="border-b border-border px-4 py-2 text-sm font-medium text-foreground">{user?.name}</div>
-          <Link href={routes.mypage.index()} className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
+          <div className="border-b border-border px-4 py-2 text-sm font-medium text-foreground">
+            {user?.name}
+          </div>
+          <Link
+            href={routes.mypage.index()}
+            className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted"
+            onClick={() => setMenuOpen(false)}
+          >
             マイページ
           </Link>
-          <Link href={routes.mypage.edit()} className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
+          <Link
+            href={routes.mypage.edit()}
+            className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted"
+            onClick={() => setMenuOpen(false)}
+          >
             プロフィール編集
           </Link>
           {isAdmin && (
-            <Link href={routes.admin()} className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted" onClick={() => setMenuOpen(false)}>
+            <Link
+              href={routes.admin()}
+              className="block px-4 py-2 text-sm text-foreground-secondary hover:bg-muted"
+              onClick={() => setMenuOpen(false)}
+            >
               管理画面
             </Link>
           )}
           <button
             type="button"
             className="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-muted"
-            onClick={() => { logoutAction(); setMenuOpen(false); }}
+            onClick={() => {
+              logoutAction();
+              setMenuOpen(false);
+            }}
           >
             ログアウト
           </button>
@@ -82,5 +110,3 @@ export const UserAccountMenu = ({ user, isAdmin, logoutAction }: Props) => {
     </div>
   );
 };
-
-

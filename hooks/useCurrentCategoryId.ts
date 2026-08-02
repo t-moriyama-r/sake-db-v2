@@ -21,9 +21,7 @@ export const useCurrentCategoryId = (initialValue?: string | null): string | nul
 
   // フェッチ完了まで前の値（initialValue）を保持し、ページ遷移中のフラッシュを防ぐ
   // ※ liquorId の非同期フェッチ結果のみ state で管理する
-  const [liquorCategoryId, setLiquorCategoryId] = useState<string | null>(
-    initialValue ?? null,
-  );
+  const [liquorCategoryId, setLiquorCategoryId] = useState<string | null>(initialValue ?? null);
 
   useEffect(() => {
     if (!liquorId) {
@@ -49,4 +47,3 @@ export const useCurrentCategoryId = (initialValue?: string | null): string | nul
   if (liquorId) return liquorCategoryId;
   return null;
 };
-
