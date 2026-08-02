@@ -26,6 +26,20 @@ describe('extractYoutubeEmbedId', () => {
     expect(extractYoutubeEmbedId('https://example.com/video?v=dQw4w9WgXcQ')).toBeUndefined();
   });
 
+  it('v を含むが v= ではないパラメータ名は無視する', () => {
+    expect(
+      extractYoutubeEmbedId('https://www.youtube.com/watch?notv=dQw4w9WgXcQ'),
+    ).toBeUndefined();
+  });
+
+  it('youtu.be URL にクエリパラメータが付与されていても ID のみを抽出する', () => {
+    expect(extractYoutubeEmbedId('https://youtu.be/dQw4w9WgXcQ?si=abc')).toBe('dQw4w9WgXcQ');
+  });
+
+  it('youtu.be URL にフラグメントが付与されていても ID のみを抽出する', () => {
+    expect(extractYoutubeEmbedId('https://youtu.be/dQw4w9WgXcQ#fragment')).toBe('dQw4w9WgXcQ');
+  });
+
   it('null / undefined / 空文字列は undefined を返す', () => {
     expect(extractYoutubeEmbedId(null)).toBeUndefined();
     expect(extractYoutubeEmbedId(undefined)).toBeUndefined();

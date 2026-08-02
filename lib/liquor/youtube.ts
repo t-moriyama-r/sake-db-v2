@@ -2,14 +2,16 @@ const YOUTUBE_HOSTS = new Set(['youtube.com', 'www.youtube.com', 'm.youtube.com'
 
 export function extractYoutubeEmbedId(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
-  const hostname = parseHostname(url);
-  if (!hostname || !YOUTUBE_HOSTS.has(hostname)) return undefined;
-  return url.match(/(?:v=|youtu\.be\/)([^&\s]+)/)?.[1];
+  const parsed = parseUrl(url);
+  if (!parsed || !YOUTUBE_HOSTS.has(parsed.hostname)) return undefined;
+  return parsed.hostname === 'youtu.be'
+    ? parsed.pathname.split('/').filter(Boolean)[0]
+    : (parsed.searchParams.get('v') ?? undefined);
 }
 
-function parseHostname(url: string): string | undefined {
+function parseUrl(url: string): URL | undefined {
   try {
-    return new URL(url).hostname;
+    return new URL(url);
   } catch {
     return undefined;
   }
