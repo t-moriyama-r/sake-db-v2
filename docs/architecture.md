@@ -2,14 +2,14 @@
 
 ## 技術スタック
 
-| 役割 | 技術 |
-|------|------|
-| フレームワーク | Next.js (App Router) |
-| UI | React + Tailwind CSS v4 |
-| バリデーション | React Hook Form + Zod |
-| バックエンド / DB | AWS Amplify Gen2 (DynamoDB) |
-| 認証 | AWS Cognito (Amplify Auth) |
-| API | Amplify GraphQL (`generateClient<Schema>()`) |
+| 役割              | 技術                                         |
+| ----------------- | -------------------------------------------- |
+| フレームワーク    | Next.js (App Router)                         |
+| UI                | React + Tailwind CSS v4                      |
+| バリデーション    | React Hook Form + Zod                        |
+| バックエンド / DB | AWS Amplify Gen2 (DynamoDB)                  |
+| 認証              | AWS Cognito (Amplify Auth)                   |
+| API               | Amplify GraphQL (`generateClient<Schema>()`) |
 
 ## ディレクトリ構成
 
@@ -106,42 +106,41 @@ DynamoDB（Amplify Data）に `UserProfile` モデルは存在しない。
 
 ## 主要画面一覧
 
-| URL | 画面 | 権限 |
-|-----|------|------|
-| `/` | ホーム（おすすめ一覧） | 全員 |
-| `/discovery/category` | カテゴリ一覧 | 全員 |
-| `/discovery/category/[id]` | カテゴリ絞り込み | 全員 |
-| `/discovery/search?q=...` | キーワード検索 | 全員 |
-| `/discovery/tag/[tag]` | タグ検索 | 全員 |
-| `/liquor/[id]` | お酒詳細・レビュー・タグ | 全員 |
-| `/liquor/create` | お酒登録（カテゴリ未指定） | 全員 |
-| `/liquor/create/[categoryId]` | お酒登録 | 全員 |
-| `/liquor/edit/[id]` | お酒編集 | 全員 |
-| `/category/[id]` | カテゴリ詳細 | 全員 |
-| `/category/create/[parentCategoryId]` | カテゴリ作成 | 要ログイン |
-| `/category/edit/[id]` | カテゴリ編集 | 要ログイン |
-| `/mypage` | マイページ・ブックマーク | 要ログイン |
-| `/mypage/edit` | プロフィール編集 | 要ログイン |
-| `/user/[id]` | ユーザー公開プロフィール | 全員 |
-| `/login` | ログイン | - |
-| `/register` | 新規登録 | - |
-| `/password-reset` | パスワードリセット申請 | - |
-| `/password-reset-exe` | パスワードリセット実行 | - |
-| `/admin` | 管理画面（カテゴリ管理） | 要管理者 |
-| `/api/auth/x/login` | X (Twitter) OAuth 開始 | - |
-| `/api/auth/x/callback` | X (Twitter) OAuth コールバック（内部） | - |
-| `/x/complete` | X (Twitter) OAuth 完了・Cognito サインイン処理 | - |
+| URL                                   | 画面                                           | 権限       |
+| ------------------------------------- | ---------------------------------------------- | ---------- |
+| `/`                                   | ホーム（おすすめ一覧）                         | 全員       |
+| `/discovery/category`                 | カテゴリ一覧                                   | 全員       |
+| `/discovery/category/[id]`            | カテゴリ絞り込み                               | 全員       |
+| `/discovery/search?q=...`             | キーワード検索                                 | 全員       |
+| `/discovery/tag/[tag]`                | タグ検索                                       | 全員       |
+| `/liquor/[id]`                        | お酒詳細・レビュー・タグ                       | 全員       |
+| `/liquor/create`                      | お酒登録（カテゴリ未指定）                     | 全員       |
+| `/liquor/create/[categoryId]`         | お酒登録                                       | 全員       |
+| `/liquor/edit/[id]`                   | お酒編集                                       | 全員       |
+| `/category/[id]`                      | カテゴリ詳細                                   | 全員       |
+| `/category/create/[parentCategoryId]` | カテゴリ作成                                   | 要ログイン |
+| `/category/edit/[id]`                 | カテゴリ編集                                   | 要ログイン |
+| `/mypage`                             | マイページ・ブックマーク                       | 要ログイン |
+| `/mypage/edit`                        | プロフィール編集                               | 要ログイン |
+| `/user/[id]`                          | ユーザー公開プロフィール                       | 全員       |
+| `/login`                              | ログイン                                       | -          |
+| `/register`                           | 新規登録                                       | -          |
+| `/password-reset`                     | パスワードリセット申請                         | -          |
+| `/password-reset-exe`                 | パスワードリセット実行                         | -          |
+| `/admin`                              | 管理画面（カテゴリ管理）                       | 要管理者   |
+| `/api/auth/x/login`                   | X (Twitter) OAuth 開始                         | -          |
+| `/api/auth/x/callback`                | X (Twitter) OAuth コールバック（内部）         | -          |
+| `/x/complete`                         | X (Twitter) OAuth 完了・Cognito サインイン処理 | -          |
 
 ## 未実装機能（Lambda 実装待ち）
 
-| 機能 | 概要 |
-|------|------|
-| `getFlavorMap(liquorId)` | FlavorVote を集計してフレーバーマップを返す |
-| `getVoted(liquorId)` | 自分のフレーバー投票を返す |
-| `getRecommendLiquorList` | ブックマーク考慮のおすすめリスト |
-| `randomRecommendList(limit)` | ランダムおすすめ（現在はクライアント側シャッフルで代替） |
-| `searchLiquors(keyword, limit)` | 全文検索（現在は DynamoDB contains フィルタで代替） |
-| `getUserByIdDetail(id)` | ユーザー詳細 + 評価履歴 |
-| `checkAdmin` | 管理者確認 |
-| Amazon アフィリエイト連携 | 商品情報・価格取得 |
-
+| 機能                            | 概要                                                     |
+| ------------------------------- | -------------------------------------------------------- |
+| `getFlavorMap(liquorId)`        | FlavorVote を集計してフレーバーマップを返す              |
+| `getVoted(liquorId)`            | 自分のフレーバー投票を返す                               |
+| `getRecommendLiquorList`        | ブックマーク考慮のおすすめリスト                         |
+| `randomRecommendList(limit)`    | ランダムおすすめ（現在はクライアント側シャッフルで代替） |
+| `searchLiquors(keyword, limit)` | 全文検索（現在は DynamoDB contains フィルタで代替）      |
+| `getUserByIdDetail(id)`         | ユーザー詳細 + 評価履歴                                  |
+| `checkAdmin`                    | 管理者確認                                               |
+| Amazon アフィリエイト連携       | 商品情報・価格取得                                       |

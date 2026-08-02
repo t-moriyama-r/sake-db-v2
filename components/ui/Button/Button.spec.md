@@ -26,18 +26,18 @@ React 19 の ref-as-prop パターンを採用しており、`forwardRef` は使
 ```tsx
 // ref を渡す呼び出し側
 const buttonRef = useRef<HTMLButtonElement>(null);
-<Button ref={buttonRef}>ボタン</Button>
+<Button ref={buttonRef}>ボタン</Button>;
 ```
 
 ## Props
 
-| Prop | 型 | デフォルト | 説明 |
-|---|---|---|---|
-| `variant` | `'primary' \| 'secondary' \| 'danger' \| 'ghost'` | `'primary'` | 外観バリアント |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | サイズ |
-| `loading` | `boolean` | - | ローディングスピナーを表示し、ボタンを無効化する |
-| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | HTML button の type 属性 |
-| `ref` | `React.Ref<HTMLButtonElement>` | - | DOM 参照（React 19 ref-as-prop） |
+| Prop      | 型                                                | デフォルト  | 説明                                             |
+| --------- | ------------------------------------------------- | ----------- | ------------------------------------------------ |
+| `variant` | `'primary' \| 'secondary' \| 'danger' \| 'ghost'` | `'primary'` | 外観バリアント                                   |
+| `size`    | `'sm' \| 'md' \| 'lg'`                            | `'md'`      | サイズ                                           |
+| `loading` | `boolean`                                         | -           | ローディングスピナーを表示し、ボタンを無効化する |
+| `type`    | `'button' \| 'submit' \| 'reset'`                 | `'button'`  | HTML button の type 属性                         |
+| `ref`     | `React.Ref<HTMLButtonElement>`                    | -           | DOM 参照（React 19 ref-as-prop）                 |
 
 `Props` は `ButtonHTMLAttributes<HTMLButtonElement>` を継承するため、HTML `<button>` の全属性を受け取れる。
 

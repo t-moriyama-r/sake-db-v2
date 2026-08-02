@@ -106,5 +106,3 @@ export const CategoryEdit = ({ categoryId, category, categories }: Props) => {
     </div>
   );
 };
-
-

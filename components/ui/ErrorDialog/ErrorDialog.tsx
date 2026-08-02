@@ -15,9 +15,8 @@ export function ErrorDialogProvider({ children }: Props) {
   useEffect(() => {
     const handler = (event: PromiseRejectionEvent) => {
       event.preventDefault();
-      const msg = event.reason instanceof Error
-        ? event.reason.message
-        : '予期しないエラーが発生しました';
+      const msg =
+        event.reason instanceof Error ? event.reason.message : '予期しないエラーが発生しました';
       setMessage(msg);
     };
     window.addEventListener('unhandledrejection', handler);

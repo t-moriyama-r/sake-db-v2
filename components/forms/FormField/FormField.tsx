@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, TextareaHTMLAttributes, RefAttributes, Ref } from 'react';
+import type { InputHTMLAttributes, TextareaHTMLAttributes, RefAttributes, Ref } from 'react';
 
 type BaseProps = {
   label: string;
@@ -7,13 +7,17 @@ type BaseProps = {
   hint?: string;
 };
 
-type InputProps = BaseProps & InputHTMLAttributes<HTMLInputElement> & RefAttributes<HTMLInputElement> & {
-  as?: 'input';
-};
+type InputProps = BaseProps &
+  InputHTMLAttributes<HTMLInputElement> &
+  RefAttributes<HTMLInputElement> & {
+    as?: 'input';
+  };
 
-type TextareaProps = BaseProps & TextareaHTMLAttributes<HTMLTextAreaElement> & RefAttributes<HTMLTextAreaElement> & {
-  as: 'textarea';
-};
+type TextareaProps = BaseProps &
+  TextareaHTMLAttributes<HTMLTextAreaElement> &
+  RefAttributes<HTMLTextAreaElement> & {
+    as: 'textarea';
+  };
 
 type Props = InputProps | TextareaProps;
 

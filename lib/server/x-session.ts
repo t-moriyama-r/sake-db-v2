@@ -39,7 +39,10 @@ export function decryptXSession(token: string): XSessionPayload | null {
     if (payload.expiresAt < Date.now()) return null;
     return payload;
   } catch (e: unknown) {
-    console.error('decryptXSession: 復号に失敗しました:', e instanceof Error ? e.message : String(e));
+    console.error(
+      'decryptXSession: 復号に失敗しました:',
+      e instanceof Error ? e.message : String(e),
+    );
     return null;
   }
 }

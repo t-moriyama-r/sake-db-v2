@@ -18,8 +18,5 @@ export const bookmarkSchema = {
       liquor: a.belongsTo('Liquor', 'liquorId'),
     })
     .secondaryIndexes((index) => [index('liquorId')])
-    .authorization((allow) => [
-      allow.owner(),
-      allow.groups(['admin']),
-    ]),
+    .authorization((allow) => [allow.owner(), allow.groups(['admin'])]),
 };

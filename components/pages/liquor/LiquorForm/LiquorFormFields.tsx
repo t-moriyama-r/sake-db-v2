@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
@@ -19,7 +19,14 @@ type Props = {
   saveError?: string;
 };
 
-export function LiquorFormFields({ categories, defaultValues, initialImageBase64, liquor, onSubmitAction, saveError }: Props) {
+export function LiquorFormFields({
+  categories,
+  defaultValues,
+  initialImageBase64,
+  liquor,
+  onSubmitAction,
+  saveError,
+}: Props) {
   const {
     register,
     handleSubmit,
