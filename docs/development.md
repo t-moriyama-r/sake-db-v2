@@ -98,4 +98,3 @@ npx ampx pipeline-deploy --branch main --app-id <Amplify App ID>
 ```
 
 詳細: [セットアップ](./setup.md)
-
