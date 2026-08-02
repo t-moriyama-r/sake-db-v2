@@ -1,9 +1,12 @@
 import type { LiquorRecord } from '@/lib/server/liquors/fetch';
 
-type RateFields = Pick<
-  LiquorRecord,
-  'rate5Users' | 'rate4Users' | 'rate3Users' | 'rate2Users' | 'rate1Users'
->;
+// スキーマ上は配列だが、DynamoDB 由来のデータは実行時に null/undefined になりうるため型でも許容する
+type RateFields = {
+  [K in 'rate5Users' | 'rate4Users' | 'rate3Users' | 'rate2Users' | 'rate1Users']:
+    | LiquorRecord[K]
+    | null
+    | undefined;
+};
 
 export function calcMemberAvgRate(liquor: RateFields): number {
   const total =

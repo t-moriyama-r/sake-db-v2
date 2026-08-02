@@ -23,6 +23,17 @@ describe('calcMemberRateCount', () => {
     });
     expect(count).toBe(0);
   });
+
+  it('null / undefined フィールドを 0 として扱う（実行時防御の固定）', () => {
+    const count = calcMemberRateCount({
+      rate5Users: null,
+      rate4Users: undefined,
+      rate3Users: ['a'],
+      rate2Users: null,
+      rate1Users: undefined,
+    });
+    expect(count).toBe(1);
+  });
 });
 
 describe('calcMemberAvgRate', () => {
