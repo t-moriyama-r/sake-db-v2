@@ -27,9 +27,7 @@ describe('extractYoutubeEmbedId', () => {
   });
 
   it('v を含むが v= ではないパラメータ名は無視する', () => {
-    expect(
-      extractYoutubeEmbedId('https://www.youtube.com/watch?notv=dQw4w9WgXcQ'),
-    ).toBeUndefined();
+    expect(extractYoutubeEmbedId('https://www.youtube.com/watch?notv=dQw4w9WgXcQ')).toBeUndefined();
   });
 
   it('youtu.be URL にクエリパラメータが付与されていても ID のみを抽出する', () => {
