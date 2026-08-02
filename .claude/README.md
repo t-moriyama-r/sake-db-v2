@@ -10,6 +10,7 @@
 | `CLAUDE.md` | プロジェクト全体のルール定義（全エージェントが参照） |
 | `.claude/agents/` | サブエージェント定義 |
 | `.claude/commands/` | スラッシュコマンド定義 |
+| `.claude/skills/` | スキル定義（特定の作業手順のパッケージ） |
 
 ## サブエージェント
 
@@ -59,6 +60,17 @@ Amplify データスキーマの編集（追加・変更・削除・ファイル
 /edit-schema Liquor モデルに description フィールドを追加する
 /edit-schema FlavorVote スキーマを独立ファイルに分離する
 ```
+
+## スキル (`.claude/skills/`)
+
+[isamu/claude](https://github.com/isamu/claude) の知見を本プロジェクト向けに翻案したもの。`/スキル名` で明示的に呼び出せるほか、該当する依頼をすると自動的に適用される。
+
+| スキル | 役割 |
+|---|---|
+| `issue-draft` | 漠然としたアイデアを調査・設計選択肢付きの GitHub issue に仕上げて起票する（実装はしない） |
+| `dep-upgrade-safe` | npm パッケージを破壊的変更の調査・コード移行込みで安全にアップグレードする |
+| `ci-fix` | 失敗した GitHub Actions を根本原因分析して修正し、緑になるまで見届ける |
+| `bot-review-loop` | PR のレビューボット指摘を検証・修正・返信するループ。マージは人間が行う |
 
 ## オーケストレーション
 
