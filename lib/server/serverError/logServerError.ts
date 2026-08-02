@@ -1,7 +1,6 @@
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
-
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const outputs = require('@/amplify_outputs.json');
 Amplify.configure(outputs, { ssr: true });
@@ -34,6 +33,9 @@ export async function logServerError(input: LogServerErrorInput): Promise<void> 
       context: input.context !== undefined ? JSON.stringify(input.context) : undefined,
     });
   } catch (e: unknown) {
-    console.error('サーバーエラーのログ記録に失敗しました:', e instanceof Error ? e.message : String(e));
+    console.error(
+      'サーバーエラーのログ記録に失敗しました:',
+      e instanceof Error ? e.message : String(e),
+    );
   }
 }
