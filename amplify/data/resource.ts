@@ -3,6 +3,7 @@ import { buildSearchCache } from '../functions/liquor/buildSearchCache/resource'
 import { bookmarkSchema } from './schema/bookmark';
 import { categorySchema } from './schema/category';
 import { liquorSchema } from './schema/liquor/liquorSchema';
+import { serverErrorModels } from './schema/serverError/serverError';
 
 /**
  * sake-db GraphQL スキーマを Amplify Gen 2 に移植したデータスキーマ。
@@ -19,6 +20,7 @@ const schema = a.schema({
   ...bookmarkSchema,
   ...categorySchema,
   ...liquorSchema,
+  ...serverErrorModels,
 });
 
 export type Schema = ClientSchema<typeof schema>;

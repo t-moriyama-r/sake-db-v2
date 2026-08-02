@@ -1,10 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/Button/Button';
 import { Dialog } from '@/components/ui/Dialog/Dialog';
 
-export function ErrorDialogProvider({ children }: { children: React.ReactNode }) {
+type Props = {
+  children: ReactNode;
+};
+
+export function ErrorDialogProvider({ children }: Props) {
   const [message, setMessage] = useState<string>('');
 
   useEffect(() => {

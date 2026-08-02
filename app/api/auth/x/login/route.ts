@@ -5,8 +5,10 @@ export const runtime = 'nodejs';
 
 export async function GET() {
   const clientId = process.env.X_CLIENT_ID;
-  if (!clientId) {
-    console.error('X_CLIENT_ID 環境変数が設定されていません');
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  if (!clientId || !appUrl) {
+    console.error('X OAuth に必要な環境変数（X_CLIENT_ID / NEXT_PUBLIC_APP_URL）が設定されていません');
     return NextResponse.json({ error: 'X OAuth の設定が不正です' }, { status: 500 });
   }
 
@@ -17,7 +19,7 @@ export async function GET() {
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: clientId,
-    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/x/callback`,
+    redirect_uri: `${appUrl}/api/auth/x/callback`,
     scope: 'users.read tweet.read',
     state,
     code_challenge: codeChallenge,

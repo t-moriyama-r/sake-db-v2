@@ -35,6 +35,10 @@
 │   ├── data/
 │   │   ├── resource.ts          # GraphQL スキーマ集約
 │   │   └── schema/              # スキーマ定義（1ファイル1スキーマ）
+│   │       ├── liquor/          # Liquor・Tag・FlavorVote・LiquorHistory・Board 関連
+│   │       ├── serverError/     # ServerError ログモデル（admin 読み取り / apiKey 書き込み）
+│   │       ├── bookmark.ts      # Bookmark モデル
+│   │       └── category.ts      # Category モデル
 │   ├── auth/resource.ts         # Cognito 認証設定
 │   ├── functions/               # Lambda 関数
 │   ├── storage/resource.ts      # S3 ストレージ設定
@@ -51,8 +55,11 @@
 ├── hooks/                       # useAuth / useToast / useTheme など
 ├── lib/
 │   ├── amplify-client.ts        # generateClient<Schema>() シングルトン
+│   ├── amplify-list.ts          # fetchAll ユーティリティ（全件取得）
 │   ├── repository/              # データ取得ロジック（サーバーサイド）
-│   └── server/                  # サーバーサイドユーティリティ
+│   └── server/
+│       └── serverError/
+│           └── logServerError.ts  # サーバーエラーを ServerError モデルに記録するユーティリティ
 ├── schemas/                     # Zod バリデーションスキーマ
 ├── providers/                   # AmplifyProvider / ThemeProvider
 └── docs/                        # プロジェクトドキュメント（本ディレクトリ）

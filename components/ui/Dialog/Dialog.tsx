@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useRef } from 'react';
+import { useId } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '../Button/Button';
 import { useDialogFocus } from './useDialogFocus';
@@ -15,7 +15,6 @@ type Props = {
 };
 
 export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
-  const overlayRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
 
   useScrollLock(open);
@@ -24,17 +23,19 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
   if (!open || typeof document === 'undefined') return null;
 
   return createPortal(
-    <div
-      ref={overlayRef}
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4"
-      onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
-    >
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="閉じる"
+        className="absolute inset-0 bg-black/50 cursor-default"
+      />
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId : undefined}
-        className="bg-surface rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col"
+        className="relative bg-surface rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] flex flex-col"
       >
         {title && (
           <div className="flex items-center justify-between border-b border-border px-6 py-4">

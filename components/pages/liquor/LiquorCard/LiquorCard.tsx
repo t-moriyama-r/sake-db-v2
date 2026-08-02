@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { LiquorRating } from '@/components/pages/liquor/common/LiquorRating/LiquorRating';
 import { calcMemberAvgRate, calcMemberRateCount } from '@/lib/liquor/rating';
@@ -16,17 +17,23 @@ export const LiquorCard = ({ liquor }: Props) => {
     >
       <div className="relative mb-3 aspect-video overflow-hidden rounded-md bg-muted">
         {liquor.imageBase64 || liquor.imageUrl ? (
-          <img
+          <Image
             src={liquor.imageBase64 ?? liquor.imageUrl ?? ''}
             alt={liquor.name}
-            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            fill
+            className="object-cover transition-transform group-hover:scale-105"
+            unoptimized
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-4xl text-muted-foreground">🍶</div>
+          <div className="flex h-full items-center justify-center text-4xl text-muted-foreground">
+            🍶
+          </div>
         )}
       </div>
       <p className="text-xs text-muted-foreground">{liquor.categoryName}</p>
-      <h3 className="mt-1 font-semibold text-foreground group-hover:text-primary line-clamp-2">{liquor.name}</h3>
+      <h3 className="mt-1 font-semibold text-foreground group-hover:text-primary line-clamp-2">
+        {liquor.name}
+      </h3>
       {liquor.description && (
         <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{liquor.description}</p>
       )}
@@ -41,4 +48,4 @@ export const LiquorCard = ({ liquor }: Props) => {
       </div>
     </Link>
   );
-}
+};

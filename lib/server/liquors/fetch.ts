@@ -54,7 +54,9 @@ export const fetchLiquorsByCategories = withCache(
         ? { categoryId: { eq: categoryIds[0] } }
         : { or: categoryIds.map((id) => ({ categoryId: { eq: id } })) };
 
-    const result = await fetchAll((options) => client.models.Liquor.list({ filter, ...options }));
+    const result = await fetchAll((nextToken, limit) =>
+      client.models.Liquor.list({ filter, limit, nextToken: nextToken ?? undefined }),
+    );
     return result.map((r) => serializeLiquorRecord(r));
   },
   ['liquors-by-categories'],
@@ -74,7 +76,7 @@ export const fetchAllLiquorsRandomly = withCache(
     // Fisher-Yates シャッフル
     for (let i = all.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [all[i], all[j]] = [all[j]!, all[i]!];
+      [all[i], all[j]] = [all[j], all[i]];
     }
 
     return all.map((r) => serializeLiquorRecord(r));
@@ -120,11 +122,10 @@ export const fetchLiquorHistories = withCache(
   async (liquorId: string): Promise<SerializableLiquorHistoryRecord[]> => {
     const client = getGuestClient();
     const data = await fetchAll((nextToken, limit) =>
-      client.models.LiquorHistory.list({
-        filter: { liquorId: { eq: liquorId } },
-        limit,
-        nextToken: nextToken ?? undefined,
-      }),
+      client.models.LiquorHistory.listLiquorHistoryByLiquorId(
+        { liquorId },
+        { limit, nextToken: nextToken ?? undefined },
+      ),
     );
     const sorted = data
       .filter(isNonNullable)

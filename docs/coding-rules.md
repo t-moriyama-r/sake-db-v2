@@ -79,7 +79,7 @@ const [items, setItems] = useState<Item[]>(initialItems);
 
 同一ファイル内に複数コンポーネントが存在する場合：
 - メインコンポーネントの props → `Props`
-- サブコンポーネントの props → コンポーネント名プレフィックスを外した短い名前（`ContentProps`・`ItemProps` など）
+- サブコンポーネントの props → **コンポーネント名と同名の `XxxProps`**（例: `HistoryItem` → `HistoryItemProps`）
 - Union 型を構成するための内部型は意味のある名前を維持する
 
 ## amplify/functions 内の定義順
@@ -97,6 +97,28 @@ export const handler = async () => {  // メインロジック（先頭）
 async function helperFn() { ... }     // ヘルパー（後方、function 宣言）
 ```
 
+## Amplify 全件取得
+
+`client.models.XxxModel.list()` を `limit` 固定でページネーションせず打ち切ることは禁止。  
+必ず `lib/amplify-list.ts` の `fetchAll` ユーティリティを使い、全件を取得する。
+
+```typescript
+// ❌ 禁止: limit 固定で打ち切り
+const { data } = await client.models.BoardPost.listBoardPostByUserId({ userId }, { limit: 200 });
+
+// ✅ 正しい: fetchAll で全件取得
+import { fetchAll } from '@/lib/amplify-list';
+const result = await fetchAll(client.models.BoardPost.list);
+
+// ✅ 正しい: fetchAll でフィルター付き全件取得
+import { fetchAll } from '@/lib/amplify-list';
+const result = await fetchAll((nextToken, limit) =>
+  client.models.BoardPost.listBoardPostByUserId({ userId }, { limit, nextToken: nextToken ?? undefined }),
+);
+```
+
+`@/lib/amplify-list` はサーバー・クライアントどちらからでも直接インポートする（`lib/server/amplify-list.ts` / `lib/client/amplify-list.ts` は存在しない）。
+
 ## Amplify スキーマ編集ルール
 
 `amplify/data/schema/` を編集する際は **`schema-editor` エージェントを使うこと**（`/edit-schema` コマンド経由）。
@@ -106,6 +128,129 @@ async function helperFn() { ... }     // ヘルパー（後方、function 宣言
 - **1ファイル1スキーマ**が絶対ルール（複数の `a.model()` を1ファイルに混在させない）
 - 関連するスキーマはディレクトリにまとめ、`index.ts` で集約する
 - 編集後は `amplify/data/resource.ts` の import も更新し、`npx tsc --noEmit` で型チェックを行う
+
+## Amplify 設定値の取得
+
+Cognito User Pool ID などの Amplify 設定値は **ハードコード禁止**。`amplify_outputs.json` から動的に読み込む。
+
+```typescript
+// ❌ 禁止
+const USER_POOL_ID = 'ap-northeast-1_CqSONoI3Y';
+
+// ✅ 正しい
+import outputs from '@/amplify_outputs.json';
+const USER_POOL_ID: string | undefined = outputs?.auth?.user_pool_id;
+```
+
+`undefined` になる可能性があるため、使用前に undefined ガードを行う。
+
+## catch ブロックの型安全性
+
+`catch` 節の変数には必ず `: unknown` を明示する。`e.message` などのプロパティへの直接アクセスは禁止。`instanceof Error` で型ガードしてから使う。
+
+```typescript
+// ❌ 禁止
+} catch (e) {
+  console.error(e.message);
+}
+
+// ✅ 正しい
+} catch (e: unknown) {
+  console.error('処理に失敗しました:', e instanceof Error ? e.message : String(e));
+}
+```
+
+## アクセシビリティ（ARIA）
+
+### 装飾目的のアイコン・SVG
+
+スクリーンリーダーに読み上げさせる必要のない装飾目的の SVG / アイコンには `aria-hidden="true"` を付ける。
+
+```tsx
+<svg aria-hidden="true" ...>...</svg>
+```
+
+### インタラクティブ要素のラベル
+
+アイコンのみで構成された `button` や `a` など、テキストコンテンツが存在しないインタラクティブ要素には `aria-label` を付ける。
+
+```tsx
+<button aria-label="検索">
+  <svg aria-hidden="true">...</svg>
+</button>
+```
+
+### 開閉状態を持つボタン
+
+ドロップダウンなど開閉状態を持つボタンには `aria-expanded={isOpen}` を付ける。
+
+```tsx
+<button aria-label="アカウントメニューを開く" aria-expanded={menuOpen}>
+  ...
+</button>
+```
+
+### クリック操作可能な要素
+
+`onClick` を持つ要素には必ずインタラクティブ要素（`button` / `a`）を使う。`div` や `li` に `onClick` を直接付けることは禁止。
+
+```tsx
+// ❌ 禁止
+<li onClick={() => onSelect(item)}>...</li>
+
+// ✅ 正しい
+<li>
+  <button type="button" onClick={() => onSelect(item)}>...</button>
+</li>
+```
+
+### 読み取り専用コンポーネントのラベリング
+
+インタラクティブな操作を持たないが視覚的な情報を伝えるコンポーネント（星評価の表示など）は、コンテナに `role="img"` と `aria-label` を付け、個々の装飾要素には `aria-hidden="true"` を付ける。
+
+```tsx
+<div role="img" aria-label={`${value}点`}>
+  {stars.map((star) => (
+    <span key={star} aria-hidden="true">★</span>
+  ))}
+</div>
+```
+
+## React 19 ref-as-prop
+
+このプロジェクトは React 19 を使用する。`forwardRef` は **禁止**。ref は通常の prop として直接受け取る。
+
+```typescript
+// ❌ 禁止: React 18 以前の forwardRef パターン
+import { forwardRef } from 'react';
+export const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => {
+  return <button ref={ref} {...props} />;
+});
+
+// ✅ 正しい: React 19 の ref-as-prop パターン
+import { ButtonHTMLAttributes, RefAttributes } from 'react';
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & RefAttributes<HTMLButtonElement> & { ... };
+export const Button = ({ ref, ...props }: Props) => {
+  return <button ref={ref} {...props} />;
+};
+```
+
+ref を受け取る必要がある場合は `RefAttributes<T>` を Props に intersection して `ref` を props から分解代入する。
+
+## Button コンポーネントの type
+
+`Button` コンポーネント（`components/ui/Button/Button.tsx`）は `type` prop のデフォルト値として `"button"` を持つ。  
+フォーム送信ボタンとして使う場合のみ `type="submit"` を明示する。
+
+```tsx
+// ✅ 正しい: フォーム送信以外はデフォルトのまま
+<Button onClick={handleCancel}>キャンセル</Button>
+
+// ✅ 正しい: フォーム送信ボタンは type を明示
+<Button type="submit" loading={isSubmitting}>送信</Button>
+```
+
+ネイティブ `<button>` 要素を直接使う場合は引き続き `type="button"` を明示すること。
 
 ## フォームバリデーション
 

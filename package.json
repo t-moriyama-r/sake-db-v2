@@ -11,6 +11,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "prepare": "simple-git-hooks",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepush:check": "bash -c 'set -euo pipefail; if git rev-parse --verify @{upstream} >/dev/null 2>&1; then FILES=$(git diff --name-only --diff-filter=ACMR @{upstream}...HEAD); else DEFAULT_BRANCH=$(git symbolic-ref --quiet refs/remotes/origin/HEAD 2>/dev/null || true); DEFAULT_BRANCH=${DEFAULT_BRANCH#refs/remotes/}; if [ -n \"$DEFAULT_BRANCH\" ]; then FILES=$(git diff --name-only --diff-filter=ACMR \"$DEFAULT_BRANCH\"...HEAD); else FILES=$(git diff-tree --root --no-commit-id --name-only -r HEAD); fi; fi; if [ -z \"$FILES\" ]; then exit 0; fi; FORMAT_FILES=$(printf \"%s\\n\" \"$FILES\" | grep -E \"\\.(ts|tsx|js|jsx|mjs|mts|json|css|md)$\" || true); if [ -n \"$FORMAT_FILES\" ]; then printf \"%s\\n\" \"$FORMAT_FILES\" | xargs -r npx prettier --write; if ! printf \"%s\\n\" \"$FORMAT_FILES\" | xargs git diff --quiet --; then echo \"pre-push hook formatted files. Commit the changes and push again.\"; exit 1; fi; fi; LINT_FILES=$(printf \"%s\\n\" \"$FILES\" | grep -E \"\\.(ts|tsx)$\" || true); if [ -n \"$LINT_FILES\" ]; then printf \"%s\\n\" \"$LINT_FILES\" | xargs -r npx eslint --max-warnings=0; fi'",
     "seed": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts",
     "seed:dry-run": "cross-env AWS_PROFILE=sake-db npx tsx scripts/seed.ts --dry-run",
     "invoke:search-cache": "cross-env AWS_PROFILE=sake-db npx tsx scripts/invoke-build-search-cache.ts",
@@ -47,8 +51,13 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.0",
     "eslint-plugin-import": "^2.32.0",
+    "prettier": "^3",
+    "simple-git-hooks": "^2",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
+  },
+  "simple-git-hooks": {
+    "pre-push": "npm run prepush:check"
   }
 }
