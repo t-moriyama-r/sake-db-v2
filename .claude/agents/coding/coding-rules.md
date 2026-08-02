@@ -79,8 +79,10 @@ async function helperFn() { ... }     // ヘルパー（後方）
 ## Next.js について
 
 <!-- BEGIN:nextjs-agent-rules -->
+
 このプロジェクトで使用している Next.js は、学習データと異なる破壊的変更を含む可能性があります。
 コードを書く前に `node_modules/next/dist/docs/` 内の該当ガイドを必ず確認し、非推奨の警告に従ってください。
+
 <!-- END:nextjs-agent-rules -->
 
 ## ルートパス生成ルール
@@ -89,11 +91,11 @@ URL（`href`）は **直書き禁止**。必ず `lib/routes.ts` の `routes` オ
 
 ```typescript
 // ❌ 禁止
-href: `/discovery/tag/${encodeURIComponent(tag)}`
+href: `/discovery/tag/${encodeURIComponent(tag)}`;
 
 // ✅ 正しい
 import { routes } from '@/lib/routes';
-href: routes.discovery.tag(tag)
+href: routes.discovery.tag(tag);
 ```
 
 新しいルートが必要な場合は `lib/routes.ts` に追加してから使う。
@@ -117,7 +119,10 @@ const result = await fetchAll(client.models.BoardPost.list);
 // ✅ 正しい: fetchAll で全件取得（フィルター付き既存形式）
 import { fetchAll } from '@/lib/amplify-list';
 const result = await fetchAll((nextToken, limit) =>
-  client.models.BoardPost.listBoardPostByUserId({ userId }, { limit, nextToken: nextToken ?? undefined }),
+  client.models.BoardPost.listBoardPostByUserId(
+    { userId },
+    { limit, nextToken: nextToken ?? undefined },
+  ),
 );
 ```
 
@@ -236,7 +241,9 @@ const USER_POOL_ID: string | undefined = outputs?.auth?.user_pool_id;
 // ✅ 正しい: readonly の StarRating
 <div role="img" aria-label={`${value}点`}>
   {stars.map((star) => (
-    <span key={star} aria-hidden="true">★</span>
+    <span key={star} aria-hidden="true">
+      ★
+    </span>
   ))}
 </div>
 ```
@@ -314,3 +321,38 @@ ref を受け取る必要がある場合は `RefAttributes<T>` を Props に int
 
 バグ調査・issue作成・コードレビューを行う前に、対象ページのディレクトリにある **`page.spec.md`** を必ず確認すること。
 意図した挙動を誤ってissue化することを防ぐため。`page.spec.md` がなければ `ComponentName.spec.md` も確認すること。
+
+## 非nullアサーション（`!`）の使用ルール
+
+非nullアサーション（`!`）の使用は **原則禁止**。型ガード、optional chaining（`?.`）、明示的な `undefined` / `null` チェックなど安全な代替手段を使うこと。
+
+```typescript
+// ❌ 禁止
+const name = user!.name;
+const first = items!.at(0)!.value;
+
+// ✅ 正しい: 型ガードで絞り込む
+if (user) {
+  const name = user.name;
+}
+
+// ✅ 正しい: optional chaining とデフォルト値
+const first = items?.at(0)?.value ?? 'default';
+
+// ✅ 正しい: 明示的な undefined / null チェック
+if (items === undefined) {
+  throw new Error('items が存在しません');
+}
+const first = items.at(0)?.value;
+```
+
+非nullアサーションの使用がどうしても合理的だと判断される場合は、その意図を **必ずコメントで残すこと**。コメントなしでの `!` 使用は禁止。
+
+```typescript
+// ❌ 禁止: コメントなしの非nullアサーション
+const element = document.getElementById('root')!;
+
+// ✅ 正しい: 意図をコメントで明示
+// index.html に静的に定義されているため必ず存在する
+const element = document.getElementById('root')!;
+```
