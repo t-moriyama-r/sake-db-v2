@@ -34,6 +34,7 @@ export default function AdminPage() {
       return;
     }
     if (isAdmin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadCategories().finally(() => setLoading(false));
     }
   }, [isAdmin, isLoading, loadCategories, router]);
