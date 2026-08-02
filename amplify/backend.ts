@@ -1,10 +1,10 @@
 import { defineBackend } from '@aws-amplify/backend';
 import { Duration } from 'aws-cdk-lib';
+import type { GraphqlApi } from 'aws-cdk-lib/aws-appsync';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { GraphqlApi } from 'aws-cdk-lib/aws-appsync';
-import { Function as CdkFunction } from 'aws-cdk-lib/aws-lambda';
+import type { Function as CdkFunction } from 'aws-cdk-lib/aws-lambda';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
 import { buildSearchCache } from './functions/liquor/buildSearchCache/resource';

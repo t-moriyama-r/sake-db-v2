@@ -4,8 +4,8 @@ import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
 import { fetchAll } from '@/lib/amplify-list';
 import { getServerAccessToken } from '@/lib/server/auth';
-import { revalidateLiquorsCache } from './revalidate';
 import { fetchLiquor } from './fetch';
+import { revalidateLiquorsCache } from './revalidate';
 
 /** お酒の categoryId をサーバーサイドで取得する Server Action。 */
 export async function getLiquorCategoryId(liquorId: string): Promise<string | null> {
