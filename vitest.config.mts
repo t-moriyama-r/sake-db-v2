@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react-swc';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
@@ -12,6 +12,6 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.mts'],
     include: ['**/*.test.{ts,tsx}'],
-    exclude: ['node_modules', '.next', 'sake-db'],
+    exclude: [...configDefaults.exclude, '.next/**', 'sake-db/**'],
   },
 });

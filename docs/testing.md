@@ -5,7 +5,7 @@
 ## テスト環境
 
 - テストランナーは **Vitest**（Next.js 公式ガイド準拠: Vitest + React Testing Library + jsdom）
-- 実行コマンド: `npm run test`（一括実行）/ `npm run test:watch`（監視モード)
+- 実行コマンド: `npm run test`（一括実行）/ `npm run test:watch`（監視モード）
 - 設定は `vitest.config.mts`。`vite-tsconfig-paths` により `@/` エイリアスがそのまま使える
 
 ## テストファイルの配置

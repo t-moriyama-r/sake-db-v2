@@ -22,6 +22,10 @@ describe('extractYoutubeEmbedId', () => {
     expect(extractYoutubeEmbedId('https://example.com/video/123')).toBeUndefined();
   });
 
+  it('YouTube 以外のホストに v= パラメータが含まれていても undefined を返す', () => {
+    expect(extractYoutubeEmbedId('https://example.com/video?v=dQw4w9WgXcQ')).toBeUndefined();
+  });
+
   it('null / undefined / 空文字列は undefined を返す', () => {
     expect(extractYoutubeEmbedId(null)).toBeUndefined();
     expect(extractYoutubeEmbedId(undefined)).toBeUndefined();

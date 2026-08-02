@@ -66,7 +66,12 @@ npm run sandbox:reset   # 削除して再起動（スキーマ変更で壊れた
 npx tsc --noEmit     # 型チェック
 npm run lint         # ESLint
 npm run test         # Vitest（一括実行）
-npm run test:watch   # Vitest（監視モード）
+```
+
+監視モード:
+
+```bash
+npm run test:watch
 ```
 
 スキーマ編集後は必ず型チェックを実行すること。  
