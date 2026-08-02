@@ -42,19 +42,25 @@ export function UserProfileView() {
           setUserName(userPosts[0].userName ?? '');
         }
 
-        const activities: UserActivity[] = (JSON.parse(JSON.stringify(userPosts)) as SerializableBoardPostRecord[]).map((p) => ({
+        const activities: UserActivity[] = (
+          JSON.parse(JSON.stringify(userPosts)) as SerializableBoardPostRecord[]
+        ).map((p) => ({
           post: p,
           liquorName: p.liquorName,
           liquorId: p.liquorId,
         }));
 
-        activities.sort((a, b) =>
-          new Date(b.post.updatedAt ?? 0).getTime() - new Date(a.post.updatedAt ?? 0).getTime()
+        activities.sort(
+          (a, b) =>
+            new Date(b.post.updatedAt ?? 0).getTime() - new Date(a.post.updatedAt ?? 0).getTime(),
         );
 
         setPosts(activities);
       } catch (e: unknown) {
-        console.error('ユーザー投稿の取得に失敗しました:', e instanceof Error ? e.message : String(e));
+        console.error(
+          'ユーザー投稿の取得に失敗しました:',
+          e instanceof Error ? e.message : String(e),
+        );
         addToast('データの読み込みに失敗しました', 'error');
       } finally {
         setLoading(false);
@@ -66,7 +72,9 @@ export function UserProfileView() {
   if (loading) {
     return (
       <>
-        <div className="flex justify-center py-32"><Spinner size="lg" /></div>
+        <div className="flex justify-center py-32">
+          <Spinner size="lg" />
+        </div>
         <ToastContainer toasts={toasts} onRemove={removeToast} />
       </>
     );
@@ -102,8 +110,14 @@ export function UserProfileView() {
         ) : (
           <div className="flex flex-col gap-3">
             {posts.slice(0, 10).map(({ post, liquorName, liquorId }) => (
-              <div key={post.id} className="rounded-xl border border-border bg-surface p-4 shadow-sm">
-                <Link href={routes.liquor.detail(liquorId)} className="font-medium text-link hover:underline">
+              <div
+                key={post.id}
+                className="rounded-xl border border-border bg-surface p-4 shadow-sm"
+              >
+                <Link
+                  href={routes.liquor.detail(liquorId)}
+                  className="font-medium text-link hover:underline"
+                >
                   {liquorName}
                 </Link>
                 <div className="mt-1 flex items-center gap-2">
@@ -126,7 +140,9 @@ export function UserProfileView() {
           <section key={r} className="mb-6">
             <div className="mb-3 flex items-center gap-2">
               <StarRating value={r} readonly size="sm" />
-              <span className="text-sm font-medium text-foreground-secondary">({rated.length}件)</span>
+              <span className="text-sm font-medium text-foreground-secondary">
+                ({rated.length}件)
+              </span>
             </div>
             <div className="flex flex-wrap gap-2">
               {rated.map(({ post, liquorName, liquorId }) => (
@@ -146,4 +162,3 @@ export function UserProfileView() {
     </div>
   );
 }
-

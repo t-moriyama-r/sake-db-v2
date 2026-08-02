@@ -29,7 +29,10 @@ export function MyPageEditForm() {
   } = useForm<UserEditInput>({ resolver: zodResolver(userEditSchema) });
 
   useEffect(() => {
-    if (!isLoading && !isLogin) { router.replace(routes.auth.login()); return; }
+    if (!isLoading && !isLogin) {
+      router.replace(routes.auth.login());
+      return;
+    }
     if (user) {
       reset({ name: user.name, email: user.email, profile: user.profile ?? '' });
     }
@@ -67,7 +70,12 @@ export function MyPageEditForm() {
     }
   };
 
-  if (isLoading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center py-32">
+        <Spinner size="lg" />
+      </div>
+    );
 
   return (
     <div className="mx-auto max-w-xl px-4 py-8">
@@ -75,10 +83,14 @@ export function MyPageEditForm() {
       <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           {serverError && (
-            <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
+            <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">
+              {serverError}
+            </div>
           )}
           {success && (
-            <div className="rounded-md bg-success-subtle px-4 py-3 text-sm text-success-subtle-foreground">更新しました</div>
+            <div className="rounded-md bg-success-subtle px-4 py-3 text-sm text-success-subtle-foreground">
+              更新しました
+            </div>
           )}
 
           <ImageUpload
@@ -87,9 +99,27 @@ export function MyPageEditForm() {
             onChange={handleImageChange}
           />
 
-          <FormField label="名前" type="text" required error={errors.name?.message} {...register('name')} />
-          <FormField label="メールアドレス" type="email" required error={errors.email?.message} {...register('email')} />
-          <FormField as="textarea" label="プロフィール" rows={3} error={errors.profile?.message} {...register('profile')} />
+          <FormField
+            label="名前"
+            type="text"
+            required
+            error={errors.name?.message}
+            {...register('name')}
+          />
+          <FormField
+            label="メールアドレス"
+            type="email"
+            required
+            error={errors.email?.message}
+            {...register('email')}
+          />
+          <FormField
+            as="textarea"
+            label="プロフィール"
+            rows={3}
+            error={errors.profile?.message}
+            {...register('profile')}
+          />
           <FormField
             label="現在のパスワード（パスワードを変更する場合のみ）"
             type="password"
@@ -105,8 +135,16 @@ export function MyPageEditForm() {
           />
 
           <div className="flex gap-2">
-            <Button type="submit" loading={isSubmitting}>保存する</Button>
-            <Button type="button" variant="secondary" onClick={() => router.push(routes.mypage.index())}>キャンセル</Button>
+            <Button type="submit" loading={isSubmitting}>
+              保存する
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => router.push(routes.mypage.index())}
+            >
+              キャンセル
+            </Button>
           </div>
         </form>
       </div>

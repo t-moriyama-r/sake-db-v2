@@ -8,7 +8,7 @@ type Props = {
   post: SerializableBoardPostRecord;
 };
 
-export function CommentItem({ post}: Props) {
+export function CommentItem({ post }: Props) {
   return (
     <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
       <div className="flex items-start gap-3">

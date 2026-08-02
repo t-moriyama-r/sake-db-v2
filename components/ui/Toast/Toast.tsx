@@ -4,8 +4,8 @@ import { type Toast } from '@/hooks/useToast';
 
 const typeClasses = {
   success: 'bg-success text-success-foreground',
-  error:   'bg-destructive text-destructive-foreground',
-  info:    'bg-primary text-primary-foreground',
+  error: 'bg-destructive text-destructive-foreground',
+  info: 'bg-primary text-primary-foreground',
 };
 
 type Props = {
@@ -36,4 +36,4 @@ export const ToastContainer = ({ toasts, onRemove }: Props) => {
       ))}
     </div>
   );
-}
+};

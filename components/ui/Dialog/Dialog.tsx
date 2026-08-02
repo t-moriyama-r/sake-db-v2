@@ -39,7 +39,9 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
       >
         {title && (
           <div className="flex items-center justify-between border-b border-border px-6 py-4">
-            <h2 id={titleId} className="text-lg font-semibold text-foreground">{title}</h2>
+            <h2 id={titleId} className="text-lg font-semibold text-foreground">
+              {title}
+            </h2>
             <button
               type="button"
               onClick={onClose}
@@ -56,9 +58,9 @@ export const Dialog = ({ open, onClose, title, children, actions }: Props) => {
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
-}
+};
 
 type ConfirmDialogProps = {
   open: boolean;
@@ -72,7 +74,14 @@ type ConfirmDialogProps = {
 };
 
 export const ConfirmDialog = ({
-  open, onClose, onConfirm, title = '確認', message, confirmLabel = '実行', loading, errorMessage,
+  open,
+  onClose,
+  onConfirm,
+  title = '確認',
+  message,
+  confirmLabel = '実行',
+  loading,
+  errorMessage,
 }: ConfirmDialogProps) => {
   return (
     <Dialog
@@ -81,15 +90,17 @@ export const ConfirmDialog = ({
       title={title}
       actions={
         <>
-          <Button variant="secondary" onClick={onClose} disabled={loading}>キャンセル</Button>
-          <Button variant="danger" onClick={onConfirm} loading={loading}>{confirmLabel}</Button>
+          <Button variant="secondary" onClick={onClose} disabled={loading}>
+            キャンセル
+          </Button>
+          <Button variant="danger" onClick={onConfirm} loading={loading}>
+            {confirmLabel}
+          </Button>
         </>
       }
     >
       <p className="text-foreground-secondary">{message}</p>
-      {errorMessage && (
-        <p className="mt-3 text-sm text-red-600">{errorMessage}</p>
-      )}
+      {errorMessage && <p className="mt-3 text-sm text-red-600">{errorMessage}</p>}
     </Dialog>
   );
-}
+};

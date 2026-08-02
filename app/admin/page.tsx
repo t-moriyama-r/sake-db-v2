@@ -29,13 +29,21 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (!isLoading && !isAdmin) { router.replace(routes.home()); return; }
+    if (!isLoading && !isAdmin) {
+      router.replace(routes.home());
+      return;
+    }
     if (isAdmin) {
       loadCategories().finally(() => setLoading(false));
     }
   }, [isAdmin, isLoading, loadCategories, router]);
 
-  if (isLoading || loading) return <div className="flex justify-center py-32"><Spinner size="lg" /></div>;
+  if (isLoading || loading)
+    return (
+      <div className="flex justify-center py-32">
+        <Spinner size="lg" />
+      </div>
+    );
 
   const rootCategories = categories.filter((c) => !c.parentId);
 
@@ -43,9 +51,7 @@ export default function AdminPage() {
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">管理画面</h1>
-        <Button onClick={() => router.push(routes.category.create('root'))}>
-          カテゴリを作成
-        </Button>
+        <Button onClick={() => router.push(routes.category.create('root'))}>カテゴリを作成</Button>
       </div>
 
       <section className="rounded-xl border border-border bg-surface shadow-sm">
@@ -56,7 +62,10 @@ export default function AdminPage() {
           {rootCategories.map((cat) => (
             <div key={cat.id} className="flex items-center justify-between px-6 py-3">
               <div>
-                <Link href={routes.category.detail(cat.id)} className="font-medium text-foreground hover:text-primary">
+                <Link
+                  href={routes.category.detail(cat.id)}
+                  className="font-medium text-foreground hover:text-primary"
+                >
                   {cat.name}
                 </Link>
                 <p className="text-xs text-muted-foreground">
@@ -64,13 +73,25 @@ export default function AdminPage() {
                 </p>
               </div>
               <div className="flex gap-2">
-                <Button variant="secondary" size="sm" onClick={() => router.push(routes.category.edit(cat.id))}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => router.push(routes.category.edit(cat.id))}
+                >
                   編集
                 </Button>
-                <Button variant="secondary" size="sm" onClick={() => router.push(routes.category.create(cat.id))}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => router.push(routes.category.create(cat.id))}
+                >
                   子を追加
                 </Button>
-                <Button variant="secondary" size="sm" onClick={() => router.push(routes.liquor.create(cat.id))}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => router.push(routes.liquor.create(cat.id))}
+                >
                   お酒を追加
                 </Button>
                 {!cat.readonly && (
