@@ -16,6 +16,7 @@ export const flavorVoteModels = {
       x: a.float().required(),
       y: a.float().required(),
     })
+    .secondaryIndexes((index) => [index('liquorId')])
     .authorization((allow) => [
       allow.guest().to(['read', 'create']),
       allow.owner().to(['read', 'create', 'update', 'delete']),

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import type { Schema } from '@/amplify/data/resource';
 import { Spinner } from '@/components/ui/Spinner/Spinner';
 import { StarRating } from '@/components/ui/StarRating/StarRating';
 import { ToastContainer } from '@/components/ui/Toast/Toast';
@@ -32,12 +31,11 @@ export function UserProfileView() {
     const load = async () => {
       setLoading(true);
       try {
-        const userPosts = await fetchAll<Schema['BoardPost']['type']>((nextToken, limit) =>
-          client.models.BoardPost.list({
-            filter: { userId: { eq: id } },
-            limit,
-            nextToken: nextToken ?? undefined,
-          }),
+        const userPosts = await fetchAll((nextToken, limit) =>
+          client.models.BoardPost.listBoardPostByUserId(
+            { userId: id },
+            { limit, nextToken: nextToken ?? undefined },
+          ),
         );
 
         if (userPosts.length > 0) {

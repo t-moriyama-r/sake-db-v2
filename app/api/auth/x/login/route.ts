@@ -4,14 +4,22 @@ import { NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 
 export async function GET() {
+  const clientId = process.env.X_CLIENT_ID;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  if (!clientId || !appUrl) {
+    console.error('X OAuth に必要な環境変数（X_CLIENT_ID / NEXT_PUBLIC_APP_URL）が設定されていません');
+    return NextResponse.json({ error: 'X OAuth の設定が不正です' }, { status: 500 });
+  }
+
   const codeVerifier = crypto.randomBytes(32).toString('base64url');
   const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url');
   const state = crypto.randomBytes(16).toString('base64url');
 
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id: process.env.X_CLIENT_ID!,
-    redirect_uri: `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/x/callback`,
+    client_id: clientId,
+    redirect_uri: `${appUrl}/api/auth/x/callback`,
     scope: 'users.read tweet.read',
     state,
     code_challenge: codeChallenge,

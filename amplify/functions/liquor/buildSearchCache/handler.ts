@@ -23,6 +23,9 @@ export const CACHE_S3_KEY = 'search-cache/liquors.json.gz';
  * EventBridge により 1 時間ごとに自動実行される。
  */
 export const handler = async (): Promise<void> => {
+  const bucket = process.env.STORAGE_BUCKET_NAME;
+  if (!bucket) throw new Error('STORAGE_BUCKET_NAME 環境変数が設定されていません');
+
   const client = getDataClient();
 
   const records: SearchRecord[] = await listAll((nextToken) =>
@@ -37,14 +40,14 @@ export const handler = async (): Promise<void> => {
 
   await s3.send(
     new PutObjectCommand({
-      Bucket: process.env.STORAGE_BUCKET_NAME!,
+      Bucket: bucket,
       Key: CACHE_S3_KEY,
       Body: compressed,
       ContentType: 'application/gzip',
     }),
   );
 
-  console.log(
-    `Search index built: ${records.length} records, ${(compressed.length / 1024).toFixed(1)} KB`,
+  console.info(
+    `検索インデックスを構築しました: ${records.length} 件, ${(compressed.length / 1024).toFixed(1)} KB`,
   );
 };

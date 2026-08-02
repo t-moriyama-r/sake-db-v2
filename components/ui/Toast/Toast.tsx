@@ -25,6 +25,7 @@ export const ToastContainer = ({ toasts, onRemove }: Props) => {
         >
           <span className="flex-1 text-sm">{toast.message}</span>
           <button
+            type="button"
             onClick={() => onRemove(toast.id)}
             className="opacity-80 hover:opacity-100"
             aria-label="閉じる"

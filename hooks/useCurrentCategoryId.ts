@@ -31,9 +31,13 @@ export const useCurrentCategoryId = (initialValue?: string | null): string | nul
     }
     let cancelled = false;
     // お酒ページ: サーバー Action 経由でカテゴリIDを取得（fetchLiquor のキャッシュを活用）
-    getLiquorCategoryId(liquorId).then((categoryId) => {
-      if (!cancelled) setLiquorCategoryId(categoryId);
-    });
+    getLiquorCategoryId(liquorId)
+      .then((categoryId) => {
+        if (!cancelled) setLiquorCategoryId(categoryId);
+      })
+      .catch((e: unknown) => {
+        console.warn('カテゴリID取得に失敗しました:', e instanceof Error ? e.message : String(e));
+      });
     return () => {
       cancelled = true;
     };

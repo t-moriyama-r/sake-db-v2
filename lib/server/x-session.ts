@@ -12,8 +12,7 @@ type XSessionPayload = {
  * 環境変数 X_SESSION_SECRET（32バイト以上）を鍵材料として使用する。
  */
 export function encryptXSession(payload: XSessionPayload): string {
-  const secret = process.env.X_SESSION_SECRET!;
-  const key = crypto.scryptSync(secret, 'x-session-salt', 32);
+  const key = getXSessionSecret();
   const iv = crypto.randomBytes(12);
   const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
   const plaintext = JSON.stringify(payload);
@@ -28,8 +27,7 @@ export function encryptXSession(payload: XSessionPayload): string {
  */
 export function decryptXSession(token: string): XSessionPayload | null {
   try {
-    const secret = process.env.X_SESSION_SECRET!;
-    const key = crypto.scryptSync(secret, 'x-session-salt', 32);
+    const key = getXSessionSecret();
     const buf = Buffer.from(token, 'base64url');
     const iv = buf.subarray(0, 12);
     const tag = buf.subarray(12, 28);
@@ -40,7 +38,14 @@ export function decryptXSession(token: string): XSessionPayload | null {
     const payload: XSessionPayload = JSON.parse(plaintext);
     if (payload.expiresAt < Date.now()) return null;
     return payload;
-  } catch {
+  } catch (e: unknown) {
+    console.error('decryptXSession: 復号に失敗しました:', e instanceof Error ? e.message : String(e));
     return null;
   }
+}
+
+function getXSessionSecret(): Buffer {
+  const secret = process.env.X_SESSION_SECRET;
+  if (!secret) throw new Error('X_SESSION_SECRET 環境変数が設定されていません');
+  return crypto.scryptSync(secret, 'x-session-salt', 32);
 }

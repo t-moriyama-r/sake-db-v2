@@ -13,7 +13,7 @@ export const tagModels = {
       liquor: a.belongsTo('Liquor', 'liquorId'),
       text: a.string().required(),
     })
-    .secondaryIndexes((index) => [index('text')])
+    .secondaryIndexes((index) => [index('text'), index('liquorId')])
     .authorization((allow) => [
       allow.guest().to(['read', 'create', 'delete']),
       allow.authenticated().to(['read', 'create', 'delete']),
