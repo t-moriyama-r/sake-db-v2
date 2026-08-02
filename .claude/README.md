@@ -71,6 +71,7 @@ Amplify データスキーマの編集（追加・変更・削除・ファイル
 | `dep-upgrade-safe` | npm パッケージを破壊的変更の調査・コード移行込みで安全にアップグレードする |
 | `ci-fix` | 失敗した GitHub Actions を根本原因分析して修正し、緑になるまで見届ける |
 | `bot-review-loop` | PR のレビューボット指摘を検証・修正・返信するループ。マージは人間が行う |
+| `test-writing` | Vitest のユニットテストを規約（`docs/testing.md`）に従って作成する |
 
 ## オーケストレーション
 

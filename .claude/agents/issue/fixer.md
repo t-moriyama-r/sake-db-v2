@@ -85,6 +85,7 @@ coder は呼ばず、`spec-manager` エージェントに以下を渡して修�
 
 - `npx tsc --noEmit` でビルドエラーがないことを確認
 - `npx next lint` でlintエラーがないことを確認
+- `npm run test` でテストが全件通ることを確認
 - エラーがあれば coder に修正を依頼する
 
 ## 5. コミット

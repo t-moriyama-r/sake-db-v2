@@ -40,6 +40,7 @@ description: fixer が実装したコードをレビューし、問題点を指�
 ## TypeScript
 - `npx tsc --noEmit` でエラーがないこと
 - `npx next lint` でエラーがないこと
+- `npm run test` が全件通ること（テスト規約は `docs/testing.md` 参照）
 
 # レビュー後の処理
 

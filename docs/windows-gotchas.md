@@ -26,7 +26,7 @@ GitHub Actions の Windows ランナーでは `os.tmpdir()` が短縮パスを�
 
 ```js
 function watchablePath(dir) {
-  if (process.platform !== "win32") return dir;
+  if (process.platform !== 'win32') return dir;
   try {
     return realpathSync.native(dir); // C:\Users\RUNNER~1\… → C:\Users\runneradmin\…
   } catch {
@@ -45,7 +45,7 @@ Windows でも `path.isAbsolute("/etc")` は **true** であり、`path.resolve(
 
 ```js
 // Windows ではこのリストは死んでいる — "/etc" に等しくなるものは存在しない
-const BLOCKED = ["/etc", "/root", "/var"];
+const BLOCKED = ['/etc', '/root', '/var'];
 BLOCKED.some((p) => path.resolve(input) === p); // 常に false
 ```
 
@@ -58,7 +58,7 @@ BLOCKED.some((p) => path.resolve(input) === p); // 常に false
 Windows のファイルシステムは大文字小文字を区別しない: `c:\windows` と `C:\Windows` は同じディレクトリである。素の `===` や `.startsWith()` では、別の綴りが許可リスト／拒否リストを素通りする。
 
 ```js
-const key = (p) => (process.platform === "win32" ? p.toLowerCase() : p);
+const key = (p) => (process.platform === 'win32' ? p.toLowerCase() : p);
 ```
 
 「配下にあるか」の判定では `+ path.sep` のガードも維持すること — `key.startsWith(blocked)` だけでは `C:\Windows-backup` まで飲み込んでしまう。
@@ -71,12 +71,12 @@ const key = (p) => (process.platform === "win32" ? p.toLowerCase() : p);
 
 環境変数から読み、未設定は「存在しない」として扱うこと:
 
-| 環境変数 | 典型的な値 |
-| --- | --- |
-| `SystemRoot` / `windir` | `C:\Windows` |
-| `ProgramFiles` | `C:\Program Files` |
-| `ProgramFiles(x86)` | `C:\Program Files (x86)` |
-| `ProgramData` | `C:\ProgramData` |
+| 環境変数                | 典型的な値               |
+| ----------------------- | ------------------------ |
+| `SystemRoot` / `windir` | `C:\Windows`             |
+| `ProgramFiles`          | `C:\Program Files`       |
+| `ProgramFiles(x86)`     | `C:\Program Files (x86)` |
+| `ProgramData`           | `C:\ProgramData`         |
 
 ---
 

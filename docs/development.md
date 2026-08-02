@@ -60,15 +60,17 @@ npm run sandbox:reset   # 削除して再起動（スキーマ変更で壊れた
 
 ---
 
-## 型チェック・Lint
+## 型チェック・Lint・テスト
 
 ```bash
-npx tsc --noEmit   # 型チェック
-npm run lint       # ESLint
+npx tsc --noEmit     # 型チェック
+npm run lint         # ESLint
+npm run test         # Vitest（一括実行）
+npm run test:watch   # Vitest（監視モード）
 ```
 
 スキーマ編集後は必ず型チェックを実行すること。  
-詳細: [コーディングルール](./coding-rules.md)
+詳細: [コーディングルール](./coding-rules.md) / [テスト](./testing.md)
 
 ---
 
