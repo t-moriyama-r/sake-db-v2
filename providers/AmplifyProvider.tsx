@@ -1,10 +1,9 @@
 'use client';
 
 import { Amplify } from 'aws-amplify';
+import outputs from '@/amplify_outputs.json';
 
 try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const outputs = require('@/amplify_outputs.json');
   Amplify.configure(outputs, { ssr: true });
 
   if (typeof window !== 'undefined' && outputs?.auth?.user_pool_client_id) {
@@ -20,10 +19,11 @@ try {
     keysToDelete.forEach((k) => localStorage.removeItem(k));
   }
 } catch {
-  console.warn('amplify_outputs.json が見つかりません。`npx ampx sandbox` を実行して生成してください。');
+  console.warn(
+    'Amplify の初期化に失敗しました。amplify_outputs.json の内容を確認してください（`npx ampx sandbox` で再生成）。',
+  );
 }
 
 export const AmplifyProvider = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
-

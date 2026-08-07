@@ -24,8 +24,12 @@ export default function AdminPage() {
     useCategoryDelete({ setCategories });
 
   const loadCategories = useCallback(async () => {
-    const data = await fetchAll(client.models.Category.list);
-    setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
+    try {
+      const data = await fetchAll(client.models.Category.list);
+      setCategories(JSON.parse(JSON.stringify(data)) as SerializableCategoryRecord[]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -34,8 +38,7 @@ export default function AdminPage() {
       return;
     }
     if (isAdmin) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      loadCategories().finally(() => setLoading(false));
+      void loadCategories();
     }
   }, [isAdmin, isLoading, loadCategories, router]);
 

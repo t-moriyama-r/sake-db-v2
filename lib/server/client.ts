@@ -1,8 +1,7 @@
 import { Amplify } from 'aws-amplify';
 import { generateClient } from 'aws-amplify/data';
 import type { Schema } from '@/amplify/data/resource';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const outputs = require('@/amplify_outputs.json');
+import outputs from '@/amplify_outputs.json';
 
 // サーバーサイド向けに SSR モードで Amplify を設定
 Amplify.configure(outputs, { ssr: true });

@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const outputs = require('@/amplify_outputs.json');
+import outputs from '@/amplify_outputs.json';
 
 export type ServerUser = {
   id: string;
