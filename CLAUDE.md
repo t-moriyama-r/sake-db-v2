@@ -5,6 +5,12 @@
 
 @.claude/agents/coding/coding-rules.md
 
+## テスト
+
+- テストランナーは Vitest。`npm run test` で一括実行、`npm run test:watch` で監視モード。
+- テストを書く・リファクタリングする前に `docs/testing.md` を読むこと。テスト作成は `test-writing` スキルを使う。
+- コード変更の検証ゲートは `npx tsc --noEmit` / `npm run lint` / `npm run test` の 3 点セット。
+
 ## デバッグ原則
 
 - 修正を試みる前に必ず**根本原因**を特定する。値のハードコード等の場当たり的な回避策は禁止。

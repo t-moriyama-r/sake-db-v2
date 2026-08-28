@@ -49,12 +49,18 @@ describe('routes', () => {
 
     it('searchWithQuery はクエリパラメータ付きで返す', () => {
       expect(routes.discovery.searchWithQuery('日本酒')).toBe(
-        '/discovery/search?q=%E6%97%A5%E6%9C%AC%E9%85%92'
+        '/discovery/search?q=%E6%97%A5%E6%9C%AC%E9%85%92',
       );
     });
 
     it('tag はURLエンコードされたパスを返す', () => {
       expect(routes.discovery.tag('辛口')).toBe('/discovery/tag/%E8%BE%9B%E5%8F%A3');
+    });
+
+    it('searchWithQuery はクエリ区切り文字（&）もエンコードする', () => {
+      expect(routes.discovery.searchWithQuery('梅酒&焼酎')).toBe(
+        '/discovery/search?q=%E6%A2%85%E9%85%92%26%E7%84%BC%E9%85%8E',
+      );
     });
   });
 

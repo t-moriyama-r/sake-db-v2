@@ -210,10 +210,10 @@ describe('userEditSchema', () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       const currentPasswordError = result.error.issues.find((i) =>
-        i.path.includes('currentPassword')
+        i.path.includes('currentPassword'),
       );
       expect(currentPasswordError?.message).toBe(
-        '新しいパスワードを設定する場合は現在のパスワードを入力してください'
+        '新しいパスワードを設定する場合は現在のパスワードを入力してください',
       );
     }
   });
