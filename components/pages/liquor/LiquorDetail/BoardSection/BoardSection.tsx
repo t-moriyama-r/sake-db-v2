@@ -13,7 +13,11 @@ type Props = {
   onLiquorUpdateAction: (updated: SerializableLiquorRecord) => void;
 };
 
-export function BoardSection({ liquor, boardPosts: initialBoardPosts, onLiquorUpdateAction }: Props) {
+export function BoardSection({
+  liquor,
+  boardPosts: initialBoardPosts,
+  onLiquorUpdateAction,
+}: Props) {
   const [boardPosts, setBoardPosts] = useState<SerializableBoardPostRecord[]>(initialBoardPosts);
   const [commentFormOpen, setCommentFormOpen] = useState<boolean>(false);
 

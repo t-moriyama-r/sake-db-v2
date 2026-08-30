@@ -11,8 +11,17 @@ type Props = {
   onEditAction: () => void;
 };
 
-export function LiquorActions({ liquorId, categoryId, liquorName, deletable, onEditAction }: Props) {
-  const { deleteDialog, setDeleteDialog, deleting, handleDelete, deleteError } = useLiquorDelete({ liquorId, categoryId });
+export function LiquorActions({
+  liquorId,
+  categoryId,
+  liquorName,
+  deletable,
+  onEditAction,
+}: Props) {
+  const { deleteDialog, setDeleteDialog, deleting, handleDelete, deleteError } = useLiquorDelete({
+    liquorId,
+    categoryId,
+  });
 
   return (
     <>

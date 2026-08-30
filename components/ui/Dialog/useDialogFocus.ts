@@ -5,7 +5,9 @@ type Args = {
   onClose: () => void;
 };
 
-export function useDialogFocus({ open, onClose }: Args): { dialogRef: React.RefObject<HTMLDivElement | null> } {
+export function useDialogFocus({ open, onClose }: Args): {
+  dialogRef: React.RefObject<HTMLDivElement | null>;
+} {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
@@ -50,7 +52,9 @@ export function useDialogFocus({ open, onClose }: Args): { dialogRef: React.RefO
     };
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => { document.removeEventListener('keydown', handleKeyDown); };
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [open, onClose]);
 
   return { dialogRef };
@@ -60,7 +64,7 @@ function getFocusableElements(container: HTMLElement | null): HTMLElement[] {
   if (!container) return [];
   return Array.from(
     container.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    )
+      'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
   );
 }

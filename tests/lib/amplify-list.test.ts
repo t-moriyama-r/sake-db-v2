@@ -53,7 +53,7 @@ describe('fetchAll', () => {
     const items: Item[] = [{ id: 'a' }, { id: 'b' }];
     // 1引数のAmplifyスタイル関数
     const amplifyListFn = vi.fn((_options?: { limit?: number; nextToken?: string | null }) =>
-      Promise.resolve({ data: items, nextToken: null })
+      Promise.resolve({ data: items, nextToken: null }),
     );
 
     const result = await fetchAll<Item>(amplifyListFn);
@@ -65,9 +65,8 @@ describe('fetchAll', () => {
   it('既存形式（2引数）の関数で全件取得できる', async () => {
     const items: Item[] = [{ id: 'x' }];
     // 2引数のレガシー形式
-    const legacyListFn = vi.fn(
-      (_nextToken?: string | null, _limit?: number) =>
-        Promise.resolve({ data: items, nextToken: null })
+    const legacyListFn = vi.fn((_nextToken?: string | null, _limit?: number) =>
+      Promise.resolve({ data: items, nextToken: null }),
     );
 
     const result = await fetchAll<Item>(legacyListFn);

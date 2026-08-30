@@ -1,85 +1,85 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* ─── デザイントークン ─────────────────────────────────────────── */
 
 :root {
   /* 背景 */
-  --background:  #f9fafb;   /* ページ背景 (gray-50) */
-  --surface:     #ffffff;   /* カード・パネル */
-  --muted:       #f3f4f6;   /* サブ背景・disabled (gray-100) */
+  --background: #f9fafb; /* ページ背景 (gray-50) */
+  --surface: #ffffff; /* カード・パネル */
+  --muted: #f3f4f6; /* サブ背景・disabled (gray-100) */
 
   /* テキスト */
-  --foreground:          #111827;  /* メインテキスト (gray-900) */
-  --foreground-secondary:#374151;  /* サブテキスト (gray-700) */
-  --muted-foreground:    #6b7280;  /* ミュートテキスト (gray-500) */
+  --foreground: #111827; /* メインテキスト (gray-900) */
+  --foreground-secondary: #374151; /* サブテキスト (gray-700) */
+  --muted-foreground: #6b7280; /* ミュートテキスト (gray-500) */
 
   /* ボーダー */
-  --border:       #e5e7eb;  /* 通常ボーダー (gray-200) */
-  --border-input: #d1d5db;  /* 入力ボーダー (gray-300) */
+  --border: #e5e7eb; /* 通常ボーダー (gray-200) */
+  --border-input: #d1d5db; /* 入力ボーダー (gray-300) */
 
   /* プライマリ (blue) */
-  --primary:            #2563eb;  /* blue-600 */
-  --primary-hover:      #1d4ed8;  /* blue-700 */
+  --primary: #2563eb; /* blue-600 */
+  --primary-hover: #1d4ed8; /* blue-700 */
   --primary-foreground: #ffffff;
 
   /* リンク */
-  --link:       #2563eb;
+  --link: #2563eb;
   --link-hover: #1d4ed8;
 
   /* 危険 (red) */
-  --destructive:                    #dc2626;  /* red-600 */
-  --destructive-hover:              #b91c1c;  /* red-700 */
-  --destructive-foreground:         #ffffff;
-  --destructive-subtle:             #fef2f2;  /* red-50 */
-  --destructive-subtle-foreground:  #b91c1c;  /* red-700 */
+  --destructive: #dc2626; /* red-600 */
+  --destructive-hover: #b91c1c; /* red-700 */
+  --destructive-foreground: #ffffff;
+  --destructive-subtle: #fef2f2; /* red-50 */
+  --destructive-subtle-foreground: #b91c1c; /* red-700 */
 
   /* 成功 (green) */
-  --success:                    #16a34a;  /* green-600 */
-  --success-foreground:         #ffffff;
-  --success-subtle:             #f0fdf4;  /* green-50 */
-  --success-subtle-foreground:  #15803d;  /* green-700 */
+  --success: #16a34a; /* green-600 */
+  --success-foreground: #ffffff;
+  --success-subtle: #f0fdf4; /* green-50 */
+  --success-subtle-foreground: #15803d; /* green-700 */
 
   /* アクセント */
-  --rating:    #facc15;  /* yellow-400 (星評価) */
-  --ring:      #3b82f6;  /* フォーカスリング */
-  --avatar-bg: #dbeafe;  /* blue-100 */
-  --avatar-fg: #2563eb;  /* blue-600 */
+  --rating: #facc15; /* yellow-400 (星評価) */
+  --ring: #3b82f6; /* フォーカスリング */
+  --avatar-bg: #dbeafe; /* blue-100 */
+  --avatar-fg: #2563eb; /* blue-600 */
 }
 
 .dark {
-  --background:  #0f172a;   /* slate-900 */
-  --surface:     #1e293b;   /* slate-800 */
-  --muted:       #334155;   /* slate-700 */
+  --background: #0f172a; /* slate-900 */
+  --surface: #1e293b; /* slate-800 */
+  --muted: #334155; /* slate-700 */
 
-  --foreground:          #f1f5f9;  /* slate-100 */
-  --foreground-secondary:#cbd5e1;  /* slate-300 */
-  --muted-foreground:    #94a3b8;  /* slate-400 */
+  --foreground: #f1f5f9; /* slate-100 */
+  --foreground-secondary: #cbd5e1; /* slate-300 */
+  --muted-foreground: #94a3b8; /* slate-400 */
 
-  --border:       #334155;  /* slate-700 */
-  --border-input: #475569;  /* slate-600 */
+  --border: #334155; /* slate-700 */
+  --border-input: #475569; /* slate-600 */
 
-  --primary:            #3b82f6;  /* blue-500 */
-  --primary-hover:      #60a5fa;  /* blue-400 */
+  --primary: #3b82f6; /* blue-500 */
+  --primary-hover: #60a5fa; /* blue-400 */
   --primary-foreground: #ffffff;
 
-  --link:       #60a5fa;  /* blue-400 */
-  --link-hover: #93c5fd;  /* blue-300 */
+  --link: #60a5fa; /* blue-400 */
+  --link-hover: #93c5fd; /* blue-300 */
 
-  --destructive:                    #ef4444;  /* red-500 */
-  --destructive-hover:              #f87171;  /* red-400 */
-  --destructive-foreground:         #ffffff;
-  --destructive-subtle:             #2d0a0a;
-  --destructive-subtle-foreground:  #fca5a5;  /* red-300 */
+  --destructive: #ef4444; /* red-500 */
+  --destructive-hover: #f87171; /* red-400 */
+  --destructive-foreground: #ffffff;
+  --destructive-subtle: #2d0a0a;
+  --destructive-subtle-foreground: #fca5a5; /* red-300 */
 
-  --success:                    #22c55e;  /* green-500 */
-  --success-foreground:         #ffffff;
-  --success-subtle:             #052e16;
-  --success-subtle-foreground:  #86efac;  /* green-300 */
+  --success: #22c55e; /* green-500 */
+  --success-foreground: #ffffff;
+  --success-subtle: #052e16;
+  --success-subtle-foreground: #86efac; /* green-300 */
 
-  --rating:    #facc15;
-  --ring:      #3b82f6;
+  --rating: #facc15;
+  --ring: #3b82f6;
   --avatar-bg: #1e3a5f;
-  --avatar-fg: #93c5fd;  /* blue-300 */
+  --avatar-fg: #93c5fd; /* blue-300 */
 }
 
 /* ─── Tailwind カスタムカラー登録 ──────────────────────────────── */
@@ -88,37 +88,37 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  --color-background:  var(--background);
-  --color-surface:     var(--surface);
-  --color-muted:       var(--muted);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
 
-  --color-foreground:           var(--foreground);
+  --color-foreground: var(--foreground);
   --color-foreground-secondary: var(--foreground-secondary);
-  --color-muted-foreground:     var(--muted-foreground);
+  --color-muted-foreground: var(--muted-foreground);
 
-  --color-border:       var(--border);
+  --color-border: var(--border);
   --color-border-input: var(--border-input);
 
-  --color-primary:            var(--primary);
-  --color-primary-hover:      var(--primary-hover);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
 
-  --color-link:       var(--link);
+  --color-link: var(--link);
   --color-link-hover: var(--link-hover);
 
-  --color-destructive:                    var(--destructive);
-  --color-destructive-hover:              var(--destructive-hover);
-  --color-destructive-foreground:         var(--destructive-foreground);
-  --color-destructive-subtle:             var(--destructive-subtle);
-  --color-destructive-subtle-foreground:  var(--destructive-subtle-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-hover: var(--destructive-hover);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-subtle: var(--destructive-subtle);
+  --color-destructive-subtle-foreground: var(--destructive-subtle-foreground);
 
-  --color-success:                    var(--success);
-  --color-success-foreground:         var(--success-foreground);
-  --color-success-subtle:             var(--success-subtle);
-  --color-success-subtle-foreground:  var(--success-subtle-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-subtle: var(--success-subtle);
+  --color-success-subtle-foreground: var(--success-subtle-foreground);
 
-  --color-rating:    var(--rating);
-  --color-ring:      var(--ring);
+  --color-rating: var(--rating);
+  --color-ring: var(--ring);
   --color-avatar-bg: var(--avatar-bg);
   --color-avatar-fg: var(--avatar-fg);
 }

@@ -1,6 +1,6 @@
 ---
 description: Amplify データスキーマの編集（追加・変更・削除・ファイル構成整理）を schema-editor エージェントで実行する
-argument-hint: "[編集内容の説明]"
+argument-hint: '[編集内容の説明]'
 ---
 
 以下の Amplify スキーマ編集タスクを実行してください。

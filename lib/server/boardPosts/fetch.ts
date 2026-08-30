@@ -11,7 +11,10 @@ export const fetchBoardPosts = withCache(
   async (liquorId: string): Promise<SerializableBoardPostRecord[]> => {
     const client = getGuestClient();
     const result = await fetchAll<BoardPostRecord>((nextToken, limit) =>
-      client.models.BoardPost.listBoardPostByLiquorId({ liquorId }, { limit, nextToken: nextToken ?? undefined }),
+      client.models.BoardPost.listBoardPostByLiquorId(
+        { liquorId },
+        { limit, nextToken: nextToken ?? undefined },
+      ),
     );
     return JSON.parse(JSON.stringify(result)) as SerializableBoardPostRecord[];
   },
@@ -27,11 +30,13 @@ export const fetchUserBoardPosts = withCache(
   async (userId: string): Promise<SerializableBoardPostRecord[]> => {
     const client = getGuestClient();
     const result = await fetchAll<BoardPostRecord>((nextToken, limit) =>
-      client.models.BoardPost.listBoardPostByUserId({ userId }, { limit, nextToken: nextToken ?? undefined }),
+      client.models.BoardPost.listBoardPostByUserId(
+        { userId },
+        { limit, nextToken: nextToken ?? undefined },
+      ),
     );
     const sorted = [...result].sort(
-      (a, b) =>
-        new Date(b.updatedAt ?? 0).getTime() - new Date(a.updatedAt ?? 0).getTime(),
+      (a, b) => new Date(b.updatedAt ?? 0).getTime() - new Date(a.updatedAt ?? 0).getTime(),
     );
     return JSON.parse(JSON.stringify(sorted)) as SerializableBoardPostRecord[];
   },

@@ -30,4 +30,3 @@ export function LiquorInfo({ liquor, actions }: Props) {
     </>
   );
 }
-

@@ -2,7 +2,10 @@
 
 import { useState } from 'react';
 import type { SerializableCategoryRecord } from '@/lib/server/categories/fetch';
-import type { SerializableLiquorHistoryRecord, SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
+import type {
+  SerializableLiquorHistoryRecord,
+  SerializableLiquorRecord,
+} from '@/lib/server/liquors/fetch';
 import { LiquorFormFields } from './LiquorFormFields';
 import { LiquorHistoryPanel } from './LiquorHistoryPanel';
 import { useLiquorSave } from './useLiquorSave';
@@ -32,9 +35,7 @@ type RollbackValues = {
 };
 
 export function LiquorForm(props: Props) {
-  const { save, saveError } = useLiquorSave(
-    props.mode === 'EDIT' ? { liquor: props.liquor } : {},
-  );
+  const { save, saveError } = useLiquorSave(props.mode === 'EDIT' ? { liquor: props.liquor } : {});
 
   const [rollbackValues, setRollbackValues] = useState<RollbackValues | null>(null);
 
@@ -73,7 +74,9 @@ export function LiquorForm(props: Props) {
                   }
                 : { categoryId: props.categoryId })
             }
-            initialImageBase64={rollbackValues?.imageBase64 ?? (isEdit ? props.liquor.imageBase64 : undefined)}
+            initialImageBase64={
+              rollbackValues?.imageBase64 ?? (isEdit ? props.liquor.imageBase64 : undefined)
+            }
             onSubmitAction={save}
             saveError={saveError}
           />

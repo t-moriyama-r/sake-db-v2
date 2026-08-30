@@ -37,7 +37,7 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
           ...breadcrumbs.map((bc, i) =>
             i < breadcrumbs.length - 1
               ? { label: bc.name ?? '', href: routes.discovery.category(bc.id) }
-              : { label: bc.name ?? '' }
+              : { label: bc.name ?? '' },
           ),
         ]}
       />
@@ -70,7 +70,9 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-4 py-16">
-          <p className="text-center text-muted-foreground">このカテゴリに登録されたお酒がありません。</p>
+          <p className="text-center text-muted-foreground">
+            このカテゴリに登録されたお酒がありません。
+          </p>
           {isLoggedIn && (
             <Link
               href={routes.liquor.create(categoryId)}
@@ -85,13 +87,14 @@ export default async function CategoryDiscoveryPage({ params }: Props) {
   );
 }
 
-function buildBreadcrumbs(categoryId: string, allCategories: SerializableCategoryRecord[]): SerializableCategoryRecord[] {
+function buildBreadcrumbs(
+  categoryId: string,
+  allCategories: SerializableCategoryRecord[],
+): SerializableCategoryRecord[] {
   const category = allCategories.find((c) => c.id === categoryId);
   if (!category) return [];
 
-  const ancestors = category.parentId
-    ? buildBreadcrumbs(category.parentId, allCategories)
-    : [];
+  const ancestors = category.parentId ? buildBreadcrumbs(category.parentId, allCategories) : [];
 
   return [...ancestors, category];
 }

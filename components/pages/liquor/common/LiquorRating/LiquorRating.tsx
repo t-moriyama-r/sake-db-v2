@@ -8,7 +8,13 @@ type Props = {
   showMemberRating?: boolean;
 };
 
-export function LiquorRating({ memberAvgRate, memberRateCount, allAvgRate, allRateCount, showMemberRating = true }: Props) {
+export function LiquorRating({
+  memberAvgRate,
+  memberRateCount,
+  allAvgRate,
+  allRateCount,
+  showMemberRating = true,
+}: Props) {
   return (
     <div className="flex items-center gap-1.5">
       {allAvgRate != null ? (

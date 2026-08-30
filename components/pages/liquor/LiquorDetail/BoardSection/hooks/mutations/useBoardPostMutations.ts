@@ -8,7 +8,10 @@ import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import type { BoardPostInput } from '@/schemas/board';
 import { useBoardPostApi } from './useBoardPostApi';
 
-type LiquorInfo = Pick<SerializableLiquorRecord, 'id' | 'categoryId' | 'categoryName' | 'name' | 'tags'>;
+type LiquorInfo = Pick<
+  SerializableLiquorRecord,
+  'id' | 'categoryId' | 'categoryName' | 'name' | 'tags'
+>;
 
 type Options = {
   liquor: LiquorInfo;
@@ -30,7 +33,8 @@ export function useBoardPostMutations({
   const { user } = useAuth();
   const { actionError, withActionError } = useActionError();
   const [deleting, startDeleteTransition] = useTransition();
-  const { createBoardPost, updateBoardPost, deleteBoardPost, updateLiquorAvgRate } = useBoardPostApi();
+  const { createBoardPost, updateBoardPost, deleteBoardPost, updateLiquorAvgRate } =
+    useBoardPostApi();
 
   async function handleFormSubmit(data: BoardPostInput): Promise<void> {
     await withActionError(() => postBoardPost(data), '投稿に失敗しました');

@@ -43,7 +43,9 @@ export function PasswordResetExeForm() {
       <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           {serverError && (
-            <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
+            <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">
+              {serverError}
+            </div>
           )}
           <FormField
             label="メールアドレス"
@@ -82,4 +84,3 @@ export function PasswordResetExeForm() {
     </div>
   );
 }
-

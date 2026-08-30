@@ -7,7 +7,10 @@ export function useLiquorFormActions() {
   const { user, isAdmin } = useAuth();
 
   async function resolveCategoryName(categoryId: string): Promise<string> {
-    const { data: cat } = await client.models.Category.get({ id: categoryId }, { authMode: 'identityPool' });
+    const { data: cat } = await client.models.Category.get(
+      { id: categoryId },
+      { authMode: 'identityPool' },
+    );
     return cat?.name ?? '';
   }
 

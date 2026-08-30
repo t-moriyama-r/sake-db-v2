@@ -1,14 +1,14 @@
 import { notFound } from 'next/navigation';
 import { CategoryDetail } from '@/components/pages/category/CategoryDetail/CategoryDetail';
 import { getServerUser } from '@/lib/server/auth';
-import { fetchAllCategories, fetchCategory, buildCategoryBreadcrumbs } from '@/lib/server/categories/fetch';
+import {
+  fetchAllCategories,
+  fetchCategory,
+  buildCategoryBreadcrumbs,
+} from '@/lib/server/categories/fetch';
 import { fetchLiquorsByCategories } from '@/lib/server/liquors/fetch';
 
-export default async function CategoryDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default async function CategoryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
   const [category, allCategories, liquors, user] = await Promise.all([

@@ -25,32 +25,38 @@ export function useLiquorSave({ liquor }: UseLiquorSaveOptions) {
         const categoryName = await resolveCategoryName(value.categoryId);
         const imageBase64 = await resolveImageBase64(value.image, liquor.imageBase64);
 
-        await updateLiquor({
-          id: liquor.id,
-          categoryId: value.categoryId,
-          categoryName,
-          name: value.name,
-          description: value.description ?? undefined,
-          youtube: value.youtube ?? undefined,
-          imageBase64,
-          versionNo: (liquor.versionNo ?? 0) + 1,
-          updateUserId: user?.id,
-          updateUserName: user?.name,
-        }, authMode);
+        await updateLiquor(
+          {
+            id: liquor.id,
+            categoryId: value.categoryId,
+            categoryName,
+            name: value.name,
+            description: value.description ?? undefined,
+            youtube: value.youtube ?? undefined,
+            imageBase64,
+            versionNo: (liquor.versionNo ?? 0) + 1,
+            updateUserId: user?.id,
+            updateUserName: user?.name,
+          },
+          authMode,
+        );
 
-        await createLiquorHistory({
-          liquorId: liquor.id,
-          categoryId: liquor.categoryId,
-          categoryName: liquor.categoryName,
-          name: liquor.name,
-          description: liquor.description ?? undefined,
-          imageUrl: liquor.imageUrl ?? undefined,
-          imageBase64: liquor.imageBase64 ?? undefined,
-          youtube: liquor.youtube ?? undefined,
-          versionNo: liquor.versionNo ?? 0,
-          updateUserId: liquor.updateUserId ?? undefined,
-          updateUserName: liquor.updateUserName ?? undefined,
-        }, authMode);
+        await createLiquorHistory(
+          {
+            liquorId: liquor.id,
+            categoryId: liquor.categoryId,
+            categoryName: liquor.categoryName,
+            name: liquor.name,
+            description: liquor.description ?? undefined,
+            imageUrl: liquor.imageUrl ?? undefined,
+            imageBase64: liquor.imageBase64 ?? undefined,
+            youtube: liquor.youtube ?? undefined,
+            versionNo: liquor.versionNo ?? 0,
+            updateUserId: liquor.updateUserId ?? undefined,
+            updateUserName: liquor.updateUserName ?? undefined,
+          },
+          authMode,
+        );
 
         await revalidateLiquorsCache();
         router.push(routes.liquor.detail(liquor.id));

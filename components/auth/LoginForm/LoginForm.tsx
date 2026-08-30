@@ -42,7 +42,9 @@ export const LoginForm = ({ onNavigate }: Props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       {serverError && (
-        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
+        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">
+          {serverError}
+        </div>
       )}
 
       <FormField
@@ -76,16 +78,24 @@ export const LoginForm = ({ onNavigate }: Props) => {
       <XLoginButton />
 
       <div className="flex flex-col items-center gap-1 text-sm">
-        <Link href={routes.auth.passwordReset()} onClick={onNavigate} className="text-link hover:underline">
+        <Link
+          href={routes.auth.passwordReset()}
+          onClick={onNavigate}
+          className="text-link hover:underline"
+        >
           パスワードを忘れた方
         </Link>
         <p className="text-muted-foreground">
           アカウントをお持ちでない方は{' '}
-          <Link href={routes.auth.register()} onClick={onNavigate} className="text-link hover:underline">
+          <Link
+            href={routes.auth.register()}
+            onClick={onNavigate}
+            className="text-link hover:underline"
+          >
             新規登録
           </Link>
         </p>
       </div>
     </form>
   );
-}
+};

@@ -12,7 +12,10 @@ import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { boardPostSchema, type BoardPostInput } from '@/schemas/board';
 import { useBoardPostMutations } from './hooks/mutations/useBoardPostMutations';
 
-type LiquorInfo = Pick<SerializableLiquorRecord, 'id' | 'categoryId' | 'categoryName' | 'name' | 'tags'>;
+type LiquorInfo = Pick<
+  SerializableLiquorRecord,
+  'id' | 'categoryId' | 'categoryName' | 'name' | 'tags'
+>;
 
 type Props = {
   liquor: LiquorInfo;

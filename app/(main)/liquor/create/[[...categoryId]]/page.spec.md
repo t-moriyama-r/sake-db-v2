@@ -18,10 +18,9 @@
 ```typescript
 // lib/repository/liquor.ts
 export async function createLiquor(input: LiquorCreateInput): Promise<string | undefined> {
-  const { data: newLiquor } = await client.models.Liquor.create(
-    input,
-    { authMode: 'identityPool' },
-  );
+  const { data: newLiquor } = await client.models.Liquor.create(input, {
+    authMode: 'identityPool',
+  });
   return newLiquor?.id;
 }
 ```

@@ -4,7 +4,7 @@ import { extractYoutubeEmbedId } from '@/lib/liquor/youtube';
 describe('extractYoutubeEmbedId', () => {
   it('youtube.com/watch?v= 形式の URL から動画IDを抽出できる', () => {
     expect(extractYoutubeEmbedId('https://www.youtube.com/watch?v=dQw4w9WgXcQ')).toBe(
-      'dQw4w9WgXcQ'
+      'dQw4w9WgXcQ',
     );
   });
 
@@ -13,9 +13,9 @@ describe('extractYoutubeEmbedId', () => {
   });
 
   it('追加クエリパラメータがあっても動画IDを抽出できる', () => {
-    expect(
-      extractYoutubeEmbedId('https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=30s')
-    ).toBe('dQw4w9WgXcQ');
+    expect(extractYoutubeEmbedId('https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=30s')).toBe(
+      'dQw4w9WgXcQ',
+    );
   });
 
   it('null のとき undefined を返す', () => {

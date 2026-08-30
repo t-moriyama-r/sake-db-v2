@@ -49,7 +49,7 @@ describe('routes', () => {
 
     it('searchWithQuery はクエリパラメータ付きで返す', () => {
       expect(routes.discovery.searchWithQuery('日本酒')).toBe(
-        '/discovery/search?q=%E6%97%A5%E6%9C%AC%E9%85%92'
+        '/discovery/search?q=%E6%97%A5%E6%9C%AC%E9%85%92',
       );
     });
 

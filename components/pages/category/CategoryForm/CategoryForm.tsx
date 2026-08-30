@@ -6,7 +6,10 @@ import { useForm, Controller } from 'react-hook-form';
 import { FormField } from '@/components/forms/FormField/FormField';
 import { ImageUpload } from '@/components/forms/ImageUpload/ImageUpload';
 import { Button } from '@/components/ui/Button/Button';
-import { collectDescendantIds, type SerializableCategoryRecord } from '@/lib/server/categories/fetch';
+import {
+  collectDescendantIds,
+  type SerializableCategoryRecord,
+} from '@/lib/server/categories/fetch';
 import { categorySchema, type CategoryInput } from '@/schemas/category';
 
 type Props = {
@@ -17,7 +20,13 @@ type Props = {
   submitLabel?: string;
 };
 
-export const CategoryForm = ({ categories, defaultValues, category, onSubmit, submitLabel = '保存' }: Props) => {
+export const CategoryForm = ({
+  categories,
+  defaultValues,
+  category,
+  onSubmit,
+  submitLabel = '保存',
+}: Props) => {
   const [serverError, setServerError] = useState<string>('');
 
   const {
@@ -45,7 +54,7 @@ export const CategoryForm = ({ categories, defaultValues, category, onSubmit, su
 
   const selectableCategories = useMemo<React.ReactElement[]>(
     () => getSelectableCategories(categories, category),
-    [categories, category]
+    [categories, category],
   );
 
   const selectClass =
@@ -55,11 +64,15 @@ export const CategoryForm = ({ categories, defaultValues, category, onSubmit, su
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-5">
       {serverError && (
-        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
+        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">
+          {serverError}
+        </div>
       )}
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-foreground-secondary">親カテゴリ <span className="text-destructive">*</span></label>
+        <label className="text-sm font-medium text-foreground-secondary">
+          親カテゴリ <span className="text-destructive">*</span>
+        </label>
         <select className={selectClass} {...register('parentId')}>
           <option value="">-- 親カテゴリを選択してください --</option>
           {selectableCategories}
@@ -102,11 +115,11 @@ export const CategoryForm = ({ categories, defaultValues, category, onSubmit, su
       </Button>
     </form>
   );
-}
+};
 
 function getSelectableCategories(
   categories: SerializableCategoryRecord[],
-  category: SerializableCategoryRecord | undefined
+  category: SerializableCategoryRecord | undefined,
 ): React.ReactElement[] {
   const excludeIds = category
     ? new Set(collectDescendantIds(category.id, categories))
@@ -114,6 +127,8 @@ function getSelectableCategories(
   return categories
     .filter((c) => !excludeIds.has(c.id))
     .map((c) => (
-      <option key={c.id} value={c.id}>{c.name}</option>
+      <option key={c.id} value={c.id}>
+        {c.name}
+      </option>
     ));
 }

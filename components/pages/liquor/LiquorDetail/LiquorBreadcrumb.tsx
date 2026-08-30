@@ -16,4 +16,3 @@ export function LiquorBreadcrumb({ categoryPath, liquorName }: Props) {
 
   return <Breadcrumb items={items} />;
 }
-

@@ -6,7 +6,10 @@ import type { SerializableLiquorRecord } from '@/lib/server/liquors/fetch';
 import { CommentForm } from './CommentForm';
 import { usePostFormState } from './hooks/logics/usePostFormState';
 
-type LiquorInfo = Pick<SerializableLiquorRecord, 'id' | 'categoryId' | 'categoryName' | 'name' | 'tags'>;
+type LiquorInfo = Pick<
+  SerializableLiquorRecord,
+  'id' | 'categoryId' | 'categoryName' | 'name' | 'tags'
+>;
 
 type Props = {
   open: boolean;
@@ -17,7 +20,14 @@ type Props = {
   onLiquorUpdateAction: (updated: SerializableLiquorRecord) => void;
 };
 
-export function CommentFormDialog({ open, onCloseAction, liquor, boardPosts, onBoardPostsChangeAction, onLiquorUpdateAction }: Props) {
+export function CommentFormDialog({
+  open,
+  onCloseAction,
+  liquor,
+  boardPosts,
+  onBoardPostsChangeAction,
+  onLiquorUpdateAction,
+}: Props) {
   const { existingPost } = usePostFormState(boardPosts);
 
   return (

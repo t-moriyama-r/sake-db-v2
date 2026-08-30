@@ -15,7 +15,7 @@ export const StarRating = ({ value, max = 5, onChange, readonly, size = 'md' }: 
       aria-label={readonly ? `${value}点` : '評価'}
       className="flex items-center gap-0.5"
     >
-      {Array.from({ length: max }, (_, i) => i + 1).map((star) => (
+      {Array.from({ length: max }, (_, i) => i + 1).map((star) =>
         readonly ? (
           <span
             key={star}
@@ -34,12 +34,17 @@ export const StarRating = ({ value, max = 5, onChange, readonly, size = 'md' }: 
             aria-label={`${star}点`}
             aria-checked={star <= (value ?? 0)}
           >
-            <span aria-hidden="true" className={star <= value ? 'text-rating' : 'text-border-input'}>★</span>
+            <span
+              aria-hidden="true"
+              className={star <= value ? 'text-rating' : 'text-border-input'}
+            >
+              ★
+            </span>
           </button>
-        )
-      ))}
+        ),
+      )}
     </div>
   );
-}
+};
 
 const sizeClasses = { sm: 'text-lg', md: 'text-2xl', lg: 'text-3xl' };

@@ -72,25 +72,31 @@ export function useAuth() {
     return () => unsubscribe();
   }, [loadUser]);
 
-  const login = useCallback(async (email: string, password: string) => {
-    const result = await signIn({ username: email, password });
-    await loadUser();
-    return result;
-  }, [loadUser]);
+  const login = useCallback(
+    async (email: string, password: string) => {
+      const result = await signIn({ username: email, password });
+      await loadUser();
+      return result;
+    },
+    [loadUser],
+  );
 
-  const loginWithX = useCallback(async (username: string, xUserId: string) => {
-    const result = await signIn({
-      username,
-      options: {
-        authFlowType: 'CUSTOM_WITHOUT_SRP',
-        clientMetadata: { xUserId },
-      },
-    });
-    if (result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE') {
-      await confirmSignIn({ challengeResponse: xUserId });
-    }
-    await loadUser();
-  }, [loadUser]);
+  const loginWithX = useCallback(
+    async (username: string, xUserId: string) => {
+      const result = await signIn({
+        username,
+        options: {
+          authFlowType: 'CUSTOM_WITHOUT_SRP',
+          clientMetadata: { xUserId },
+        },
+      });
+      if (result.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE') {
+        await confirmSignIn({ challengeResponse: xUserId });
+      }
+      await loadUser();
+    },
+    [loadUser],
+  );
 
   const logout = useCallback(async () => {
     await signOut();

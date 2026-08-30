@@ -37,7 +37,7 @@ export const SearchContent = () => {
           setResults([]);
           return;
         }
-        const liquors = await res.json() as SerializableLiquorRecord[];
+        const liquors = (await res.json()) as SerializableLiquorRecord[];
         setResults(liquors);
       } catch (err: unknown) {
         console.error('[search] 例外:', err);
@@ -67,20 +67,26 @@ export const SearchContent = () => {
           placeholder="お酒の名前で検索..."
           className="flex-1 rounded-md border border-border-input bg-surface px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
         />
-        <Button type="submit" loading={loading}>検索</Button>
+        <Button type="submit" loading={loading}>
+          検索
+        </Button>
       </form>
 
-      {loading && <div className="flex justify-center py-16"><Spinner size="lg" /></div>}
-
-      {searchError && !loading && (
-        <p className="py-4 text-sm text-red-500">{searchError}</p>
+      {loading && (
+        <div className="flex justify-center py-16">
+          <Spinner size="lg" />
+        </div>
       )}
+
+      {searchError && !loading && <p className="py-4 text-sm text-red-500">{searchError}</p>}
 
       {searched && !loading && !searchError && (
         <>
           <p className="mb-4 text-sm text-muted-foreground">{results.length} 件見つかりました</p>
           {results.length === 0 ? (
-            <p className="py-16 text-center text-muted-foreground">「{query}」に一致するお酒が見つかりませんでした</p>
+            <p className="py-16 text-center text-muted-foreground">
+              「{query}」に一致するお酒が見つかりませんでした
+            </p>
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {results.map((liquor) => (

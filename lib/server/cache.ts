@@ -24,9 +24,7 @@ export const withCache = <Args extends unknown[], Return>(
   key: string[],
   options: { tags: string[]; revalidate?: number },
 ): ((...args: Args) => Promise<Return>) => {
-  const effectiveOptions =
-    isDevelopmentEnv() ? { ...options, revalidate: 60 } : options;
+  const effectiveOptions = isDevelopmentEnv() ? { ...options, revalidate: 60 } : options;
   const cached = unstable_cache(fn, key, effectiveOptions) as (...args: Args) => Promise<Return>;
   return cache(cached);
 };
-

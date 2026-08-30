@@ -200,7 +200,9 @@ function buildBreadcrumbs(id: string, all: Category[]): Category[] {
   let current = all.find((c) => c.id === id);
   while (current) {
     chain.unshift(current);
-    current = current.parentId ? all.find((c) => c.id === current!.parentId) ?? undefined : undefined;
+    current = current.parentId
+      ? (all.find((c) => c.id === current!.parentId) ?? undefined)
+      : undefined;
   }
   return chain;
 }

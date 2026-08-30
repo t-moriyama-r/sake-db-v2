@@ -15,7 +15,7 @@ export function XCompleteView() {
       try {
         const res = await fetch('/api/auth/x/session');
         if (!res.ok) throw new Error('session');
-        const { username, xUserId } = await res.json() as { username: string; xUserId: string };
+        const { username, xUserId } = (await res.json()) as { username: string; xUserId: string };
 
         await loginWithX(username, xUserId);
         router.push(routes.home());
@@ -34,8 +34,5 @@ export function XCompleteView() {
     );
   }
 
-  return (
-    <p className="text-muted-foreground">Xアカウントで認証中...</p>
-  );
+  return <p className="text-muted-foreground">Xアカウントで認証中...</p>;
 }
-

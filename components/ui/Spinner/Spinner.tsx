@@ -10,4 +10,4 @@ export const Spinner = ({ size = 'md' }: Props) => {
       aria-label="読み込み中"
     />
   );
-}
+};

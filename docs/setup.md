@@ -48,4 +48,3 @@ AWS Amplify Hosting へデプロイする場合:
 ```bash
 npx ampx pipeline-deploy --branch main --app-id <Amplify App ID>
 ```
-

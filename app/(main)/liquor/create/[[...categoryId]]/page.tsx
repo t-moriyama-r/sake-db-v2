@@ -6,10 +6,7 @@ export default async function LiquorCreatePage({
 }: {
   params: Promise<{ categoryId?: string[] }>;
 }) {
-  const [{ categoryId }, categories] = await Promise.all([
-    params,
-    fetchAllCategories(),
-  ]);
+  const [{ categoryId }, categories] = await Promise.all([params, fetchAllCategories()]);
 
   return <LiquorForm mode="NEW" categoryId={categoryId?.[0]} categories={categories} />;
 }

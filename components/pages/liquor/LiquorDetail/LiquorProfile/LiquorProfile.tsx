@@ -47,16 +47,11 @@ export function LiquorProfile({ liquor, initialTags, isLogin }: Props) {
             }
           />
 
-          <LiquorTagSection
-            liquorId={liquor.id}
-            initialTags={initialTags}
-          />
+          <LiquorTagSection liquorId={liquor.id} initialTags={initialTags} />
         </div>
       </div>
 
-      {youtubeEmbedId && (
-        <LiquorYoutube youtubeEmbedId={youtubeEmbedId} title={liquor.name} />
-      )}
+      {youtubeEmbedId && <LiquorYoutube youtubeEmbedId={youtubeEmbedId} title={liquor.name} />}
     </>
   );
 }

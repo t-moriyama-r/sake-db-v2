@@ -20,10 +20,11 @@ try {
     keysToDelete.forEach((k) => localStorage.removeItem(k));
   }
 } catch {
-  console.warn('amplify_outputs.json が見つかりません。`npx ampx sandbox` を実行して生成してください。');
+  console.warn(
+    'amplify_outputs.json が見つかりません。`npx ampx sandbox` を実行して生成してください。',
+  );
 }
 
 export const AmplifyProvider = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
-

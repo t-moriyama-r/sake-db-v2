@@ -5,7 +5,11 @@
  *   npm run invoke:search-cache
  */
 
-import { CloudFormationClient, ListStacksCommand, DescribeStackResourcesCommand } from '@aws-sdk/client-cloudformation';
+import {
+  CloudFormationClient,
+  ListStacksCommand,
+  DescribeStackResourcesCommand,
+} from '@aws-sdk/client-cloudformation';
 import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
 
 const region = 'ap-northeast-1';
@@ -17,26 +21,38 @@ async function getFunctionName(): Promise<string> {
   const functionStacks = [];
   let nextToken: string | undefined;
   do {
-    const list = await cf.send(new ListStacksCommand({
-      StackStatusFilter: ['CREATE_COMPLETE', 'UPDATE_COMPLETE'],
-      NextToken: nextToken,
-    }));
-    const matched = list.StackSummaries?.filter(
-      (s) => s.StackName?.includes('sakedbv2') && s.StackName.includes('function') && !s.StackName.includes('SearchCache'),
-    ) ?? [];
+    const list = await cf.send(
+      new ListStacksCommand({
+        StackStatusFilter: ['CREATE_COMPLETE', 'UPDATE_COMPLETE'],
+        NextToken: nextToken,
+      }),
+    );
+    const matched =
+      list.StackSummaries?.filter(
+        (s) =>
+          s.StackName?.includes('sakedbv2') &&
+          s.StackName.includes('function') &&
+          !s.StackName.includes('SearchCache'),
+      ) ?? [];
     functionStacks.push(...matched);
     nextToken = list.NextToken;
   } while (nextToken);
 
   if (functionStacks.length === 0) {
-    throw new Error('サンドボックスの function スタックが見つかりません（sandbox が起動していますか？）');
+    throw new Error(
+      'サンドボックスの function スタックが見つかりません（sandbox が起動していますか？）',
+    );
   }
 
   // function スタックが複数ある場合に備え、全スタックから buildSearchCache リソースを探す
   for (const stack of functionStacks) {
-    const resources = await cf.send(new DescribeStackResourcesCommand({ StackName: stack.StackName! }));
+    const resources = await cf.send(
+      new DescribeStackResourcesCommand({ StackName: stack.StackName! }),
+    );
     const fn = resources.StackResources?.find(
-      (r) => r.LogicalResourceId?.includes('buildSearchCache') && r.ResourceType === 'AWS::Lambda::Function',
+      (r) =>
+        r.LogicalResourceId?.includes('buildSearchCache') &&
+        r.ResourceType === 'AWS::Lambda::Function',
     );
     if (fn?.PhysicalResourceId) return fn.PhysicalResourceId;
   }
@@ -48,7 +64,9 @@ async function main() {
   const functionName = await getFunctionName();
   console.log(`Lambda を起動中: ${functionName}`);
 
-  const response = await lambda.send(new InvokeCommand({ FunctionName: functionName, LogType: 'Tail' }));
+  const response = await lambda.send(
+    new InvokeCommand({ FunctionName: functionName, LogType: 'Tail' }),
+  );
 
   if (response.LogResult) {
     process.stdout.write(Buffer.from(response.LogResult, 'base64').toString());

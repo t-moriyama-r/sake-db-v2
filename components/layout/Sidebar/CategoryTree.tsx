@@ -24,7 +24,10 @@ type CategoryTreeContentProps = {
   activeCategoryId?: string | null;
 };
 
-export function CategoryTreeContent({ categoryTree, activeCategoryId: propActiveCategoryId }: CategoryTreeContentProps) {
+export function CategoryTreeContent({
+  categoryTree,
+  activeCategoryId: propActiveCategoryId,
+}: CategoryTreeContentProps) {
   const activeCategoryId = useCurrentCategoryId(propActiveCategoryId);
 
   const pathIds = activeCategoryId ? (findPath(activeCategoryId, categoryTree) ?? []) : [];
@@ -37,7 +40,10 @@ export function CategoryTreeContent({ categoryTree, activeCategoryId: propActive
 
   return (
     <div className="rounded-lg border border-border bg-surface p-4">
-      <Link href={routes.home()} className="mb-3 block text-sm font-semibold text-foreground hover:text-primary hover:underline">
+      <Link
+        href={routes.home()}
+        className="mb-3 block text-sm font-semibold text-foreground hover:text-primary hover:underline"
+      >
         カテゴリ
       </Link>
       <ul className="space-y-0.5">

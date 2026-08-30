@@ -64,7 +64,9 @@ export const RegisterForm = () => {
           <strong>{email}</strong> に確認コードを送信しました。メールを確認して入力してください。
         </p>
         {serverError && (
-          <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
+          <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">
+            {serverError}
+          </div>
         )}
         <FormField
           label="確認コード"
@@ -83,7 +85,9 @@ export const RegisterForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       {serverError && (
-        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">{serverError}</div>
+        <div className="rounded-md bg-destructive-subtle px-4 py-3 text-sm text-destructive-subtle-foreground">
+          {serverError}
+        </div>
       )}
 
       <FormField
@@ -126,4 +130,4 @@ export const RegisterForm = () => {
       </p>
     </form>
   );
-}
+};

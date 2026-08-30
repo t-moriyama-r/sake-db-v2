@@ -17,12 +17,7 @@ export function Comments({ boardPosts }: Props) {
           まだ投稿がありません。最初の投稿をしてみましょう！
         </p>
       ) : (
-        sorted.map((post) => (
-          <CommentItem
-            key={post.id}
-            post={post}
-          />
-        ))
+        sorted.map((post) => <CommentItem key={post.id} post={post} />)
       )}
     </div>
   );

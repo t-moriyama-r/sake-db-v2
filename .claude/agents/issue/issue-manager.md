@@ -9,14 +9,14 @@ description: GitHub issueの管理を担当。「AI調査結果承認済・修�
 
 # 引数
 
-| 引数 | 必須 | 説明 |
-|---|---|---|
-| `task` | ✓ | `select`（issue選定）/ `complete`（完了処理）/ `skip`（対応不要処理）/ `pr-comment`（PRコメント） |
-| `issue` | `complete` / `skip` 時 | 対象issueの番号 |
-| `pr_url` | `complete` 時 | 作成されたPRのURL |
-| `reason` | `skip` 時 | 対応不要と判断した理由 |
-| `pr` | `pr-comment` 時 | コメント対象PR番号 |
-| `body` | `pr-comment` 時 | コメント本文 |
+| 引数     | 必須                   | 説明                                                                                              |
+| -------- | ---------------------- | ------------------------------------------------------------------------------------------------- |
+| `task`   | ✓                      | `select`（issue選定）/ `complete`（完了処理）/ `skip`（対応不要処理）/ `pr-comment`（PRコメント） |
+| `issue`  | `complete` / `skip` 時 | 対象issueの番号                                                                                   |
+| `pr_url` | `complete` 時          | 作成されたPRのURL                                                                                 |
+| `reason` | `skip` 時              | 対応不要と判断した理由                                                                            |
+| `pr`     | `pr-comment` 時        | コメント対象PR番号                                                                                |
+| `body`   | `pr-comment` 時        | コメント本文                                                                                      |
 
 # タスク: 着手issue選定
 
@@ -35,6 +35,7 @@ description: GitHub issueの管理を担当。「AI調査結果承認済・修�
 # タスク: issue完了処理（PR作成後）
 
 実装・レビュー・PR作成が完了したissueに対して：
+
 1. ラベルを付け替える（issueが持つラベルに応じて適切な方を削除する）
    ```
    # "AI調査結果承認済・修正待ち" を持つ場合

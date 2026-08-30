@@ -31,7 +31,9 @@ export function CategoryCascadeSelect({ categories, value, onChange, error }: Pr
         >
           <option value="">-- 選択 --</option>
           {sortWithOtherLast(levelCategories).map((c) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
           ))}
         </select>
       ))}
@@ -43,11 +45,17 @@ const SELECT_CLASS =
   'w-full rounded-md border border-border-input bg-surface px-3 py-2 text-sm text-foreground ' +
   'focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring';
 
-function getChildren(categories: SerializableCategoryRecord[], parentId: string): SerializableCategoryRecord[] {
+function getChildren(
+  categories: SerializableCategoryRecord[],
+  parentId: string,
+): SerializableCategoryRecord[] {
   return categories.filter((c) => c.parentId === parentId);
 }
 
-function computeLevels(categories: SerializableCategoryRecord[], selectedPath: string[]): SerializableCategoryRecord[][] {
+function computeLevels(
+  categories: SerializableCategoryRecord[],
+  selectedPath: string[],
+): SerializableCategoryRecord[][] {
   const roots = categories.filter((c) => !c.parentId);
   if (roots.length === 0) return [];
 

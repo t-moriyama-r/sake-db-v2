@@ -17,7 +17,12 @@ type Props = {
   categoryPath: CategoryBreadcrumbItem[];
 };
 
-export function LiquorDetail({ initialLiquor, initialBoardPosts, initialTags, categoryPath }: Props) {
+export function LiquorDetail({
+  initialLiquor,
+  initialBoardPosts,
+  initialTags,
+  categoryPath,
+}: Props) {
   const { isLogin } = useAuth();
   const [liquor, setLiquor] = useState<SerializableLiquorRecord>(initialLiquor);
 
@@ -27,11 +32,7 @@ export function LiquorDetail({ initialLiquor, initialBoardPosts, initialTags, ca
 
       <div className="mt-4 flex flex-col gap-8">
         <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
-          <LiquorProfile
-            liquor={liquor}
-            initialTags={initialTags}
-            isLogin={isLogin}
-          />
+          <LiquorProfile liquor={liquor} initialTags={initialTags} isLogin={isLogin} />
         </div>
 
         <BoardSection

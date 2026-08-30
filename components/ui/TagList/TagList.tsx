@@ -19,7 +19,7 @@ type Props = {
 
 export function TagList({
   tags,
-                          deletable = false,
+  deletable = false,
   onDelete,
   onClick,
   colorScheme,

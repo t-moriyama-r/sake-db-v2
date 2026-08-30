@@ -74,10 +74,7 @@ export interface SeederConfig<T, TRecord extends { id: string }> {
   getLabel?: (item: T) => string;
 
   /** refresh 時に既存レコード 1 件を削除する関数（省略時は refresh 不可） */
-  delete?: (
-    client: DataClient,
-    id: string,
-  ) => Promise<{ errors?: { message: string }[] | null }>;
+  delete?: (client: DataClient, id: string) => Promise<{ errors?: { message: string }[] | null }>;
 }
 
 // ================================================================
@@ -195,9 +192,7 @@ export async function runAll(seeders: Seeder[], options: RunOptions): Promise<vo
   }
 
   console.log('=== 全シード完了 ===');
-  console.log(
-    `合計: 作成 ${totals.created} / スキップ ${totals.skipped} / 失敗 ${totals.failed}`,
-  );
+  console.log(`合計: 作成 ${totals.created} / スキップ ${totals.skipped} / 失敗 ${totals.failed}`);
 }
 
 // ================================================================

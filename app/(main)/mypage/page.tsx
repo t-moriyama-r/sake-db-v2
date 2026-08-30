@@ -5,10 +5,7 @@ import { getServerUserProfile } from '@/lib/server/auth';
 import { fetchBookmarksSSR } from '@/lib/server/bookmarks/fetch';
 
 export default async function MyPage() {
-  const [userProfile, bookmarks] = await Promise.all([
-    getServerUserProfile(),
-    fetchBookmarksSSR(),
-  ]);
+  const [userProfile, bookmarks] = await Promise.all([getServerUserProfile(), fetchBookmarksSSR()]);
 
   if (!userProfile) return redirect(routes.auth.login());
 

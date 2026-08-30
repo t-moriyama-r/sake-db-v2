@@ -48,7 +48,10 @@ export function Tag({
       {showDelete && (
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); onDeleteAction(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteAction();
+          }}
           className="ml-0.5 text-current opacity-60 hover:opacity-100"
           aria-label={`タグ ${label} を削除`}
         >
@@ -71,9 +74,5 @@ export function Tag({
     );
   }
 
-  return (
-    <span className={baseClass}>
-      {content}
-    </span>
-  );
+  return <span className={baseClass}>{content}</span>;
 }

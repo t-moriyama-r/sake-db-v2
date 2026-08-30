@@ -41,8 +41,12 @@ export function TagAddInput({ open, onClose, onAddAction }: Props) {
       title="タグを追加"
       actions={
         <>
-          <Button variant="secondary" onClick={handleClose} disabled={loading}>キャンセル</Button>
-          <Button onClick={() => void handleAdd()} loading={loading}>追加</Button>
+          <Button variant="secondary" onClick={handleClose} disabled={loading}>
+            キャンセル
+          </Button>
+          <Button onClick={() => void handleAdd()} loading={loading}>
+            追加
+          </Button>
         </>
       }
     >

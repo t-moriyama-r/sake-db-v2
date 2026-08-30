@@ -34,7 +34,7 @@ export function CategoryDetail({
     ...breadcrumbs.map((bc, i) =>
       i < breadcrumbs.length - 1
         ? { label: bc.name, href: routes.category.detail(bc.id) }
-        : { label: bc.name }
+        : { label: bc.name },
     ),
   ];
 
@@ -109,4 +109,3 @@ export function CategoryDetail({
     </div>
   );
 }
-
