@@ -22,7 +22,7 @@ describe('calcMemberRateCount', () => {
         rate3Users: [],
         rate2Users: ['d', 'e', 'f'],
         rate1Users: [],
-      })
+      }),
     ).toBe(6);
   });
 
@@ -34,7 +34,7 @@ describe('calcMemberRateCount', () => {
         rate3Users: ['a'],
         rate2Users: null,
         rate1Users: undefined,
-      } as Parameters<typeof calcMemberRateCount>[0])
+      } as unknown as Parameters<typeof calcMemberRateCount>[0]),
     ).toBe(1);
   });
 });
@@ -49,7 +49,7 @@ describe('calcMemberAvgRate', () => {
       calcMemberAvgRate({
         ...emptyRates,
         rate5Users: ['a', 'b', 'c'],
-      })
+      }),
     ).toBe(5);
   });
 
@@ -58,7 +58,7 @@ describe('calcMemberAvgRate', () => {
       calcMemberAvgRate({
         ...emptyRates,
         rate1Users: ['a', 'b'],
-      })
+      }),
     ).toBe(1);
   });
 
@@ -68,7 +68,7 @@ describe('calcMemberAvgRate', () => {
         ...emptyRates,
         rate5Users: ['a'],
         rate3Users: ['b'],
-      })
+      }),
     ).toBe(4);
   });
 
@@ -80,7 +80,7 @@ describe('calcMemberAvgRate', () => {
         rate5Users: ['a'],
         rate4Users: ['b'],
         rate3Users: ['c'],
-      })
+      }),
     ).toBe(4);
   });
 });
