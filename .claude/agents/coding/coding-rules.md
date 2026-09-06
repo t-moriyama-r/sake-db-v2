@@ -331,3 +331,38 @@ ref を受け取る必要がある場合は `RefAttributes<T>` を Props に int
 - 現在のタスク・修正・呼び出し元への言及（`// X から使われる`、`// issue #123 対応で追加`）は禁止 — その文脈は PR 説明とコミットメッセージに書くものであり、コードの進化とともに腐る。
 - 複数行のコメントブロックは書かない。1 行が上限。
 - リファクタリング時、WHAT コメントは「念のため」残さず積極的に削除する — 真実の源はコードである。
+
+## 非nullアサーション（`!`）の使用ルール
+
+非nullアサーション（`!`）の使用は **原則禁止**。型ガード、optional chaining（`?.`）、明示的な `undefined` / `null` チェックなど安全な代替手段を使うこと。
+
+```typescript
+// ❌ 禁止
+const name = user!.name;
+const first = items!.at(0)!.value;
+
+// ✅ 正しい: 型ガードで絞り込む
+if (user) {
+  const name = user.name;
+}
+
+// ✅ 正しい: optional chaining とデフォルト値
+const first = items?.at(0)?.value ?? 'default';
+
+// ✅ 正しい: 明示的な undefined / null チェック
+if (items === undefined) {
+  throw new Error('items が存在しません');
+}
+const first = items.at(0)?.value;
+```
+
+非nullアサーションの使用がどうしても合理的だと判断される場合は、その意図を **必ずコメントで残すこと**。コメントなしでの `!` 使用は禁止。
+
+```typescript
+// ❌ 禁止: コメントなしの非nullアサーション
+const element = document.getElementById('root')!;
+
+// ✅ 正しい: 意図をコメントで明示
+// index.html に静的に定義されているため必ず存在する
+const element = document.getElementById('root')!;
+```
